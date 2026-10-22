@@ -1,0 +1,16 @@
+# Ruff configuration for Django backend
+line-length = 100
+target-version = "py312"
+
+[lint]
+select = ["E", "F", "W", "UP"]
+ignore = [
+    "RUF012", # Mutable class attributes (standard in Django views/models/admin)
+    "F403",   # Star imports in settings (e.g. from .base import *)
+    "F405",   # Undefined from star import in settings
+    "E501",   # Line length handled gracefully
+]
+
+[lint.isort]
+combine-as-imports = true
+known-first-party = ["apps", "config"]
