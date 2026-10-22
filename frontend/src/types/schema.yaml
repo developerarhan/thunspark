@@ -1,0 +1,1893 @@
+openapi: 3.0.3
+info:
+  title: Thunspark Headless API
+  version: 1.0.0
+  description: Strategic growth agency CMS, content, leads, and analytics backend.
+paths:
+  /api/analytics/active/:
+    get:
+      operationId: analytics_active_list
+      description: Endpoint consumed by Next.js to initialize approved tracking tags.
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - analytics
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedTrackingConfigList'
+          description: ''
+  /api/blog/articles/:
+    get:
+      operationId: blog_articles_list
+      parameters:
+      - in: query
+        name: category__slug
+        schema:
+          type: string
+      - in: query
+        name: is_featured
+        schema:
+          type: boolean
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: tags__slug
+        schema:
+          type: string
+      tags:
+      - blog
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedArticleListList'
+          description: ''
+  /api/blog/articles/{slug}/:
+    get:
+      operationId: blog_articles_retrieve
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - blog
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArticleDetail'
+          description: ''
+  /api/blog/categories/:
+    get:
+      operationId: blog_categories_list
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - blog
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedCategoryList'
+          description: ''
+  /api/blog/categories/{slug}/:
+    get:
+      operationId: blog_categories_retrieve
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - blog
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+          description: ''
+  /api/blog/tags/:
+    get:
+      operationId: blog_tags_list
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - blog
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedTagList'
+          description: ''
+  /api/blog/tags/{slug}/:
+    get:
+      operationId: blog_tags_retrieve
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - blog
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tag'
+          description: ''
+  /api/content/growth-stages/:
+    get:
+      operationId: content_growth_stages_list
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - content
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedGrowthStageList'
+          description: ''
+  /api/content/growth-stages/{slug}/:
+    get:
+      operationId: content_growth_stages_retrieve
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - content
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GrowthStage'
+          description: ''
+  /api/content/homepage/:
+    get:
+      operationId: content_homepage_list
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - content
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedHomepageContentList'
+          description: ''
+  /api/content/homepage/{section_key}/:
+    get:
+      operationId: content_homepage_retrieve
+      parameters:
+      - in: path
+        name: section_key
+        schema:
+          enum:
+          - hero
+          - problem
+          - growth_system
+          - who_we_help
+          - projects_preview
+          - why_thunspark
+          - final_cta
+          type: string
+          description: |-
+            * `hero` - Hero Section
+            * `problem` - The Problem Section
+            * `growth_system` - Interactive Growth System
+            * `who_we_help` - Who We Help
+            * `projects_preview` - Projects Section (Empty / Future)
+            * `why_thunspark` - Why Thunspark Principles
+            * `final_cta` - Final Conversion CTA
+        required: true
+      tags:
+      - content
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomepageContent'
+          description: ''
+  /api/content/industries/:
+    get:
+      operationId: content_industries_list
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - content
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedIndustryCategoryList'
+          description: ''
+  /api/content/industries/{slug}/:
+    get:
+      operationId: content_industries_retrieve
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - content
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IndustryCategory'
+          description: ''
+  /api/content/legal/:
+    get:
+      operationId: content_legal_list
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - content
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedLegalPageList'
+          description: ''
+  /api/content/legal/{slug}/:
+    get:
+      operationId: content_legal_retrieve
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - content
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LegalPage'
+          description: ''
+  /api/content/principles/:
+    get:
+      operationId: content_principles_list
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - content
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPrincipleList'
+          description: ''
+  /api/content/principles/{id}/:
+    get:
+      operationId: content_principles_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Principle (Why Thunspark).
+        required: true
+      tags:
+      - content
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Principle'
+          description: ''
+  /api/content/service-groups/:
+    get:
+      operationId: content_service_groups_list
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - content
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedServiceGroupList'
+          description: ''
+  /api/content/service-groups/{slug}/:
+    get:
+      operationId: content_service_groups_retrieve
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - content
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceGroup'
+          description: ''
+  /api/content/services/:
+    get:
+      operationId: content_services_list
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - content
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedServiceList'
+          description: ''
+  /api/content/services/{slug}/:
+    get:
+      operationId: content_services_retrieve
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - content
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Service'
+          description: ''
+  /api/core/health/:
+    get:
+      operationId: core_health_retrieve
+      tags:
+      - core
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthCheck'
+          description: ''
+  /api/leads/submit/:
+    post:
+      operationId: leads_submit_create
+      tags:
+      - leads
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LeadSubmissionRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LeadSubmissionRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LeadSubmissionRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LeadSubmission'
+          description: ''
+  /api/projects/items/:
+    get:
+      operationId: projects_items_list
+      parameters:
+      - in: query
+        name: industry__slug
+        schema:
+          type: string
+      - in: query
+        name: is_featured
+        schema:
+          type: boolean
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: services__slug
+        schema:
+          type: string
+      tags:
+      - projects
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedProjectListList'
+          description: ''
+  /api/projects/items/{slug}/:
+    get:
+      operationId: projects_items_retrieve
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - projects
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectDetail'
+          description: ''
+components:
+  schemas:
+    ArticleDetail:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          maxLength: 250
+        slug:
+          type: string
+          maxLength: 250
+          pattern: ^[-a-zA-Z0-9_]+$
+        excerpt:
+          type: string
+          description: Concise lead synopsis for index cards and meta descriptions.
+          maxLength: 320
+        content:
+          type: string
+        featured_image:
+          type: string
+          format: uri
+        featured_image_alt:
+          type: string
+          maxLength: 200
+        category:
+          allOf:
+          - $ref: '#/components/schemas/Category'
+          readOnly: true
+        author:
+          allOf:
+          - $ref: '#/components/schemas/Author'
+          readOnly: true
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tag'
+          readOnly: true
+        is_featured:
+          type: boolean
+        published_at:
+          type: string
+          format: date-time
+          nullable: true
+        reading_time:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Estimated minutes to read. Auto-calculated upon save.
+        views_count:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        faq_schema:
+          description: 'Optional structured schema. Example: [{"question": "...",
+            "answer": "..."}]'
+        meta_title:
+          type: string
+          description: Primary SEO title (max 70 chars). Falls back to main title
+            if empty.
+          maxLength: 70
+        meta_description:
+          type: string
+          description: Search engine snippet description (max 160 chars).
+          maxLength: 160
+        canonical_url:
+          description: Canonical URL override. Blank will auto-generate based on slug.
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 200
+          - type: string
+            maxLength: 0
+        og_title:
+          type: string
+          description: OpenGraph title for social media shares.
+          maxLength: 70
+        og_description:
+          type: string
+          description: OpenGraph description for social cards.
+          maxLength: 200
+        og_image:
+          type: string
+          format: uri
+          nullable: true
+          description: 1200x630px social card preview image.
+        no_index:
+          type: boolean
+          description: Set True to instruct search bots not to index this entry.
+      required:
+      - author
+      - category
+      - content
+      - excerpt
+      - featured_image
+      - id
+      - slug
+      - tags
+      - title
+    ArticleList:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          maxLength: 250
+        slug:
+          type: string
+          maxLength: 250
+          pattern: ^[-a-zA-Z0-9_]+$
+        excerpt:
+          type: string
+          description: Concise lead synopsis for index cards and meta descriptions.
+          maxLength: 320
+        featured_image:
+          type: string
+          format: uri
+        featured_image_alt:
+          type: string
+          maxLength: 200
+        category:
+          allOf:
+          - $ref: '#/components/schemas/Category'
+          readOnly: true
+        author:
+          allOf:
+          - $ref: '#/components/schemas/Author'
+          readOnly: true
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tag'
+          readOnly: true
+        is_featured:
+          type: boolean
+        published_at:
+          type: string
+          format: date-time
+          nullable: true
+        reading_time:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Estimated minutes to read. Auto-calculated upon save.
+      required:
+      - author
+      - category
+      - excerpt
+      - featured_image
+      - id
+      - slug
+      - tags
+      - title
+    Author:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 150
+        slug:
+          type: string
+          maxLength: 150
+          pattern: ^[-a-zA-Z0-9_]+$
+        role:
+          type: string
+          maxLength: 120
+        bio:
+          type: string
+        avatar:
+          type: string
+          format: uri
+          nullable: true
+        linkedin_url:
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 200
+          - type: string
+            maxLength: 0
+      required:
+      - id
+      - name
+      - slug
+    BlankEnum:
+      enum:
+      - ''
+    BudgetEnum:
+      enum:
+      - under_1k
+      - 1k_3k
+      - 3k_5k
+      - 5k_10k
+      - 10k_plus
+      type: string
+      description: |-
+        * `under_1k` - Under $1,000
+        * `1k_3k` - $1,000–$3,000
+        * `3k_5k` - $3,000–$5,000
+        * `5k_10k` - $5,000–$10,000
+        * `10k_plus` - $10,000+
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 100
+        slug:
+          type: string
+          maxLength: 100
+          pattern: ^[-a-zA-Z0-9_]+$
+        description:
+          type: string
+      required:
+      - id
+      - name
+      - slug
+    GrowthStage:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 60
+        slug:
+          type: string
+          maxLength: 60
+          pattern: ^[-a-zA-Z0-9_]+$
+        step_number:
+          type: integer
+          maximum: 32767
+          minimum: 0
+          description: Order in pipeline (1-6)
+        headline:
+          type: string
+          maxLength: 150
+        description:
+          type: string
+          description: Clear explanation of the stage's purpose in the connected system.
+        icon_name:
+          type: string
+          description: Lucide icon name
+          maxLength: 60
+      required:
+      - description
+      - id
+      - name
+      - slug
+      - step_number
+    HealthCheck:
+      type: object
+      properties:
+        status:
+          type: string
+        version:
+          type: string
+      required:
+      - status
+      - version
+    HomepageContent:
+      type: object
+      properties:
+        section_key:
+          $ref: '#/components/schemas/SectionKeyEnum'
+        badge:
+          type: string
+          maxLength: 80
+        headline:
+          type: string
+          maxLength: 250
+        subheadline:
+          type: string
+        cta_primary_label:
+          type: string
+          maxLength: 80
+        cta_primary_url:
+          type: string
+          maxLength: 200
+        cta_secondary_label:
+          type: string
+          maxLength: 80
+        cta_secondary_url:
+          type: string
+          maxLength: 200
+        extra_body:
+          type: string
+          title: Extra Content
+      required:
+      - headline
+      - section_key
+    IndustryCategory:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 120
+        slug:
+          type: string
+          maxLength: 120
+          pattern: ^[-a-zA-Z0-9_]+$
+        tagline:
+          type: string
+          maxLength: 200
+        description:
+          type: string
+          description: Focus areas, key challenges, and how we scale this category.
+        icon_name:
+          type: string
+          description: Lucide icon name
+          maxLength: 60
+        sort_order:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Order index (lower numbers appear first).
+      required:
+      - description
+      - id
+      - name
+      - slug
+    LeadSubmission:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 200
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        company:
+          type: string
+          maxLength: 200
+        website:
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 200
+          - type: string
+            maxLength: 0
+        improvement_goal:
+          type: string
+          description: What are you trying to improve (bottleneck/challenge)?
+        budget:
+          oneOf:
+          - $ref: '#/components/schemas/BudgetEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        message:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - email
+      - id
+      - name
+    LeadSubmissionRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+        email:
+          type: string
+          format: email
+          minLength: 1
+          maxLength: 254
+        company:
+          type: string
+          maxLength: 200
+        website:
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 200
+          - type: string
+            maxLength: 0
+        improvement_goal:
+          type: string
+          description: What are you trying to improve (bottleneck/challenge)?
+        budget:
+          oneOf:
+          - $ref: '#/components/schemas/BudgetEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        message:
+          type: string
+        website_hp:
+          type: string
+          writeOnly: true
+        attribution:
+          writeOnly: true
+      required:
+      - email
+      - name
+    LegalPage:
+      type: object
+      properties:
+        page_type:
+          $ref: '#/components/schemas/PageTypeEnum'
+        title:
+          type: string
+          maxLength: 150
+        slug:
+          type: string
+          maxLength: 150
+          pattern: ^[-a-zA-Z0-9_]+$
+        last_updated:
+          type: string
+          format: date
+          readOnly: true
+        content:
+          type: string
+          title: Legal Text
+        meta_title:
+          type: string
+          description: Primary SEO title (max 70 chars). Falls back to main title
+            if empty.
+          maxLength: 70
+        meta_description:
+          type: string
+          description: Search engine snippet description (max 160 chars).
+          maxLength: 160
+        canonical_url:
+          description: Canonical URL override. Blank will auto-generate based on slug.
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 200
+          - type: string
+            maxLength: 0
+        og_image:
+          type: string
+          format: uri
+          nullable: true
+          description: 1200x630px social card preview image.
+      required:
+      - content
+      - last_updated
+      - page_type
+      - slug
+      - title
+    PageTypeEnum:
+      enum:
+      - privacy
+      - cookies
+      - terms
+      type: string
+      description: |-
+        * `privacy` - Privacy Policy
+        * `cookies` - Cookie Policy
+        * `terms` - Terms of Service
+    PaginatedArticleListList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ArticleList'
+    PaginatedCategoryList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Category'
+    PaginatedGrowthStageList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/GrowthStage'
+    PaginatedHomepageContentList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/HomepageContent'
+    PaginatedIndustryCategoryList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/IndustryCategory'
+    PaginatedLegalPageList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/LegalPage'
+    PaginatedPrincipleList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Principle'
+    PaginatedProjectListList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectList'
+    PaginatedServiceGroupList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ServiceGroup'
+    PaginatedServiceList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Service'
+    PaginatedTagList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tag'
+    PaginatedTrackingConfigList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/TrackingConfig'
+    PlatformEnum:
+      enum:
+      - gtm
+      - ga4
+      - google_ads
+      - meta_pixel
+      - linkedin
+      - pinterest
+      type: string
+      description: |-
+        * `gtm` - Google Tag Manager (Container ID)
+        * `ga4` - Google Analytics 4 (Measurement ID)
+        * `google_ads` - Google Ads (Conversion ID)
+        * `meta_pixel` - Meta Pixel (Pixel ID)
+        * `linkedin` - LinkedIn Insight Tag (Partner ID)
+        * `pinterest` - Pinterest Tag (Tag ID)
+    Principle:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          maxLength: 120
+        subtitle:
+          type: string
+          maxLength: 200
+        description:
+          type: string
+        sort_order:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Order index (lower numbers appear first).
+      required:
+      - description
+      - id
+      - title
+    ProjectDetail:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          maxLength: 200
+        slug:
+          type: string
+          maxLength: 200
+          pattern: ^[-a-zA-Z0-9_]+$
+        client_name:
+          type: string
+          maxLength: 200
+        industry:
+          allOf:
+          - $ref: '#/components/schemas/IndustryCategory'
+          readOnly: true
+        services:
+          type: array
+          items:
+            $ref: '#/components/schemas/ServiceGroup'
+          readOnly: true
+        thumbnail:
+          type: string
+          format: uri
+        short_description:
+          type: string
+          description: Concise summary for project preview cards.
+        overview:
+          type: string
+        challenge:
+          type: string
+        objective:
+          type: string
+        strategy:
+          type: string
+        execution:
+          type: string
+        results:
+          type: string
+        key_learnings:
+          type: string
+        testimonial_quote:
+          type: string
+        testimonial_author:
+          type: string
+          maxLength: 150
+        testimonial_role:
+          type: string
+          maxLength: 150
+        gallery:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectGalleryImage'
+          readOnly: true
+        is_featured:
+          type: boolean
+        published_at:
+          type: string
+          format: date-time
+          nullable: true
+        meta_title:
+          type: string
+          description: Primary SEO title (max 70 chars). Falls back to main title
+            if empty.
+          maxLength: 70
+        meta_description:
+          type: string
+          description: Search engine snippet description (max 160 chars).
+          maxLength: 160
+        canonical_url:
+          description: Canonical URL override. Blank will auto-generate based on slug.
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 200
+          - type: string
+            maxLength: 0
+        og_title:
+          type: string
+          description: OpenGraph title for social media shares.
+          maxLength: 70
+        og_description:
+          type: string
+          description: OpenGraph description for social cards.
+          maxLength: 200
+        og_image:
+          type: string
+          format: uri
+          nullable: true
+          description: 1200x630px social card preview image.
+        no_index:
+          type: boolean
+          description: Set True to instruct search bots not to index this entry.
+      required:
+      - gallery
+      - id
+      - industry
+      - services
+      - short_description
+      - slug
+      - thumbnail
+      - title
+    ProjectGalleryImage:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        image:
+          type: string
+          format: uri
+        caption:
+          type: string
+          maxLength: 200
+        alt_text:
+          type: string
+          maxLength: 200
+        sort_order:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+      required:
+      - alt_text
+      - id
+      - image
+    ProjectList:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          maxLength: 200
+        slug:
+          type: string
+          maxLength: 200
+          pattern: ^[-a-zA-Z0-9_]+$
+        client_name:
+          type: string
+          maxLength: 200
+        industry:
+          allOf:
+          - $ref: '#/components/schemas/IndustryCategory'
+          readOnly: true
+        services:
+          type: array
+          items:
+            $ref: '#/components/schemas/ServiceGroup'
+          readOnly: true
+        thumbnail:
+          type: string
+          format: uri
+        short_description:
+          type: string
+          description: Concise summary for project preview cards.
+        is_featured:
+          type: boolean
+        published_at:
+          type: string
+          format: date-time
+          nullable: true
+      required:
+      - id
+      - industry
+      - services
+      - short_description
+      - slug
+      - thumbnail
+      - title
+    RequiredConsentEnum:
+      enum:
+      - necessary
+      - analytics
+      - marketing
+      type: string
+      description: |-
+        * `necessary` - Strictly Necessary (Always loaded)
+        * `analytics` - Performance & Analytics Category
+        * `marketing` - Targeting & Marketing Category
+    SectionKeyEnum:
+      enum:
+      - hero
+      - problem
+      - growth_system
+      - who_we_help
+      - projects_preview
+      - why_thunspark
+      - final_cta
+      type: string
+      description: |-
+        * `hero` - Hero Section
+        * `problem` - The Problem Section
+        * `growth_system` - Interactive Growth System
+        * `who_we_help` - Who We Help
+        * `projects_preview` - Projects Section (Empty / Future)
+        * `why_thunspark` - Why Thunspark Principles
+        * `final_cta` - Final Conversion CTA
+    Service:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 150
+        slug:
+          type: string
+          maxLength: 150
+          pattern: ^[-a-zA-Z0-9_]+$
+        tagline:
+          type: string
+          maxLength: 255
+        problem:
+          type: string
+          description: The exact friction or growth barrier this service addresses.
+        approach:
+          type: string
+          description: Our strategic methodology.
+        business_objective:
+          type: string
+          description: Measurable commercial outcomes delivered.
+        process:
+          type: string
+        deliverables:
+          type: string
+        sort_order:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Order index (lower numbers appear first).
+        meta_title:
+          type: string
+          description: Primary SEO title (max 70 chars). Falls back to main title
+            if empty.
+          maxLength: 70
+        meta_description:
+          type: string
+          description: Search engine snippet description (max 160 chars).
+          maxLength: 160
+        canonical_url:
+          description: Canonical URL override. Blank will auto-generate based on slug.
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 200
+          - type: string
+            maxLength: 0
+        og_title:
+          type: string
+          description: OpenGraph title for social media shares.
+          maxLength: 70
+        og_description:
+          type: string
+          description: OpenGraph description for social cards.
+          maxLength: 200
+        og_image:
+          type: string
+          format: uri
+          nullable: true
+          description: 1200x630px social card preview image.
+        no_index:
+          type: boolean
+          description: Set True to instruct search bots not to index this entry.
+      required:
+      - approach
+      - business_objective
+      - id
+      - name
+      - problem
+      - slug
+    ServiceGroup:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 120
+        slug:
+          type: string
+          maxLength: 120
+          pattern: ^[-a-zA-Z0-9_]+$
+        icon_name:
+          type: string
+          description: Lucide icon component name (e.g., Compass, TrendingUp, Sparkles,
+            Layout, Target)
+          maxLength: 60
+        summary:
+          type: string
+          description: Short description of this service domain.
+        sort_order:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Order index (lower numbers appear first).
+        services:
+          type: array
+          items:
+            $ref: '#/components/schemas/Service'
+          readOnly: true
+      required:
+      - id
+      - name
+      - services
+      - slug
+    Tag:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 60
+        slug:
+          type: string
+          maxLength: 60
+          pattern: ^[-a-zA-Z0-9_]+$
+      required:
+      - id
+      - name
+      - slug
+    TrackingConfig:
+      type: object
+      properties:
+        platform:
+          $ref: '#/components/schemas/PlatformEnum'
+        tracking_id:
+          type: string
+          description: e.g. GTM-XXXXXX, G-XXXXXX, etc.
+          maxLength: 120
+        is_enabled:
+          type: boolean
+        required_consent:
+          $ref: '#/components/schemas/RequiredConsentEnum'
+      required:
+      - platform
+      - tracking_id
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid
