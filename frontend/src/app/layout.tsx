@@ -1,60 +1,75 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { Inter, Plus_Jakarta_Sans } from "next/font/google";
+import { Space_Grotesk, Inter, Space_Mono } from "next/font/google";
 import { GoogleTagManager } from "@next/third-parties/google";
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { MotionProvider } from "@/components/motion/MotionProvider";
 import { AttributionTracker } from "@/components/analytics/AttributionTracker";
 import { CookieConsentBanner } from "@/components/analytics/CookieConsentBanner";
 import { ScrollDepthTracker } from "@/components/analytics/ScrollDepthTracker";
 import { RouteTracker } from "@/components/analytics/RouteTracker";
+import { siteConfig } from "@/site.config";
 
-const inter = Inter({
-  variable: "--font-inter",
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-display",
   subsets: ["latin"],
   display: "swap",
+  weight: ["500", "700"],
+  preload: true,
 });
 
-const jakarta = Plus_Jakarta_Sans({
-  variable: "--font-jakarta",
+const inter = Inter({
+  variable: "--font-body",
   subsets: ["latin"],
   display: "swap",
-  weight: ["400", "500", "600", "700", "800"],
+  weight: ["400", "500", "600"],
+  preload: true,
+});
+
+const spaceMono = Space_Mono({
+  variable: "--font-mono",
+  subsets: ["latin"],
+  display: "swap",
+  weight: ["400", "700"],
+  preload: true,
 });
 
 export const metadata: Metadata = {
   title: {
-    default: "Thunspark — Strategic Digital Growth & Marketing Agency",
-    template: "%s | Thunspark",
+    default: "Digital Marketing Agency in India · ThunSpark",
+    template: "%s · ThunSpark",
   },
   description:
-    "We help ambitious businesses turn strategy, content, search, websites, and digital channels into a connected system designed to attract, convert, and grow customers.",
-  metadataBase: new URL("https://www.thunspark.agency"),
+    "Strategy-led digital growth: social media, paid ads, SEO, content & web. We solve business problems, not just post content.",
+  metadataBase: new URL(siteConfig.url),
   keywords: [
-    "Digital Marketing Agency",
+    "Digital Marketing Agency in India",
+    "Social Media Marketing Agency",
+    "Performance Marketing & Paid Ads",
+    "SEO Services in India",
     "Growth Strategy",
-    "SEO",
     "Conversion Rate Optimization",
-    "B2B Growth",
-    "Headless Web Development",
   ],
-  authors: [{ name: "Thunspark Agency", url: "https://www.thunspark.agency" }],
-  creator: "Thunspark",
+  authors: [{ name: "ThunSpark", url: siteConfig.url }],
+  creator: "ThunSpark",
   openGraph: {
     type: "website",
-    locale: "en_US",
-    url: "https://www.thunspark.agency",
-    siteName: "Thunspark",
-    title: "Thunspark — Strategic Digital Growth Agency",
+    locale: "en_IN",
+    url: siteConfig.url,
+    siteName: siteConfig.name,
+    title: "Digital Marketing Agency in India · ThunSpark",
     description:
-      "Digital Marketing Built Around Your Growth. A connected system of strategy, content, search, and conversion.",
+      "Strategy That Sparks Growth. Connected digital growth across strategy, creative, search, and conversion.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Thunspark — Strategic Digital Growth Agency",
+    title: "Digital Marketing Agency in India · ThunSpark",
     description:
-      "Digital Marketing Built Around Your Growth. We start with the business problem, not a sales pitch.",
+      "Strategy That Sparks Growth. We solve business problems, not just post content.",
   },
   robots: {
     index: true,
@@ -67,24 +82,24 @@ const jsonLd = {
   "@graph": [
     {
       "@type": "Organization",
-      "@id": "https://www.thunspark.agency/#organization",
-      "name": "Thunspark",
-      "url": "https://www.thunspark.agency",
-      "logo": "https://www.thunspark.agency/images/logo.png",
-      "description":
-        "Global digital marketing and digital growth agency building connected systems of strategy, content, search, websites, and conversion.",
-      "sameAs": [
-        "https://linkedin.com/company/thunspark",
-        "https://twitter.com/thunspark",
+      "@id": `${siteConfig.url}/#organization`,
+      name: siteConfig.name,
+      url: siteConfig.url,
+      logo: `${siteConfig.url}/logo.svg`,
+      description: siteConfig.description,
+      sameAs: [
+        siteConfig.contact.socials.linkedin,
+        siteConfig.contact.socials.instagram,
+        siteConfig.contact.socials.twitter,
       ],
     },
     {
       "@type": "WebSite",
-      "@id": "https://www.thunspark.agency/#website",
-      "url": "https://www.thunspark.agency",
-      "name": "Thunspark",
-      "publisher": {
-        "@id": "https://www.thunspark.agency/#organization",
+      "@id": `${siteConfig.url}/#website`,
+      url: siteConfig.url,
+      name: siteConfig.name,
+      publisher: {
+        "@id": `${siteConfig.url}/#organization`,
       },
     },
   ],
@@ -100,10 +115,10 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${jakarta.variable} dark antialiased scroll-smooth`}
+      className={`${spaceGrotesk.variable} ${inter.variable} ${spaceMono.variable} dark antialiased scroll-smooth`}
     >
       <head>
-        {/* Google Consent Mode v2 Default Settings (Must execute before any tags) */}
+        {/* Google Consent Mode v2 Default Settings */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -119,13 +134,13 @@ export default function RootLayout({
             `,
           }}
         />
-        {/* Organization & WebSite Structured Data */}
+        {/* Organization & WebSite JSON-LD */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className="min-h-screen flex flex-col bg-bg-primary text-text-primary selection:bg-accent-soft selection:text-text-primary">
+      <body className="min-h-screen flex flex-col bg-[#050505] text-[#F5F5F0] font-sans selection:bg-[#FFD21F] selection:text-[#050505]">
         {gtmId && <GoogleTagManager gtmId={gtmId} />}
         <Suspense fallback={null}>
           <RouteTracker />
@@ -133,11 +148,14 @@ export default function RootLayout({
         <ScrollDepthTracker />
         <CookieConsentBanner />
         <AttributionTracker />
-        <Header />
-        <main className="flex-1 pt-24">{children}</main>
-        <Footer />
+        <MotionProvider>
+          <Header />
+          <main className="flex-1 pt-20">{children}</main>
+          <Footer />
+        </MotionProvider>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
 }
-

@@ -1,288 +1,373 @@
 'use client';
 
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, CheckCircle2, AlertCircle } from 'lucide-react';
+import Link from 'next/link';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
-import { Input, Textarea } from '@/components/ui/Input';
+import { CheckCircle2, AlertCircle, ArrowRight, Loader2 } from 'lucide-react';
 import { getAttributionPayload } from '@/components/analytics/AttributionTracker';
 
+const SERVICE_OPTIONS = [
+  'Social Media Marketing',
+  'Performance Marketing',
+  'SEO Strategy',
+  'Content Marketing',
+  'Brand Identity & Strategy',
+  'Creative Production',
+  'Web Design & Dev',
+  'Landing Pages & CRO',
+  'Analytics Audit',
+  'Growth Consulting',
+];
+
+const CHALLENGE_OPTIONS = [
+  'Ads that burn budget without pipeline',
+  'Traffic that doesn’t convert below the fold',
+  'Inconsistent or invisible content output',
+  'Website that undersells the business',
+  'Data everywhere, actionable insight nowhere',
+  'Growth that plateaued across key channels',
+  'Other / Full-stack growth overhaul',
+];
+
 const BUDGET_OPTIONS = [
-  { value: 'under_1k', label: 'Under $1,000 / mo' },
-  { value: '1k_3k', label: '$1,000 – $3,000 / mo' },
-  { value: '3k_5k', label: '$3,000 – $5,000 / mo' },
-  { value: '5k_10k', label: '$5,000 – $10,000 / mo' },
-  { value: '10k_plus', label: '$10,000+ / mo' },
+  'Under $2,000 / month',
+  '$2,000 – $5,000 / month',
+  '$5,000 – $10,000 / month',
+  '$10,000+ / month',
+  'Project-based sprint (Fixed fee)',
+];
+
+const TIMELINE_OPTIONS = [
+  'Immediately (Within 2 weeks)',
+  'This quarter (Within 30–60 days)',
+  'Planning ahead / Exploring options',
 ];
 
 export function ContactForm() {
-  const [step, setStep] = useState<number>(1);
   const [formData, setFormData] = useState({
     name: '',
-    email: '',
+    workEmail: '',
     company: '',
     website: '',
-    budget: '',
-    improvement_goal: '',
+    servicesNeeded: [] as string[],
+    businessChallenge: '',
+    budgetRange: '',
+    timeline: '',
     message: '',
-    website_hp: '', // spam honeypot
+    consent: false,
+    website_hp: '',
   });
 
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
 
-  const updateField = (field: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-  };
-
-  const handleNext = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (step === 1) {
-      if (!formData.name.trim() || !formData.email.trim()) {
-        setErrorMessage('Please provide your name and work email.');
-        return;
-      }
-      setErrorMessage('');
-      setStep(2);
-    } else if (step === 2) {
-      setStep(3);
-    }
+  const toggleService = (service: string) => {
+    setFormData((prev) => {
+      const exists = prev.servicesNeeded.includes(service);
+      return {
+        ...prev,
+        servicesNeeded: exists
+          ? prev.servicesNeeded.filter((s) => s !== service)
+          : [...prev.servicesNeeded, service],
+      };
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!formData.name.trim() || !formData.workEmail.trim()) {
+      setErrorMessage('Please provide your name and work email.');
+      setStatus('error');
+      return;
+    }
+
+    if (!formData.consent) {
+      setErrorMessage('Please agree to the privacy policy to proceed.');
+      setStatus('error');
+      return;
+    }
+
     setStatus('submitting');
     setErrorMessage('');
 
     try {
       const attribution = getAttributionPayload();
-      const payload = {
-        ...formData,
-        attribution,
-      };
-
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000'}/api/leads/submit/`, {
+      const res = await fetch('/api/enquiry', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({
+          ...formData,
+          attribution,
+        }),
       });
 
+      const data = await res.json();
+
       if (!res.ok) {
-        const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.detail || errorData.website_hp?.[0] || 'Unable to submit inquiry. Please try again.');
+        throw new Error(data.message || 'Something went wrong. Please try again.');
       }
 
       setStatus('success');
     } catch (err: any) {
       setStatus('error');
-      setErrorMessage(err.message || 'Something went wrong. Please try again.');
+      setErrorMessage(err.message || 'Network error. Please try again.');
     }
   };
 
   if (status === 'success') {
     return (
-      <Card className="p-8 sm:p-12 text-center max-w-xl mx-auto border-accent/40 bg-surface-elevated">
-        <div className="w-16 h-16 rounded-full bg-accent-soft text-accent flex items-center justify-center mx-auto mb-6">
+      <Card className="p-8 sm:p-12 text-center bg-[#111111] border-[#252525]">
+        <div className="w-16 h-16 rounded-full bg-[#171717] border border-[#FFD21F] text-[#FFD21F] flex items-center justify-center mx-auto mb-6">
           <CheckCircle2 size={32} />
         </div>
-        <h3 className="font-display font-bold text-2xl text-text-primary mb-3">
-          Inquiry Received.
+        <h3 className="font-display font-medium text-2xl sm:text-3xl text-[#F5F5F0] mb-3">
+          Strategy Call Request Received.
         </h3>
-        <p className="text-text-secondary text-sm leading-relaxed mb-8">
-          Thank you for reaching out, {formData.name}. Our growth strategy team will review your commercial objectives and respond within 24 hours.
+        <p className="text-[#8A8A85] text-sm leading-relaxed max-w-md mx-auto mb-8">
+          Thank you, {formData.name}. Our senior growth team will review your website and current footprint, then reply within 24 hours to schedule our conversation.
         </p>
-        <Button href="/" variant="secondary">
-          Return to Homepage
+        <Button href="/" variant="secondary" size="md">
+          <span>Return to Homepage</span>
         </Button>
       </Card>
     );
   }
 
   return (
-    <Card className="p-6 sm:p-10 max-w-2xl mx-auto border-border bg-surface relative overflow-hidden">
-      {/* Progress Indicator */}
-      <div className="flex items-center justify-between mb-8 pb-4 border-b border-border/80">
-        {[1, 2, 3].map((s) => (
-          <div key={s} className="flex items-center gap-2">
-            <div
-              className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-mono font-bold transition-colors ${
-                step === s
-                  ? 'bg-accent text-white'
-                  : step > s
-                  ? 'bg-accent-soft text-accent'
-                  : 'bg-surface-elevated text-text-muted border border-border'
-              }`}
-            >
-              0{s}
-            </div>
-            <span
-              className={`text-xs font-semibold hidden sm:inline ${
-                step === s ? 'text-text-primary' : 'text-text-muted'
-              }`}
-            >
-              {s === 1 ? 'Contact Info' : s === 2 ? 'Project Scope' : 'Your Challenge'}
-            </span>
-          </div>
-        ))}
-      </div>
-
-      {errorMessage && (
-        <div className="mb-6 p-4 rounded-lg bg-red-950/40 border border-red-500/30 flex items-center gap-3 text-red-300 text-xs">
-          <AlertCircle size={16} className="shrink-0" />
-          <span>{errorMessage}</span>
+    <Card className="p-6 sm:p-10 bg-[#111111] border-[#252525]">
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Hidden Honeypot */}
+        <div className="hidden" aria-hidden="true">
+          <input
+            type="text"
+            name="website_hp"
+            tabIndex={-1}
+            autoComplete="off"
+            value={formData.website_hp}
+            onChange={(e) => setFormData({ ...formData, website_hp: e.target.value })}
+          />
         </div>
-      )}
 
-      {/* Hidden honeypot field for bot trap */}
-      <input
-        type="text"
-        name="website_hp"
-        value={formData.website_hp}
-        onChange={(e) => updateField('website_hp', e.target.value)}
-        className="hidden"
-        tabIndex={-1}
-        autoComplete="off"
-      />
+        {/* Name & Work Email */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label className="font-mono text-xs uppercase tracking-wider text-[#F5F5F0] block mb-2">
+              Your Name <span className="text-[#FFD21F]">*</span>
+            </label>
+            <input
+              type="text"
+              required
+              placeholder="Sarah Chen"
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              className="w-full px-4 py-3 rounded-lg bg-[#171717] border border-[#252525] text-sm text-[#F5F5F0] placeholder:text-[#8A8A85] focus:outline-none focus:border-[#FFD21F] transition-colors"
+            />
+          </div>
 
-      <form onSubmit={step === 3 ? handleSubmit : handleNext}>
-        <AnimatePresence mode="wait">
-          {step === 1 && (
-            <motion.div
-              key="step-1"
-              initial={{ opacity: 0, x: -16 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 16 }}
-              transition={{ duration: 0.2 }}
-              className="space-y-5"
-            >
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                <Input
-                  label="Your Name *"
-                  placeholder="e.g. Alex Morgan"
-                  required
-                  value={formData.name}
-                  onChange={(e) => updateField('name', e.target.value)}
-                />
-                <Input
-                  label="Work Email *"
-                  type="email"
-                  placeholder="alex@company.com"
-                  required
-                  value={formData.email}
-                  onChange={(e) => updateField('email', e.target.value)}
-                />
-              </div>
+          <div>
+            <label className="font-mono text-xs uppercase tracking-wider text-[#F5F5F0] block mb-2">
+              Work Email <span className="text-[#FFD21F]">*</span>
+            </label>
+            <input
+              type="email"
+              required
+              placeholder="sarah@company.com"
+              value={formData.workEmail}
+              onChange={(e) => setFormData({ ...formData, workEmail: e.target.value })}
+              className="w-full px-4 py-3 rounded-lg bg-[#171717] border border-[#252525] text-sm text-[#F5F5F0] placeholder:text-[#8A8A85] focus:outline-none focus:border-[#FFD21F] transition-colors"
+            />
+          </div>
+        </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                <Input
-                  label="Company Name"
-                  placeholder="Acme Corp"
-                  value={formData.company}
-                  onChange={(e) => updateField('company', e.target.value)}
-                />
-                <Input
-                  label="Website / Digital Presence"
-                  placeholder="https://company.com"
-                  value={formData.website}
-                  onChange={(e) => updateField('website', e.target.value)}
-                />
-              </div>
+        {/* Company & Website */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label className="font-mono text-xs uppercase tracking-wider text-[#F5F5F0] block mb-2">
+              Company / Brand
+            </label>
+            <input
+              type="text"
+              placeholder="Acme Growth Inc."
+              value={formData.company}
+              onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+              className="w-full px-4 py-3 rounded-lg bg-[#171717] border border-[#252525] text-sm text-[#F5F5F0] placeholder:text-[#8A8A85] focus:outline-none focus:border-[#FFD21F] transition-colors"
+            />
+          </div>
 
-              <div className="pt-4 flex justify-end">
-                <Button type="submit" variant="primary">
-                  <span>Continue</span>
-                  <ArrowRight size={16} className="ml-2" />
-                </Button>
-              </div>
-            </motion.div>
-          )}
+          <div>
+            <label className="font-mono text-xs uppercase tracking-wider text-[#F5F5F0] block mb-2">
+              Website URL
+            </label>
+            <input
+              type="url"
+              placeholder="https://company.com"
+              value={formData.website}
+              onChange={(e) => setFormData({ ...formData, website: e.target.value })}
+              className="w-full px-4 py-3 rounded-lg bg-[#171717] border border-[#252525] text-sm text-[#F5F5F0] placeholder:text-[#8A8A85] focus:outline-none focus:border-[#FFD21F] transition-colors"
+            />
+          </div>
+        </div>
 
-          {step === 2 && (
-            <motion.div
-              key="step-2"
-              initial={{ opacity: 0, x: -16 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 16 }}
-              transition={{ duration: 0.2 }}
-              className="space-y-6"
-            >
-              <div>
-                <label className="text-xs font-semibold uppercase tracking-wider text-text-secondary block mb-3">
-                  Monthly Growth / Marketing Investment Budget
-                </label>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {BUDGET_OPTIONS.map((opt) => (
-                    <button
-                      type="button"
-                      key={opt.value}
-                      onClick={() => updateField('budget', opt.value)}
-                      className={`p-3.5 rounded-lg border text-xs font-semibold text-left transition-all ${
-                        formData.budget === opt.value
-                          ? 'border-accent bg-accent-soft text-accent'
-                          : 'border-border bg-surface-elevated text-text-secondary hover:border-border-strong hover:text-text-primary'
-                      }`}
-                    >
-                      {opt.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="pt-4 flex items-center justify-between">
-                <Button type="button" variant="ghost" onClick={() => setStep(1)}>
-                  Back
-                </Button>
-                <Button type="submit" variant="primary">
-                  <span>Next Step</span>
-                  <ArrowRight size={16} className="ml-2" />
-                </Button>
-              </div>
-            </motion.div>
-          )}
-
-          {step === 3 && (
-            <motion.div
-              key="step-3"
-              initial={{ opacity: 0, x: -16 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 16 }}
-              transition={{ duration: 0.2 }}
-              className="space-y-5"
-            >
-              <Textarea
-                label="What is your primary growth bottleneck?"
-                placeholder="e.g. High cost per acquisition on Google Ads, poor website conversion rate, or lack of search positioning."
-                value={formData.improvement_goal}
-                onChange={(e) => updateField('improvement_goal', e.target.value)}
-              />
-
-              <Textarea
-                label="Additional Context / Details (Optional)"
-                placeholder="Tell us what you've tried and what timeline you are targeting."
-                value={formData.message}
-                onChange={(e) => updateField('message', e.target.value)}
-              />
-
-              <div className="pt-4 flex items-center justify-between">
-                <Button type="button" variant="ghost" onClick={() => setStep(2)}>
-                  Back
-                </Button>
-                <Button
-                  type="submit"
-                  variant="primary"
-                  disabled={status === 'submitting'}
-                  data-analytics-cta="submit_contact_form"
-                  data-analytics-location="contact_page"
+        {/* Services Needed (Pills) */}
+        <div>
+          <label className="font-mono text-xs uppercase tracking-wider text-[#F5F5F0] block mb-2">
+            Disciplines you are interested in:
+          </label>
+          <div className="flex flex-wrap gap-2">
+            {SERVICE_OPTIONS.map((service) => {
+              const isSelected = formData.servicesNeeded.includes(service);
+              return (
+                <button
+                  key={service}
+                  type="button"
+                  onClick={() => toggleService(service)}
+                  className={`px-3 py-1.5 rounded-full text-xs font-mono transition-colors ${
+                    isSelected
+                      ? 'bg-[#FFD21F] text-[#050505] font-bold'
+                      : 'bg-[#171717] text-[#8A8A85] border border-[#252525] hover:border-[#353535] hover:text-[#F5F5F0]'
+                  }`}
                 >
-                  {status === 'submitting' ? 'Submitting...' : 'Send Inquiry'}
-                </Button>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+                  {service}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Primary Business Challenge */}
+        <div>
+          <label className="font-mono text-xs uppercase tracking-wider text-[#F5F5F0] block mb-2">
+            Primary Bottleneck You Are Experiencing
+          </label>
+          <select
+            value={formData.businessChallenge}
+            onChange={(e) => setFormData({ ...formData, businessChallenge: e.target.value })}
+            className={`w-full px-4 py-3 rounded-lg bg-[#171717] border border-[#252525] text-sm focus:outline-none focus:border-[#FFD21F] transition-colors ${
+              formData.businessChallenge ? 'text-[#F5F5F0]' : 'text-[#8A8A85]'
+            }`}
+          >
+            <option value="" className="bg-[#171717] text-[#8A8A85]">
+              Select your biggest challenge...
+            </option>
+            {CHALLENGE_OPTIONS.map((challenge) => (
+              <option key={challenge} value={challenge} className="bg-[#171717] text-[#F5F5F0]">
+                {challenge}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Budget & Timeline */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label className="font-mono text-xs uppercase tracking-wider text-[#F5F5F0] block mb-2">
+              Monthly Growth Budget (Optional)
+            </label>
+            <select
+              value={formData.budgetRange}
+              onChange={(e) => setFormData({ ...formData, budgetRange: e.target.value })}
+              className={`w-full px-4 py-3 rounded-lg bg-[#171717] border border-[#252525] text-sm focus:outline-none focus:border-[#FFD21F] transition-colors ${
+                formData.budgetRange ? 'text-[#F5F5F0]' : 'text-[#8A8A85]'
+              }`}
+            >
+              <option value="" className="bg-[#171717] text-[#8A8A85]">
+                Select a range...
+              </option>
+              {BUDGET_OPTIONS.map((budget) => (
+                <option key={budget} value={budget} className="bg-[#171717] text-[#F5F5F0]">
+                  {budget}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="font-mono text-xs uppercase tracking-wider text-[#F5F5F0] block mb-2">
+              Target Timeline (Optional)
+            </label>
+            <select
+              value={formData.timeline}
+              onChange={(e) => setFormData({ ...formData, timeline: e.target.value })}
+              className={`w-full px-4 py-3 rounded-lg bg-[#171717] border border-[#252525] text-sm focus:outline-none focus:border-[#FFD21F] transition-colors ${
+                formData.timeline ? 'text-[#F5F5F0]' : 'text-[#8A8A85]'
+              }`}
+            >
+              <option value="" className="bg-[#171717] text-[#8A8A85]">
+                Select a timeline...
+              </option>
+              {TIMELINE_OPTIONS.map((t) => (
+                <option key={t} value={t} className="bg-[#171717] text-[#F5F5F0]">
+                  {t}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        {/* Message / Context */}
+        <div>
+          <label className="font-mono text-xs uppercase tracking-wider text-[#F5F5F0] block mb-2">
+            Context & Growth Goals
+          </label>
+          <textarea
+            rows={4}
+            placeholder="Tell us what you have tried, what currently works, and where you want to be in 90 days..."
+            value={formData.message}
+            onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+            className="w-full px-4 py-3 rounded-lg bg-[#171717] border border-[#252525] text-sm text-[#F5F5F0] placeholder:text-[#6F6F6A] focus:outline-none focus:border-[#FFD21F] transition-colors"
+          />
+        </div>
+
+        {/* Consent Checkbox */}
+        <div className="flex items-start gap-3 pt-2">
+          <input
+            type="checkbox"
+            id="consent"
+            required
+            checked={formData.consent}
+            onChange={(e) => setFormData({ ...formData, consent: e.target.checked })}
+            className="mt-1 w-4 h-4 rounded bg-[#171717] border border-[#252525] text-[#FFD21F] focus:ring-0 focus:ring-offset-0 cursor-pointer"
+          />
+          <label htmlFor="consent" className="text-xs text-[#8A8A85] leading-relaxed cursor-pointer">
+            I agree to the processing of my details according to the{' '}
+            <Link href="/privacy-policy" className="text-[#FFD21F] hover:underline">
+              Privacy Policy
+            </Link>
+            . We will never share or sell your company information.
+          </label>
+        </div>
+
+        {/* Error message display */}
+        {status === 'error' && errorMessage && (
+          <div className="p-4 rounded-lg bg-red-950/40 border border-red-800 text-red-300 text-xs flex items-center gap-2">
+            <AlertCircle size={16} className="shrink-0" />
+            <span>{errorMessage}</span>
+          </div>
+        )}
+
+        {/* Submit Button */}
+        <div>
+          <button
+            type="submit"
+            disabled={status === 'submitting'}
+            className="w-full py-3.5 px-6 rounded-lg bg-[#FFD21F] hover:bg-[#F2C718] text-[#050505] font-display font-medium text-base transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+          >
+            {status === 'submitting' ? (
+              <>
+                <Loader2 size={18} className="animate-spin" />
+                <span>Submitting request...</span>
+              </>
+            ) : (
+              <>
+                <span>Book a strategy call</span>
+                <ArrowRight size={16} />
+              </>
+            )}
+          </button>
+        </div>
       </form>
     </Card>
   );

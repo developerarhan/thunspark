@@ -1,29 +1,34 @@
 import React from 'react';
 
 export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
-  variant?: 'default' | 'elevated' | 'glass' | 'interactive';
-  className?: string;
   children: React.ReactNode;
+  className?: string;
+  interactive?: boolean;
+  surface?: 'card' | 'elevated' | 'alt';
 }
 
 export function Card({
-  variant = 'default',
-  className = '',
   children,
+  className = '',
+  interactive = false,
+  surface = 'card',
   ...props
 }: CardProps) {
-  const baseStyles = 'rounded-xl border transition-all duration-300';
+  const surfaceBg = {
+    card: 'bg-[#111111]',
+    elevated: 'bg-[#171717]',
+    alt: 'bg-[#0A0A0A]',
+  }[surface];
 
-  const variants = {
-    default: 'bg-surface border-border text-text-primary',
-    elevated: 'bg-surface-elevated border-border-strong text-text-primary shadow-xl shadow-black/40',
-    glass: 'bg-[#151515]/80 backdrop-blur-md border-border/80 text-text-primary',
-    interactive:
-      'bg-surface border-border hover:border-border-strong hover:bg-surface-elevated hover:-translate-y-1 text-text-primary cursor-pointer',
-  };
+  const interactiveStyles = interactive
+    ? 'hover:border-[#353535] hover:bg-[#171717] transition-all duration-200 cursor-pointer'
+    : '';
 
   return (
-    <div className={`${baseStyles} ${variants[variant]} ${className}`} {...props}>
+    <div
+      className={`rounded-xl border border-[#252525] ${surfaceBg} ${interactiveStyles} ${className}`}
+      {...props}
+    >
       {children}
     </div>
   );

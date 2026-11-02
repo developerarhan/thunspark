@@ -75,20 +75,20 @@ export function CookieConsentBanner() {
         transition={{ duration: 0.3 }}
         className="fixed bottom-4 left-4 right-4 sm:left-6 sm:right-auto sm:max-w-md z-50"
       >
-        <div className="p-6 rounded-2xl bg-[#121212]/95 backdrop-blur-xl border border-border shadow-2xl shadow-black/80 text-text-primary">
+        <div className="p-6 rounded-2xl bg-[#111111]/95 backdrop-blur-xl border border-[#252525] text-[#F5F5F0]">
           <div className="flex items-center gap-3 mb-3">
-            <div className="p-2 rounded-lg bg-accent-soft text-accent border border-accent/20">
+            <div className="p-2 rounded-lg bg-[#171717] text-[#FFD21F] border border-[#252525]">
               <ShieldCheck size={18} />
             </div>
-            <h4 className="font-display font-bold text-sm text-text-primary">
-              Privacy & Consent Preferences
+            <h4 className="font-display font-medium text-sm text-[#F5F5F0]">
+              Privacy & Cookie Preferences
             </h4>
           </div>
 
-          <p className="text-text-secondary text-xs leading-relaxed mb-4">
-            We use cookies to analyze search behavior and traffic, measure campaign efficiency, and deliver personalized strategic insights in compliance with GDPR. Review our{' '}
-            <Link href="/cookie-policy" className="text-accent underline hover:text-accent-hover">
-              Cookie Policy
+          <p className="text-[#8A8A85] text-xs leading-relaxed mb-4">
+            We use privacy-first telemetry to understand engagement and improve our growth architecture in compliance with GDPR and Indian DPDP. See our{' '}
+            <Link href="/privacy-policy" className="text-[#FFD21F] underline hover:text-[#F2C718]">
+              Privacy Policy
             </Link>.
           </p>
 
@@ -97,39 +97,39 @@ export function CookieConsentBanner() {
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              className="space-y-3 pt-3 pb-4 border-t border-border/60 text-xs"
+              className="space-y-3 pt-3 pb-4 border-t border-[#252525] text-xs"
             >
               <div className="flex items-center justify-between">
                 <div>
-                  <span className="font-semibold block text-text-primary">Strictly Necessary</span>
-                  <span className="text-[11px] text-text-muted">Required for core site routing and form submissions.</span>
+                  <span className="font-medium block text-[#F5F5F0]">Strictly Necessary</span>
+                  <span className="text-[11px] text-[#8A8A85]">Required for site routing and enquiry dispatch.</span>
                 </div>
-                <span className="font-mono text-[10px] text-accent uppercase font-bold">Always Active</span>
+                <span className="font-mono text-[10px] text-[#FFD21F] uppercase font-bold">Always Active</span>
               </div>
 
               <div className="flex items-center justify-between">
                 <div>
-                  <span className="font-semibold block text-text-primary">Analytics & Performance</span>
-                  <span className="text-[11px] text-text-muted">Helps us understand page performance and engagement.</span>
+                  <span className="font-medium block text-[#F5F5F0]">Analytics & Performance</span>
+                  <span className="text-[11px] text-[#8A8A85]">Helps us measure page speed and scroll depth.</span>
                 </div>
                 <input
                   type="checkbox"
                   checked={consentAnalytics}
                   onChange={(e) => setConsentAnalytics(e.target.checked)}
-                  className="accent-accent w-4 h-4 rounded cursor-pointer"
+                  className="accent-[#FFD21F] w-4 h-4 rounded cursor-pointer"
                 />
               </div>
 
               <div className="flex items-center justify-between">
                 <div>
-                  <span className="font-semibold block text-text-primary">Marketing & Conversion Tags</span>
-                  <span className="text-[11px] text-text-muted">Measures ad attribution across Google Ads & Meta Pixel.</span>
+                  <span className="font-medium block text-[#F5F5F0]">Marketing & Conversion Tags</span>
+                  <span className="text-[11px] text-[#8A8A85]">Measures ad attribution and campaign signals.</span>
                 </div>
                 <input
                   type="checkbox"
                   checked={consentMarketing}
                   onChange={(e) => setConsentMarketing(e.target.checked)}
-                  className="accent-accent w-4 h-4 rounded cursor-pointer"
+                  className="accent-[#FFD21F] w-4 h-4 rounded cursor-pointer"
                 />
               </div>
             </motion.div>
@@ -155,8 +155,9 @@ export function CookieConsentBanner() {
                   Essential Only
                 </Button>
                 <button
+                  type="button"
                   onClick={() => setShowPreferences(true)}
-                  className="text-xs text-text-muted hover:text-text-primary transition-colors flex items-center gap-1 sm:ml-auto p-1 cursor-pointer"
+                  className="text-xs text-[#8A8A85] hover:text-[#F5F5F0] transition-colors flex items-center gap-1 sm:ml-auto p-1 cursor-pointer"
                 >
                   <Settings size={13} />
                   <span>Customize</span>

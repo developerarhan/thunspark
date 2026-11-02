@@ -1,74 +1,56 @@
 import type { Metadata } from 'next';
-import { Container, Section } from '@/components/ui/Container';
-import { Badge } from '@/components/ui/Badge';
-import { ScrollReveal } from '@/components/ui/ScrollReveal';
+import { Container } from '@/components/ui/Container';
+import { Reveal } from '@/components/motion/Reveal';
 import { BlogListingView } from '@/components/blog/BlogListingView';
-import { apiClient } from '@/lib/api-client';
 
 export const metadata: Metadata = {
-  title: 'Strategic Growth Insights & Editorial',
+  title: 'Strategic Growth Insights & Playbooks | ThunSpark',
   description:
-    'Deep dives on search intent, conversion rate optimization, customer acquisition economics, and connected digital systems.',
+    'Deep dives on customer acquisition economics, search intent, conversion rate optimization, and connected digital growth systems.',
+  openGraph: {
+    title: 'Growth Insights & Playbooks | ThunSpark',
+    description:
+      'Practical breakdowns on turning traffic into enterprise pipeline, fixing conversion friction, and scaling unit economics.',
+    url: 'https://thunspark.agency/blog',
+  },
+  alternates: {
+    canonical: '/blog',
+  },
 };
 
-async function getBlogData() {
-  try {
-    const [articlesRes, categoriesRes] = await Promise.all([
-      apiClient.GET('/api/blog/articles/', {
-        next: { tags: ['articles'] },
-      }),
-      apiClient.GET('/api/blog/categories/', {
-        next: { tags: ['categories'] },
-      }),
-    ]);
-
-    const unpack = (res: any) => {
-      if (!res?.data) return [];
-      if (Array.isArray(res.data)) return res.data;
-      if (Array.isArray(res.data.results)) return res.data.results;
-      return [];
-    };
-
-    return {
-      articles: unpack(articlesRes),
-      categories: unpack(categoriesRes),
-    };
-  } catch {
-    return {
-      articles: [],
-      categories: [],
-    };
-  }
-}
-
 export default async function BlogPage() {
-  const { articles, categories } = await getBlogData();
+  // Graceful CMS fallback (empty array until posts are created in Sanity)
+  const articles: any[] = [];
+  const categories: any[] = [];
 
   return (
     <div className="flex flex-col">
-      <Section className="pt-20 pb-16">
+      {/* 1. HERO */}
+      <section className="pt-28 pb-16 md:pt-36 md:pb-24 border-b border-[#252525]">
         <Container>
-          <div className="max-w-3xl mx-auto text-center">
-            <ScrollReveal>
-              <Badge variant="accent" className="mb-4">
-                Strategy & Intelligence
-              </Badge>
-              <h1 className="font-display font-extrabold text-4xl sm:text-5xl lg:text-6xl text-text-primary tracking-tight mb-6">
-                Growth Insights & <span className="text-accent">Playbooks.</span>
+          <Reveal>
+            <div className="max-w-3xl">
+              <span className="font-mono text-xs uppercase tracking-widest text-[#FFD21F] block mb-3">
+                STRATEGY & PLAYBOOKS
+              </span>
+              <h1 className="font-display font-medium text-4xl sm:text-5xl lg:text-6xl text-[#F5F5F0] tracking-tight mb-6">
+                Growth insights. <br />
+                <span className="text-[#8A8A85]">Zero fluff.</span>
               </h1>
-              <p className="text-text-secondary text-base sm:text-lg leading-relaxed">
-                Practical breakdowns on turning traffic into enterprise pipeline, fixing conversion friction, and scaling unit economics.
+              <p className="text-[#8A8A85] text-base sm:text-lg leading-relaxed">
+                Practical breakdowns on turning search and paid traffic into predictable enterprise revenue, eliminating conversion leaks, and managing capital efficiency.
               </p>
-            </ScrollReveal>
-          </div>
+            </div>
+          </Reveal>
         </Container>
-      </Section>
+      </section>
 
-      <Section className="py-8 pb-28">
+      {/* 2. BLOG LISTING VIEW */}
+      <section className="py-20 md:py-28 border-b border-[#252525]">
         <Container>
-          <BlogListingView initialArticles={articles as any} categories={categories as any} />
+          <BlogListingView initialArticles={articles} categories={categories} />
         </Container>
-      </Section>
+      </section>
     </div>
   );
 }

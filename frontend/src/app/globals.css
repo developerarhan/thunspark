@@ -1,89 +1,175 @@
 @import "tailwindcss";
 
 :root {
-  /* Thunspark Dark Theme Design Tokens */
-  --bg-primary: #080808;
-  --bg-secondary: #101010;
-  --surface: #151515;
-  --surface-elevated: #1C1C1C;
+  /* ThunSpark Master Design Tokens (Guide v1.2 §B2 & §R6) */
+  --color-base: #050505;
+  --color-alt: #0A0A0A;
+  --color-card: #111111;
+  --color-elevated: #171717;
 
-  --text-primary: #F5F5F0;
-  --text-secondary: #A3A3A0;
-  --text-muted: #737370;
+  --color-ink: #F5F5F0;
+  --color-soft: #A6A6A0;
+  --color-muted: #6F6F6A;
+  --color-meta: #8A8A85;
 
-  --accent: #C96F4A;
-  --accent-hover: #E07D55;
-  --accent-soft: #2A1711;
+  --color-accent: #FFD21F;
+  --color-accent-hi: #FFE75A;
+  --color-accent-deep: #C9A900;
 
-  --border: #292929;
-  --border-strong: #383838;
+  --color-line: #252525;
+  --color-line-strong: #353535;
+  --color-lineStrong: #353535;
 
-  --white: #FFFFFF;
-  --black: #000000;
+  --color-success: #47C78A;
+  --color-warning: #FFBF47;
+  --color-error: #FF6464;
+
+  /* Backward Compatibility Aliases for transitional components */
+  --bg-primary: var(--color-base);
+  --bg-secondary: var(--color-alt);
+  --surface: var(--color-card);
+  --surface-elevated: var(--color-elevated);
+
+  --text-primary: var(--color-ink);
+  --text-secondary: var(--color-soft);
+  --text-muted: var(--color-muted);
+
+  --accent: var(--color-accent);
+  --accent-hover: var(--color-accent-hi);
+  --accent-soft: rgba(255, 210, 31, 0.12);
+
+  --border: var(--color-line);
+  --border-strong: var(--color-line-strong);
+
+  /* Radius Tokens */
+  --radius-card: 0.75rem;
+  --radius-panel: 1rem;
+  --radius-pill: 999px;
+
+  /* Approved Gradients */
+  --gradient-thunder: linear-gradient(135deg, #FFD21F 0%, #FFE75A 50%, #FFD21F 100%);
+  --gradient-dark: linear-gradient(180deg, #111111 0%, #050505 100%);
+  --radial-glow: radial-gradient(600px at 85% 0%, rgba(255, 210, 31, 0.07), transparent 70%);
 }
 
 @theme {
-  --color-bg-primary: #080808;
-  --color-bg-secondary: #101010;
-  --color-surface: #151515;
-  --color-surface-elevated: #1C1C1C;
+  --color-base: #050505;
+  --color-alt: #0A0A0A;
+  --color-card: #111111;
+  --color-elevated: #171717;
 
+  --color-ink: #F5F5F0;
+  --color-soft: #A6A6A0;
+  --color-muted: #6F6F6A;
+  --color-meta: #8A8A85;
+
+  --color-accent: #FFD21F;
+  --color-accent-hi: #FFE75A;
+  --color-accent-deep: #C9A900;
+
+  --color-line: #252525;
+  --color-line-strong: #353535;
+  --color-lineStrong: #353535;
+
+  --color-success: #47C78A;
+  --color-warning: #FFBF47;
+  --color-error: #FF6464;
+
+  /* Legacy Bridge Colors */
+  --color-bg-primary: #050505;
+  --color-bg-secondary: #0A0A0A;
+  --color-surface: #111111;
+  --color-surface-elevated: #171717;
   --color-text-primary: #F5F5F0;
-  --color-text-secondary: #A3A3A0;
-  --color-text-muted: #737370;
+  --color-text-secondary: #A6A6A0;
+  --color-text-muted: #6F6F6A;
+  --color-border: #252525;
+  --color-border-strong: #353535;
 
-  --color-accent: #C96F4A;
-  --color-accent-hover: #E07D55;
-  --color-accent-soft: #2A1711;
-
-  --color-border: #292929;
-  --color-border-strong: #383838;
-
-  --color-white: #FFFFFF;
-  --color-black: #000000;
-
-  --font-sans: var(--font-inter), system-ui, sans-serif;
-  --font-display: var(--font-jakarta), var(--font-inter), system-ui, sans-serif;
+  --font-display: var(--font-display), sans-serif;
+  --font-body: var(--font-body), sans-serif;
+  --font-mono: var(--font-mono), monospace;
 }
 
 html {
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
+  background-color: var(--color-base);
+  color: var(--color-ink);
   color-scheme: dark;
   scroll-behavior: smooth;
+  scroll-padding-top: 96px;
 }
 
 body {
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
-  font-family: var(--font-sans);
+  background-color: var(--color-base);
+  color: var(--color-ink);
+  font-family: var(--font-body);
   min-height: 100vh;
   overflow-x: hidden;
-  selection-background-color: #2A1711;
-  selection-color: #E07D55;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Subtle custom scrollbar */
+/* Global Selection per Guide §B3 */
+::selection {
+  background-color: #FFD21F;
+  color: #050505;
+}
+
+/* Global Focus-Visible per Guide §B3 */
+:focus-visible {
+  outline: 2px solid #FFD21F;
+  outline-offset: 3px;
+}
+
+/* Custom Scrollbar (Webkit) per Guide §B3 */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #080808;
+  background: #050505;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #292929;
-  border-radius: 4px;
+  background: #2A2A2A;
+  border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #383838;
+  background: #353535;
 }
 
-::selection {
-  background: #2A1711;
+/* Editorial One-Accent-Word Utility per Guide §B3 */
+.font-italic-accent {
+  font-style: italic;
+  color: var(--color-accent);
+}
+
+/* Select & Option Dropdown Dark Mode Contrast */
+select option {
+  background-color: #171717;
   color: #F5F5F0;
+}
+
+/* Reduced Motion Matrix */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.rm * {
+  animation-duration: 0.01ms !important;
+  transition-duration: 0.01ms !important;
+}
+
+/* Grain Overlay Utility */
+.bg-grain {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 0);
+  background-size: 24px 24px;
 }

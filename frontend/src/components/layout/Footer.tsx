@@ -1,98 +1,175 @@
+'use client';
+
 import React from 'react';
 import Link from 'next/link';
 import { Container } from '@/components/ui/Container';
-import { Mail, ArrowUpRight } from 'lucide-react';
+import { Button } from '@/components/ui/Button';
+import { siteConfig } from '@/site.config';
+import { LEGAL_DISCLAIMER } from '@/lib/constants';
+import { BackToTop } from './BackToTop';
 
 export function Footer() {
-  const currentYear = 2026;
-
   return (
-    <footer className="border-t border-border bg-bg-secondary pt-16 pb-12 text-sm text-text-secondary">
+    <footer className="bg-[#0A0A0A] border-t border-[#252525] text-[#A6A6A0] pt-16 pb-12 text-sm relative">
       <Container>
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 pb-16 border-b border-border">
-          {/* Brand Info */}
-          <div className="md:col-span-5 flex flex-col gap-4">
-            <Link href="/" className="inline-block">
-              <span className="font-display font-extrabold text-2xl tracking-tight text-text-primary">
-                THUN<span className="text-accent">SPARK</span>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+          {/* Column 1: Brand & Tagline */}
+          <div className="space-y-4">
+            <Link href="/" className="flex items-center gap-2 group">
+              <svg
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                className="text-[#FFD21F]"
+              >
+                <path
+                  d="M13 2L3 14H12L11 22L21 10H12L13 2Z"
+                  fill="#FFD21F"
+                  stroke="#FFD21F"
+                  strokeWidth="1.5"
+                />
+              </svg>
+              <span className="font-display font-extrabold text-xl tracking-tight text-[#F5F5F0]">
+                THUN<span className="text-[#FFD21F]">SPARK</span>
               </span>
             </Link>
-            <p className="text-text-secondary max-w-sm leading-relaxed">
-              Digital marketing built around your growth. We turn strategy, content, search, websites, and conversion channels into a connected commercial engine.
+            <p className="text-xs text-[#8A8A85] leading-relaxed max-w-xs">
+              Strategy, execution, and measurement — for businesses that want growth they can prove.
             </p>
-            <div className="flex items-center gap-4 pt-2">
+            <div className="flex items-center gap-4 pt-2 text-xs">
               <a
-                href="https://linkedin.com/company/thunspark"
+                href={siteConfig.contact.socials.linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-text-muted hover:text-accent transition-colors p-2 rounded-lg bg-surface border border-border flex items-center justify-center"
-                aria-label="Thunspark LinkedIn"
+                className="hover:text-[#FFD21F] transition-colors"
               >
-                <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
-                  <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/>
-                </svg>
+                LinkedIn
               </a>
               <a
-                href="mailto:contact@thunspark.agency"
-                className="text-text-muted hover:text-accent transition-colors p-2 rounded-lg bg-surface border border-border"
-                aria-label="Email Thunspark"
+                href={siteConfig.contact.socials.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-[#FFD21F] transition-colors"
               >
-                <Mail size={18} />
+                Instagram
+              </a>
+              <a
+                href={siteConfig.contact.socials.twitter}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-[#FFD21F] transition-colors"
+              >
+                Twitter
               </a>
             </div>
           </div>
 
-          {/* Navigation Links */}
-          <div className="md:col-span-3 flex flex-col gap-3">
-            <h4 className="font-display font-semibold text-text-primary uppercase tracking-wider text-xs">
-              Navigation
+          {/* Column 2: Strategic Services */}
+          <div>
+            <h4 className="font-mono text-xs uppercase tracking-wider text-[#F5F5F0] mb-4 font-semibold">
+              Capabilities
             </h4>
-            <div className="flex flex-col gap-2 pt-2">
-              <Link href="/" className="hover:text-text-primary transition-colors">Home</Link>
-              <Link href="/services" className="hover:text-text-primary transition-colors">Services</Link>
-              <Link href="/about" className="hover:text-text-primary transition-colors">About</Link>
-              <Link href="/projects" className="hover:text-text-primary transition-colors">Projects</Link>
-              <Link href="/blog" className="hover:text-text-primary transition-colors">Blog</Link>
-              <Link href="/contact" className="hover:text-text-primary transition-colors">Contact</Link>
-            </div>
+            <ul className="space-y-2 text-xs">
+              {siteConfig.serviceGroups.map((g) => (
+                <li key={g.id}>
+                  <Link
+                    href={`/services#${g.id}`}
+                    className="hover:text-[#FFD21F] transition-colors flex items-center gap-1.5"
+                  >
+                    <span className="text-[#8A8A85] font-mono text-[10px]">{g.number}</span>
+                    <span>{g.name}</span>
+                  </Link>
+                </li>
+              ))}
+              <li className="pt-2 border-t border-[#252525]">
+                <Link
+                  href="/services"
+                  className="text-[#FFD21F] hover:text-[#FFE75A] font-medium"
+                >
+                  All 10 Services &rarr;
+                </Link>
+              </li>
+            </ul>
           </div>
 
-          {/* Connect & Engage */}
-          <div className="md:col-span-4 flex flex-col gap-3">
-            <h4 className="font-display font-semibold text-text-primary uppercase tracking-wider text-xs">
-              Start A Dialogue
+          {/* Column 3: Company */}
+          <div>
+            <h4 className="font-mono text-xs uppercase tracking-wider text-[#F5F5F0] mb-4 font-semibold">
+              Company
             </h4>
-            <p className="text-text-muted text-xs leading-relaxed pt-2">
-              Have a growth problem worth solving? We examine bottlenecks first before prescribing solutions.
+            <ul className="space-y-2 text-xs">
+              <li>
+                <Link href="/about" className="hover:text-[#FFD21F] transition-colors">
+                  About ThunSpark
+                </Link>
+              </li>
+              <li>
+                <Link href="/projects" className="hover:text-[#FFD21F] transition-colors">
+                  Selected Work
+                </Link>
+              </li>
+              <li>
+                <Link href="/blog" className="hover:text-[#FFD21F] transition-colors">
+                  Insights & Thinking
+                </Link>
+              </li>
+              <li>
+                <Link href="/contact" className="hover:text-[#FFD21F] transition-colors">
+                  Contact & Diagnostics
+                </Link>
+              </li>
+              <li>
+                <Link href="/privacy-policy" className="hover:text-[#FFD21F] transition-colors">
+                  Privacy Policy
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Column 4: Contact & Direct Inquiries */}
+          <div className="space-y-4">
+            <h4 className="font-mono text-xs uppercase tracking-wider text-[#F5F5F0] mb-4 font-semibold">
+              Start a Conversation
+            </h4>
+            <p className="text-xs text-[#8A8A85] leading-relaxed">
+              Tell us what&apos;s holding your growth back. We diagnose before we prescribe.
             </p>
-            <Link
+            <Button
               href="/contact"
-              className="inline-flex items-center gap-2 text-accent hover:text-accent-hover font-semibold text-sm pt-2 group"
+              variant="primary"
+              size="sm"
+              className="w-full text-center"
+              data-analytics-cta="footer_diagnostics"
             >
-              <span>Explore Partnership</span>
-              <ArrowUpRight size={16} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-            </Link>
+              Book a strategy call
+            </Button>
+            <div className="text-xs text-[#8A8A85]">
+              Direct: <a href={`mailto:${siteConfig.contact.email}`} className="text-[#F5F5F0] hover:text-[#FFD21F]">{siteConfig.contact.email}</a>
+            </div>
           </div>
         </div>
 
-        {/* Bottom Bar & Legal */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-text-muted">
-          <div>
-            © {currentYear} Thunspark. All Rights Reserved.
-          </div>
-          <div className="flex items-center gap-6">
-            <Link href="/privacy-policy" className="hover:text-text-secondary transition-colors">
-              Privacy Policy
-            </Link>
-            <Link href="/cookie-policy" className="hover:text-text-secondary transition-colors">
-              Cookie Policy
-            </Link>
-            <Link href="/terms-of-service" className="hover:text-text-secondary transition-colors">
-              Terms of Service
-            </Link>
+        {/* Legal Disclaimer & Performance Clause per Guide §R9 */}
+        <div className="pt-8 border-t border-[#252525] text-xs text-[#6F6F6A] leading-relaxed space-y-3">
+          <p>{LEGAL_DISCLAIMER}</p>
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-[#8A8A85] pt-2">
+            <span>&copy; {new Date().getFullYear()} {siteConfig.name}. All rights reserved.</span>
+            <div className="flex items-center gap-6">
+              <Link href="/privacy-policy" className="hover:text-[#FFD21F] transition-colors">
+                Privacy Policy
+              </Link>
+              <Link href="/terms" className="hover:text-[#FFD21F] transition-colors">
+                Terms of Service
+              </Link>
+            </div>
           </div>
         </div>
       </Container>
+
+      {/* 44px Fixed Circular Back to Top Button */}
+      <BackToTop />
     </footer>
   );
 }

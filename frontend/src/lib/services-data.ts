@@ -1,0 +1,388 @@
+export interface ServiceDetail {
+  slug: string;
+  name: string;
+  groupId: 'attract' | 'engage' | 'convert' | 'optimize';
+  groupName: string;
+  groupNumber: string;
+  oneLineOutcome: string;
+  shortDesc: string;
+  longDesc: string;
+  problemsSolved: string[];
+  deliverables: string[];
+  subServices: { title: string; description: string }[];
+  whatResultsLookLike: string[];
+  faqs: { q: string; a: string }[];
+}
+
+export const SERVICES_DATA: Record<string, ServiceDetail> = {
+  'social-media-marketing': {
+    slug: 'social-media-marketing',
+    name: 'Social Media Marketing',
+    groupId: 'attract',
+    groupName: 'Attract',
+    groupNumber: '01',
+    oneLineOutcome: 'Turn feeds into an audience acquisition engine.',
+    shortDesc: 'Audience-focused social strategies, content systems and community building that turn attention into business opportunities.',
+    longDesc: 'Social media should not be an endless cycle of random posting. We design structured content calendars, high-velocity short-form video pipelines, and proactive community management that align with your business goals.',
+    problemsSolved: [
+      'Posting daily without seeing pipeline or inquiries',
+      'Inconsistent visual brand identity across platforms',
+      'Low audience retention and zero community engagement',
+    ],
+    deliverables: [
+      'Monthly editorial calendar & content roadmaps',
+      'Short-form vertical video production (Reels & Shorts)',
+      'High-impact carousel graphics & brand storytelling',
+      'Daily community engagement & direct message workflows',
+      'Monthly performance audit & competitor benchmarking',
+    ],
+    subServices: [
+      { title: 'Content Systems', description: 'Repeatable templates and asset pipelines for consistent weekly output.' },
+      { title: 'Short-Form Video', description: 'Scripted, filmed, and edited Reels and Shorts designed for high watch-time.' },
+      { title: 'Creator Collabs', description: 'Curated micro-influencer partnerships that build authentic social proof.' },
+      { title: 'Community Care', description: 'Active comment moderation and DM routing to nurture warm leads.' },
+    ],
+    whatResultsLookLike: [
+      'Compounding follower growth from your exact target demographic',
+      'Higher video completion rates and organic engagement velocity',
+      'Clear referral traffic routing from profile links to conversion pages',
+    ],
+    faqs: [
+      { q: 'Which platforms do you manage?', a: 'We focus primarily on Instagram, LinkedIn, and YouTube Shorts where audience attention and organic reach are highest.' },
+      { q: 'Do you create the video assets in-house?', a: 'Yes. Our creative team handles scripting, storyboarding, editing, sound design, and publishing.' },
+    ],
+  },
+  'seo': {
+    slug: 'seo',
+    name: 'SEO Services in India',
+    groupId: 'attract',
+    groupName: 'Attract',
+    groupNumber: '01',
+    oneLineOutcome: 'Compounding search visibility built around buying intent.',
+    shortDesc: 'Technical audits, content optimization and local search visibility. No ranking guarantees — sustained, measurable organic growth.',
+    longDesc: 'Search engine optimization is not about ranking for vanity terms. We align technical site health, topical authority clusters, and bottom-of-funnel keyword intent so high-intent buyers find your solution when ready to purchase.',
+    problemsSolved: [
+      'Traffic arriving from keywords that never convert into sales',
+      'Technical site errors, slow load times, and crawl budget waste',
+      'Content that fails to rank on page one despite regular publishing',
+    ],
+    deliverables: [
+      'Full technical SEO audit & Core Web Vitals remediation plan',
+      'Search intent keyword architecture & topical map',
+      'On-page content optimization & schema markup implementation',
+      'High-authority organic backlink acquisition strategies',
+      'Bi-weekly rank tracking and organic pipeline reporting',
+    ],
+    subServices: [
+      { title: 'Technical SEO', description: 'Fixing crawl errors, indexation issues, site speed, and structured data.' },
+      { title: 'Topical Authority', description: 'Clustered content planning that signals deep expertise to search engines.' },
+      { title: 'Local Search Optimization', description: 'Optimizing local business listings and regional search signals.' },
+      { title: 'Conversion-Focused SEO', description: 'Targeting commercial-intent keywords that drive pipeline, not just traffic.' },
+    ],
+    whatResultsLookLike: [
+      'Predictable month-over-month growth in qualified organic search visits',
+      'Top-3 rankings for high-intent product and service search queries',
+      'Lower blended customer acquisition costs as organic traffic compounds',
+    ],
+    faqs: [
+      { q: 'Do you offer keyword ranking guarantees?', a: 'No. Search algorithms cannot be guaranteed by third parties. We guarantee rigorous technical execution, high-intent targeting, and proven white-hat methodologies.' },
+      { q: 'How long until organic traffic begins compounding?', a: 'Technical improvements often show signal in 4–8 weeks; competitive topical clusters typically require 3–6 months to compound.' },
+    ],
+  },
+  'performance-marketing': {
+    slug: 'performance-marketing',
+    name: 'Performance Marketing & Paid Ads',
+    groupId: 'attract',
+    groupName: 'Attract',
+    groupNumber: '01',
+    oneLineOutcome: 'Paid campaigns run against revenue goals, not vanity metrics.',
+    shortDesc: 'Google and Meta campaigns built around revenue goals — targeting, creative testing and tracking that measure what matters.',
+    longDesc: 'Too many agencies celebrate platform ROAS while your bank account remains flat. We build full-funnel paid advertising systems with rigorous offline conversion tracking, aggressive creative testing, and ruthless budget allocation.',
+    problemsSolved: [
+      'Ad spend burning with high click-through rates but zero qualified pipeline',
+      'Ad fatigue leading to skyrocketing customer acquisition costs (CAC)',
+      'Inability to accurately attribute which ad sets drive actual closed revenue',
+    ],
+    deliverables: [
+      'Full-funnel Google Ads (Search, Performance Max, YouTube) architecture',
+      'Meta Ads (Facebook & Instagram) campaign structure and retargeting',
+      'Weekly creative testing framework (hooks, visual formats, copy angles)',
+      'Server-side tracking & Conversion API (CAPI) implementation',
+      'Real-time revenue attribution dashboards',
+    ],
+    subServices: [
+      { title: 'Google Search & PMax', description: 'Capturing existing high-intent search demand with surgical precision.' },
+      { title: 'Meta Ads', description: 'Interruptive demand generation with thumb-stopping creative testing.' },
+      { title: 'Retargeting Architecture', description: 'Sequential nurturing flows that bring abandoned visitors back.' },
+      { title: 'Conversion Tracking & CAPI', description: 'Server-side tracking resilient to iOS privacy updates and browser blocks.' },
+    ],
+    whatResultsLookLike: [
+      'Decreased Cost Per Qualified Acquisition (CPQA) across primary channels',
+      'Scalable budget allocation backed by verified multi-touch attribution',
+      'A predictable pipeline of high-intent sales conversations or purchases',
+    ],
+    faqs: [
+      { q: 'What ad platforms do you recommend starting with?', a: 'Most brands start with Google Search to capture high intent alongside Meta Ads for targeted demand generation.' },
+      { q: 'Who owns the ad accounts?', a: 'You do. We manage your accounts with partner access so you retain 100% data ownership and history.' },
+    ],
+  },
+  'content-marketing': {
+    slug: 'content-marketing',
+    name: 'Content Strategy & Marketing',
+    groupId: 'engage',
+    groupName: 'Engage',
+    groupNumber: '02',
+    oneLineOutcome: 'Content that earns attention, builds authority, and converts.',
+    shortDesc: 'Editorial planning, copywriting and creative production that builds trust and supports the buying journey.',
+    longDesc: 'Content is not filler for social feeds or keyword stuffing for search engines. We write and produce authoritative editorial assets that answer real buyer objections, explain complex value propositions, and position you as the definitive leader in your market.',
+    problemsSolved: [
+      'Blog articles that read like generic AI drafts and produce no leads',
+      'Lack of clear brand messaging across sales decks and case studies',
+      'High bounce rates due to unengaging or surface-level writing',
+    ],
+    deliverables: [
+      'Quarterly content strategy & buyer persona objection mapping',
+      'In-depth thought leadership articles and research-backed guides',
+      'Case study writing & customer success narrative production',
+      'Sales enablement collateral (one-pagers, whitepapers, email nurtures)',
+      'Content distribution and syndication frameworks',
+    ],
+    subServices: [
+      { title: 'Editorial Strategy', description: 'Mapping content topics directly to the stages of buyer decision-making.' },
+      { title: 'Long-Form Authority Articles', description: 'Exhaustive, original articles that rank well and convert readers.' },
+      { title: 'Case Study Narratives', description: 'Compelling problem-strategy-outcome stories that prove your capability.' },
+      { title: 'Sales Enablement', description: 'Collateral designed to help your sales team close deals faster.' },
+    ],
+    whatResultsLookLike: [
+      'Increased time on page and deeper engagement across key content assets',
+      'Direct inbound inquiries referencing specific articles and case studies',
+      'A library of evergreen brand assets that shorten sales cycles',
+    ],
+    faqs: [
+      { q: 'How do you ensure technical accuracy in specialized industries?', a: 'We conduct recorded subject-matter expert (SME) interviews with your team before drafting.' },
+      { q: 'Do you use AI to write content?', a: 'We use AI for research and ideation; all final writing, positioning, and nuance is crafted and verified by human strategists.' },
+    ],
+  },
+  'branding-creative': {
+    slug: 'branding-creative',
+    name: 'Branding & Creative Strategy',
+    groupId: 'engage',
+    groupName: 'Engage',
+    groupNumber: '02',
+    oneLineOutcome: 'Identities and creative systems that make your brand unforgettable.',
+    shortDesc: 'Positioning, identity systems and campaign creative that make brands recognizable, consistent and trusted.',
+    longDesc: 'A brand is not just a logo; it is the gut feeling a customer has about your business. We engineer comprehensive visual identity systems, messaging frameworks, and packaging designs that communicate immediate premium credibility.',
+    problemsSolved: [
+      'Looking amateurish or indistinguishable from low-cost competitors',
+      'Inconsistent visual assets across web, print, and social media',
+      'Difficulty articulating why your product commands a premium price',
+    ],
+    deliverables: [
+      'Brand positioning statement, core narrative & tone-of-voice guide',
+      'Complete visual identity system (logo marks, color palettes, typography)',
+      'Packaging design & physical product collateral (where applicable)',
+      'Brand design guideline book & design system component tokens',
+      'Launch campaign creative kit (social banners, ad templates, decks)',
+    ],
+    subServices: [
+      { title: 'Brand Positioning', description: 'Defining your unique value wedge and counter-positioning in your market.' },
+      { title: 'Visual Identity Design', description: 'Comprehensive aesthetic systems that scale from business cards to billboards.' },
+      { title: 'Packaging Design', description: 'Shelf-stopping consumer packaging engineered for physical delight.' },
+      { title: 'Brand Guidelines', description: 'Exhaustive documentation so your internal team never goes off-brand.' },
+    ],
+    whatResultsLookLike: [
+      'Immediate elevation in perceived brand value and market positioning',
+      'Consistent, cohesive aesthetic across every customer touchpoint',
+      'Higher pricing power and increased conversion on branded sales assets',
+    ],
+    faqs: [
+      { q: 'What files do we receive upon completion?', a: 'Vector files (AI, EPS, SVG), web-ready assets (PNG, WebP), font licenses, and interactive brand guidelines.' },
+      { q: 'How long does a brand identity project take?', a: 'Standard brand identity engagements run 4–6 weeks from discovery to final guideline handoff.' },
+    ],
+  },
+  'web-design-development': {
+    slug: 'web-design-development',
+    name: 'Web Design & Development',
+    groupId: 'convert',
+    groupName: 'Convert',
+    groupNumber: '03',
+    oneLineOutcome: 'Fast, credible, conversion-focused websites engineered to scale.',
+    shortDesc: 'Fast, credible, conversion-focused websites and e-commerce experiences that support real business goals.',
+    longDesc: 'Your website is your best salesperson. We design and develop custom full-stack web applications using Next.js, TypeScript, and headless CMS architecture that load in milliseconds and guide visitors seamlessly toward conversion.',
+    problemsSolved: [
+      'Slow, bloated WordPress or template sites that lose mobile visitors',
+      'Confusing navigation and lack of clear conversion pathways',
+      'Inability for non-technical team members to update content without code',
+    ],
+    deliverables: [
+      'Custom UX wireframing & high-fidelity Figma design systems',
+      'Next.js (App Router) + React 19 + TypeScript frontend development',
+      'Headless CMS integration (Sanity) for non-technical content management',
+      'Mobile-first responsive optimization & Core Web Vitals score $\ge 90$',
+      'Analytics, Google Consent Mode v2, and lead tracking instrumentation',
+    ],
+    subServices: [
+      { title: 'Custom Web Design', description: 'Bespoke UI/UX crafted specifically for your audience and brand aesthetic.' },
+      { title: 'Next.js Development', description: 'Modern, server-rendered web applications with blistering page-load speeds.' },
+      { title: 'Headless CMS Architecture', description: 'Sanity or Strapi integration allowing flexible editing with zero risk of breaking styles.' },
+      { title: 'Conversion Rate Optimization', description: 'Strategic layout hierarchy and frictionless forms designed to maximize inquiries.' },
+    ],
+    whatResultsLookLike: [
+      'Sub-second page transitions and 90+ mobile Lighthouse scores',
+      'Immediate lift in visit-to-lead and visit-to-purchase conversion rates',
+      'An intuitive CMS workflow allowing your marketing team to publish instantly',
+    ],
+    faqs: [
+      { q: 'Why do you build with Next.js instead of WordPress?', a: 'Next.js delivers unmatched speed, bank-grade security, flawless mobile performance, and complete design freedom without plugin bloat.' },
+      { q: 'Can we edit the website content after launch?', a: 'Yes. Every project includes a headless CMS dashboard where your team can edit copy, publish blog posts, and add case studies without code.' },
+    ],
+  },
+  'email-marketing': {
+    slug: 'email-marketing',
+    name: 'Email Marketing & Automation',
+    groupId: 'convert',
+    groupName: 'Convert',
+    groupNumber: '03',
+    oneLineOutcome: 'Lifecycle flows and segmented campaigns that retain customers.',
+    shortDesc: 'Segmented campaigns and lifecycle journeys — welcome flows, nurturing and retention that respect consent.',
+    longDesc: 'Email remains the highest-ROI owned acquisition channel. We build intelligent automated lifecycle flows that onboard new subscribers, recover abandoned carts, and re-engage lapsed customers without burning your domain reputation.',
+    problemsSolved: [
+      'Sending generic monthly newsletters that get archived without opens',
+      'Leaving revenue on the table by missing automated cart recovery flows',
+      'Poor inbox deliverability and high unsubscribe rates',
+    ],
+    deliverables: [
+      'Core automation flows (Welcome series, Abandoned browse/cart, Win-back)',
+      'Audience segmentation based on purchase history and engagement tiers',
+      'Custom HTML/CSS responsive email template design systems',
+      'Deliverability audit & SPF/DKIM/DMARC domain authentication',
+      'A/B subject line and content testing schedule',
+    ],
+    subServices: [
+      { title: 'Automated Lifecycle Flows', description: 'Behavior-triggered sequences that nurture prospects 24/7 on autopilot.' },
+      { title: 'Campaign Broadcasts', description: 'Engaging, story-driven weekly or bi-weekly emails that generate immediate revenue.' },
+      { title: 'List Segmentation', description: 'Delivering the right message to the right subscriber based on past behavior.' },
+      { title: 'Deliverability Optimization', description: 'Ensuring your emails consistently reach the primary inbox, not spam.' },
+    ],
+    whatResultsLookLike: [
+      'Automated email flows generating 20–35% of total business revenue',
+      'Consistent open rates above 40% and click-through rates above 3%',
+      'Predictable repeat customer purchase cycles and reduced churn',
+    ],
+    faqs: [
+      { q: 'Which email platforms do you support?', a: 'We specialize in Klaviyo for e-commerce brands and Resend / HubSpot for B2B and SaaS businesses.' },
+      { q: 'Do you write the email copy and design the templates?', a: 'Yes. We provide complete end-to-end execution from copywriting to custom responsive design and flow logic.' },
+    ],
+  },
+  'reputation-management': {
+    slug: 'reputation-management',
+    name: 'Online Reputation Management',
+    groupId: 'convert',
+    groupName: 'Convert',
+    groupNumber: '03',
+    oneLineOutcome: 'Protect and elevate brand trust across the web.',
+    shortDesc: 'Review monitoring, response workflows and crisis planning. Authentic reputation care — never rating manipulation.',
+    longDesc: 'When buyers research your brand before signing a contract or making a purchase, what they read in reviews defines the deal. We set up automated monitoring, proactive review generation workflows, and strategic crisis protocols.',
+    problemsSolved: [
+      'A few negative reviews dominating search results and suppressing conversions',
+      'Slow or defensive responses to customer complaints online',
+      'Lack of an organized system to collect verified reviews from happy clients',
+    ],
+    deliverables: [
+      'Comprehensive digital reputation and search sentiment audit',
+      'Automated post-purchase review collection and testimonial workflows',
+      'Professional review response templates and escalation playbooks',
+      'Google Business Profile and third-party review site optimization',
+      'Brand crisis monitoring and search suppression strategies',
+    ],
+    subServices: [
+      { title: 'Sentiment Monitoring', description: 'Real-time alerts whenever your brand is mentioned across search and social.' },
+      { title: 'Review Generation Systems', description: 'Ethical, automated prompts that encourage satisfied customers to leave feedback.' },
+      { title: 'Crisis Management', description: 'Strategic communications protocols to de-escalate public customer issues.' },
+      { title: 'Profile Optimization', description: 'Claiming, verifying, and optimizing your listings across Google and industry directories.' },
+    ],
+    whatResultsLookLike: [
+      'A steady stream of authentic 5-star reviews from verified buyers',
+      'Search results for "[Brand] reviews" showcasing overwhelming positive sentiment',
+      'Higher close rates on sales calls as prospective buyers trust your track record',
+    ],
+    faqs: [
+      { q: 'Do you write fake reviews or pay for positive ratings?', a: 'Never. Fake reviews violate consumer protection laws and search engine terms. We build legitimate systems to capture feedback from real, happy customers.' },
+      { q: 'How do you handle negative reviews?', a: 'We craft professional, empathetic response strategies that solve customer problems publicly, demonstrating accountability to prospective buyers.' },
+    ],
+  },
+  'analytics-audit': {
+    slug: 'analytics-audit',
+    name: 'Digital Growth Audit & Analytics',
+    groupId: 'optimize',
+    groupName: 'Optimize',
+    groupNumber: '04',
+    oneLineOutcome: 'Find the leaks: audits and KPI frameworks that turn data into decisions.',
+    shortDesc: 'Find the leaks: tracking audits, funnel analysis and KPI frameworks that turn data into decisions.',
+    longDesc: 'Most companies have dashboards full of numbers, but none of them inform real decisions. We conduct exhaustive audits of your tracking stack, map your conversion funnels, and implement clean attribution frameworks that show exactly where revenue comes from.',
+    problemsSolved: [
+      'Discrepancies between ad platform metrics and your actual bank deposits',
+      'Missing or broken event tracking across key form submissions and purchases',
+      'Confusion over customer acquisition cost (CAC) and lifetime value (LTV)',
+    ],
+    deliverables: [
+      'Full tracking stack diagnostic (GA4, Google Tag Manager, Consent Mode v2)',
+      'Custom conversion funnel mapping and drop-off analysis report',
+      'Single-source-of-truth executive reporting dashboard',
+      'Multi-touch attribution model implementation',
+      'Prioritized 90-day bottleneck remediation roadmap',
+    ],
+    subServices: [
+      { title: 'Tracking Stack Audits', description: 'Inspecting tags, triggers, dataLayers, and consent settings for accuracy.' },
+      { title: 'Funnel Analysis', description: 'Identifying the exact steps where prospective customers abandon your funnel.' },
+      { title: 'Attribution Modeling', description: 'Unifying first-touch and last-touch data to identify true acquisition drivers.' },
+      { title: 'Executive Dashboards', description: 'Clean, digestible dashboards displaying real revenue KPIs, not vanity metrics.' },
+    ],
+    whatResultsLookLike: [
+      '100% confidence in the accuracy of your marketing attribution data',
+      'Clear identification of the top 3 friction points suppressing conversion',
+      'A prioritized action plan to deploy marketing capital with high predictability',
+    ],
+    faqs: [
+      { q: 'What is included in the initial Growth Audit?', a: 'We inspect your analytics setup, review your ad account structures, analyze your website conversion pathways, and deliver a written findings document.' },
+      { q: 'How long does a tracking audit take?', a: 'A standard diagnostic audit is completed within 7–10 business days.' },
+    ],
+  },
+  'growth-consulting': {
+    slug: 'growth-consulting',
+    name: 'Digital Growth Strategy & Consultancy',
+    groupId: 'optimize',
+    groupName: 'Optimize',
+    groupNumber: '04',
+    oneLineOutcome: 'Bottleneck diagnosis and an executive roadmap for sustainable scale.',
+    shortDesc: 'Bottleneck diagnosis and a prioritized growth roadmap. Strategy-only engagements available.',
+    longDesc: 'When marketing stalls, doing more of the same tactics won’t fix the problem. We work directly with founders and leadership teams to diagnose why growth plateaued, re-align acquisition channels with unit economics, and build an executable roadmap for compound expansion.',
+    problemsSolved: [
+      'Tactics multiplied across channels but revenue growth hit a plateau',
+      'Disjointed marketing efforts where channels operate in silos with no synergy',
+      'Unclear unit economics preventing confident investment in customer acquisition',
+    ],
+    deliverables: [
+      'Comprehensive competitive landscape and market positioning analysis',
+      'Cross-channel growth architecture and budget allocation strategy',
+      'Unit economics modeling (CAC, payback periods, blended margins)',
+      'Bi-weekly strategic advisory sprints with senior growth partners',
+      'Quarterly growth roadmap with clear milestone KPIs',
+    ],
+    subServices: [
+      { title: 'Diagnostic Sprints', description: 'Uncovering the root constraints holding your business back from scale.' },
+      { title: 'Channel Allocation Strategy', description: 'Determining exactly how much to spend on search, social, and owned channels.' },
+      { title: 'Advisory Retainers', description: 'Direct strategic guidance for founders and marketing directors on an ongoing cadence.' },
+      { title: 'Cross-Functional Alignment', description: 'Ensuring your sales, marketing, and product messaging operate as one unified engine.' },
+    ],
+    whatResultsLookLike: [
+      'Crystal clarity on the 1–2 high-leverage growth bets to focus on each quarter',
+      'Elimination of wasted ad spend on underperforming acquisition channels',
+      'Predictable, compounding revenue growth backed by sound unit economics',
+    ],
+    faqs: [
+      { q: 'Can we hire you for strategy only without execution?', a: 'Yes. We offer standalone Strategy & Consultancy engagements for teams that have in-house execution resources.' },
+      { q: 'How do strategy calls work?', a: 'We start with a 30-minute diagnostic session to examine your funnel, identify your biggest constraint, and outline our recommended approach.' },
+    ],
+  },
+};

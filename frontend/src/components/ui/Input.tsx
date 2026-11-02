@@ -19,19 +19,19 @@ export function Input({
       {label && (
         <label
           htmlFor={inputId}
-          className="text-xs font-semibold uppercase tracking-wider text-text-secondary"
+          className="text-xs font-mono uppercase tracking-wider text-[#A6A6A0]"
         >
           {label}
         </label>
       )}
       <input
         id={inputId}
-        className={`w-full px-4 py-3 rounded-lg bg-surface border border-border text-text-primary placeholder:text-text-muted text-sm transition-all focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent ${
-          error ? 'border-red-500' : ''
+        className={`w-full px-4 py-3 rounded-lg bg-[#171717] border border-[#252525] text-[#F5F5F0] placeholder:text-[#6F6F6A] text-sm transition-colors focus:outline-none focus:border-[#FFD21F] ${
+          error ? 'border-[#FF6464]' : ''
         } ${className}`}
         {...props}
       />
-      {error && <span className="text-xs text-red-400 font-medium">{error}</span>}
+      {error && <span className="text-xs text-[#FF6464] font-medium">{error}</span>}
     </div>
   );
 }
@@ -55,7 +55,7 @@ export function Textarea({
       {label && (
         <label
           htmlFor={inputId}
-          className="text-xs font-semibold uppercase tracking-wider text-text-secondary"
+          className="text-xs font-mono uppercase tracking-wider text-[#A6A6A0]"
         >
           {label}
         </label>
@@ -63,12 +63,12 @@ export function Textarea({
       <textarea
         id={inputId}
         rows={4}
-        className={`w-full px-4 py-3 rounded-lg bg-surface border border-border text-text-primary placeholder:text-text-muted text-sm transition-all focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent ${
-          error ? 'border-red-500' : ''
+        className={`w-full px-4 py-3 rounded-lg bg-[#171717] border border-[#252525] text-[#F5F5F0] placeholder:text-[#6F6F6A] text-sm transition-colors focus:outline-none focus:border-[#FFD21F] ${
+          error ? 'border-[#FF6464]' : ''
         } ${className}`}
         {...props}
       />
-      {error && <span className="text-xs text-red-400 font-medium">{error}</span>}
+      {error && <span className="text-xs text-[#FF6464] font-medium">{error}</span>}
     </div>
   );
 }
