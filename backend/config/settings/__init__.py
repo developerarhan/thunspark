@@ -1,3 +1,0 @@
-"""
-Thunspark Settings Package.
-"""

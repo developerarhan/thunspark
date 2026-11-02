@@ -1,4 +1,5 @@
-# Python / Django
+# Archive
+_archive/
 __pycache__/
 *.py[cod]
 *$py.class

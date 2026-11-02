@@ -1,3 +1,0 @@
-"""
-Thunspark Backend Config Package.
-"""
