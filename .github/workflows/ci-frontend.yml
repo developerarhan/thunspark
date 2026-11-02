@@ -1,4 +1,4 @@
-name: Frontend CI (Lint, Typecheck & Next.js Build)
+name: Next.js CI (Lint, Typecheck & Production Build)
 
 on:
   push:
@@ -19,14 +19,14 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: 'npm'
           cache-dependency-path: 'frontend/package-lock.json'
 
       - name: Install dependencies
         run: |
           cd frontend
-          npm ci
+          npm ci --legacy-peer-deps
 
       - name: Linting
         run: |
@@ -40,8 +40,8 @@ jobs:
 
       - name: Production Build
         env:
-          NEXT_PUBLIC_API_URL: http://localhost:8000
-          INTERNAL_API_URL: http://localhost:8000
+          NEXT_PUBLIC_SITE_URL: https://www.thunspark.agency
+          NEXT_PUBLIC_GTM_ID: GTM-THUNSPARK
         run: |
           cd frontend
           npm run build
