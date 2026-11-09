@@ -8,14 +8,16 @@ import { HERO_COPY } from '@/lib/constants';
 import { ArrowRight } from 'lucide-react';
 
 export function Section01Hero() {
-  const [slotIndex, setSlotIndex] = useState(0);
+  const [count, setCount] = useState(0);
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setSlotIndex((prev) => (prev + 1) % HERO_COPY.rotatingSlots.length);
-    }, 3500);
+      setCount((prev) => prev + 1);
+    }, 5000);
     return () => clearInterval(timer);
   }, []);
+
+  const currentWord = HERO_COPY.rotatingSlots[count % HERO_COPY.rotatingSlots.length];
 
   return (
     <section className="relative pt-36 md:pt-44 pb-20 md:pb-28 overflow-hidden bg-[#050505] bg-grain">
@@ -35,22 +37,22 @@ export function Section01Hero() {
             {/* H1 with Rotating Word Slot */}
             <h1 className="font-display font-extrabold text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-[1.04] tracking-[-0.03em] text-[#F5F5F0]">
               We turn growth bottlenecks into{' '}
-              <span className="relative inline-block h-[1.15em] overflow-hidden align-top text-[#FFD21F]">
+              <span className="relative inline-block h-[1.15em] overflow-hidden align-top text-[#FFD21F] pr-1.5">
                 {/* Static text for SEO crawlers */}
                 <span className="sr-only">breakthroughs</span>
 
-                {/* Animated dynamic slot */}
-                <AnimatePresence mode="wait">
+                {/* Animated dynamic slot with continuous forward conveyor flow */}
+                <AnimatePresence mode="wait" initial={false}>
                   <motion.span
-                    key={slotIndex}
-                    initial={{ y: '100%', opacity: 0 }}
-                    animate={{ y: '0%', opacity: 1 }}
-                    exit={{ y: '-100%', opacity: 0 }}
+                    key={count}
+                    initial={{ x: '-100%', opacity: 0 }}
+                    animate={{ x: '0%', opacity: 1 }}
+                    exit={{ x: '100%', opacity: 0 }}
                     transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-                    className="inline-block font-italic-accent"
+                    className="inline-block font-italic-accent whitespace-nowrap"
                     aria-hidden="true"
                   >
-                    {HERO_COPY.rotatingSlots[slotIndex]}
+                    {currentWord}
                   </motion.span>
                 </AnimatePresence>
               </span>
