@@ -9,10 +9,18 @@ import { ArrowRight } from 'lucide-react';
 interface MegaMenuProps {
   isOpen: boolean;
   onClose: () => void;
+  onMouseEnter?: () => void;
+  onMouseLeave?: () => void;
   triggerRef: React.RefObject<HTMLButtonElement | null>;
 }
 
-export function MegaMenu({ isOpen, onClose, triggerRef }: MegaMenuProps) {
+export function MegaMenu({
+  isOpen,
+  onClose,
+  onMouseEnter,
+  onMouseLeave,
+  triggerRef,
+}: MegaMenuProps) {
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -50,11 +58,13 @@ export function MegaMenu({ isOpen, onClose, triggerRef }: MegaMenuProps) {
       {isOpen && (
         <motion.div
           ref={menuRef}
+          onMouseEnter={onMouseEnter}
+          onMouseLeave={onMouseLeave}
           initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -8 }}
-          transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-          className="absolute top-full left-0 right-0 bg-[#050505]/95 backdrop-blur-xl border-b border-[#252525] z-40 py-10"
+          transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+          className="absolute top-full left-0 right-0 bg-[#050505]/95 backdrop-blur-xl border-b border-[#252525] z-40 py-10 before:absolute before:-top-4 before:left-0 before:right-0 before:h-4 before:content-['']"
         >
           <div className="max-w-7xl mx-auto px-6 lg:px-8">
             <div className="grid grid-cols-4 gap-8">

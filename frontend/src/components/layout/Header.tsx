@@ -15,6 +15,7 @@ export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
   const servicesBtnRef = useRef<HTMLButtonElement>(null);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -25,11 +26,49 @@ export function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Cleanup hover-intent timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
+
   // Close menus on route change
   useEffect(() => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
     setMobileMenuOpen(false);
     setServicesOpen(false);
   }, [pathname]);
+
+  const handleOpenServices = () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+    setServicesOpen(true);
+  };
+
+  const handleCloseServices = () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    timeoutRef.current = setTimeout(() => {
+      setServicesOpen(false);
+    }, 200);
+  };
+
+  const handleImmediateCloseServices = () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+    setServicesOpen(false);
+  };
 
   return (
     <>
@@ -75,13 +114,14 @@ export function Header() {
               {/* Services with MegaMenu */}
               <div
                 className="relative"
-                onMouseEnter={() => setServicesOpen(true)}
-                onMouseLeave={() => setServicesOpen(false)}
+                onMouseEnter={handleOpenServices}
+                onMouseLeave={handleCloseServices}
               >
                 <button
                   ref={servicesBtnRef}
                   type="button"
                   onClick={() => setServicesOpen((prev) => !prev)}
+                  onFocus={handleOpenServices}
                   aria-expanded={servicesOpen}
                   className={`text-sm font-medium transition-colors hover:text-[#F5F5F0] flex items-center gap-1.5 py-2 cursor-pointer ${
                     pathname.startsWith('/services') || servicesOpen
@@ -161,7 +201,9 @@ export function Header() {
         {/* MegaMenu Dropdown */}
         <MegaMenu
           isOpen={servicesOpen}
-          onClose={() => setServicesOpen(false)}
+          onClose={handleImmediateCloseServices}
+          onMouseEnter={handleOpenServices}
+          onMouseLeave={handleCloseServices}
           triggerRef={servicesBtnRef}
         />
       </header>
