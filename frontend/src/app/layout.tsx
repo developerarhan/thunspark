@@ -115,9 +115,22 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={`${spaceGrotesk.variable} ${inter.variable} ${spaceMono.variable} dark antialiased scroll-smooth`}
     >
       <head>
+        {/* Fast Preloader Session Check: executes synchronously before paint to prevent flash for returning visitors */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                if (sessionStorage.getItem('thunspark_visited') === 'true' || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                  document.documentElement.classList.add('hide-site-loader');
+                }
+              } catch (e) {}
+            `,
+          }}
+        />
         {/* Google Consent Mode v2 Default Settings */}
         <script
           dangerouslySetInnerHTML={{
