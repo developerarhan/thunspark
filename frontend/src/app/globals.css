@@ -1,8 +1,9 @@
 @import "tailwindcss";
+@source "../../src";
 
 :root {
   /* ThunSpark Master Design Tokens (Guide v1.2 §B2 & §R6) */
-  --color-base: #050505;
+  --color-canvas: #050505;
   --color-alt: #0A0A0A;
   --color-card: #111111;
   --color-elevated: #171717;
@@ -25,7 +26,7 @@
   --color-error: #FF6464;
 
   /* Backward Compatibility Aliases for transitional components */
-  --bg-primary: var(--color-base);
+  --bg-primary: var(--color-canvas);
   --bg-secondary: var(--color-alt);
   --surface: var(--color-card);
   --surface-elevated: var(--color-elevated);
@@ -53,7 +54,7 @@
 }
 
 @theme {
-  --color-base: #050505;
+  --color-canvas: #050505;
   --color-alt: #0A0A0A;
   --color-card: #111111;
   --color-elevated: #171717;
@@ -92,7 +93,7 @@
 }
 
 html {
-  background-color: var(--color-base);
+  background-color: var(--color-canvas);
   color: var(--color-ink);
   color-scheme: dark;
   scroll-behavior: smooth;
@@ -100,7 +101,7 @@ html {
 }
 
 body {
-  background-color: var(--color-base);
+  background-color: var(--color-canvas);
   color: var(--color-ink);
   font-family: var(--font-body);
   min-height: 100vh;
@@ -173,7 +174,6 @@ select option {
   background-image: radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 0);
   background-size: 24px 24px;
 }
-
 
 /* Preloader Zero-Flash Initial Render & Suppression */
 html.hide-site-loader #site-loader {
