@@ -24,7 +24,7 @@ export function Section10FAQ() {
     <section className="py-24 md:py-32 bg-[#050505]">
       <Container>
         <SectionHeading
-          eyebrow="08 / QUESTIONS"
+          eyebrow="09 / QUESTIONS"
           title={
             <>
               Answers, <span className="font-italic-accent">before</span> you ask.

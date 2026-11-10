@@ -146,7 +146,7 @@ export const INDUSTRIES_COPY = {
 } as const;
 
 export const WHY_THUNSPARK = {
-  eyebrow: "06 / WHY THUNSPARK",
+  eyebrow: "07 / WHY THUNSPARK",
   h2: "An agency built like a growth partner.",
   copy: "We don't sell marketing services. We solve business problems — and stay until the numbers move.",
   cta: {

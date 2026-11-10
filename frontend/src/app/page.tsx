@@ -6,6 +6,7 @@ import { Section04SolutionsSelector } from '@/components/sections/Section04Solut
 import { Section05ProcessPathway } from '@/components/sections/Section05ProcessPathway';
 import { Section06Industries } from '@/components/sections/Section06Industries';
 import { Section07FeaturedWork } from '@/components/sections/Section07FeaturedWork';
+import { Section08ClientLove } from '@/components/sections/Section08ClientLove';
 import { Section08WhyThunSpark } from '@/components/sections/Section08WhyThunSpark';
 import { Section09Insights } from '@/components/sections/Section09Insights';
 import { Section10FAQ } from '@/components/sections/Section10FAQ';
@@ -32,19 +33,22 @@ export default function HomePage() {
       {/* §6 Industries (Startups, E-com, B2B, Lean Teams) */}
       <Section06Industries />
 
-      {/* §7 Featured Work (Confirmed Scope & Overview Showcases) */}
+      {/* §7 Selected Work (4 Confirmed Scope & Overview Showcases) */}
       <Section07FeaturedWork />
 
-      {/* §8 Why ThunSpark (Problem-first, Full-funnel, Senior-led, Transparency) */}
+      {/* §8 Client Love / Client Voices (Anti-Fabrication Transparency Grid) */}
+      <Section08ClientLove />
+
+      {/* §9 Why ThunSpark (Problem-first, Full-funnel, Senior-led, Transparency) */}
       <Section08WhyThunSpark />
 
-      {/* §9 Insights (Auto-hidden when 0 published posts) */}
+      {/* §10 Insights (Auto-hidden when 0 published posts) */}
       <Section09Insights posts={[]} />
 
-      {/* §10 FAQ (Single-Open Accordion with FAQPage JSON-LD) */}
+      {/* §11 FAQ (Single-Open Accordion with FAQPage JSON-LD) */}
       <Section10FAQ />
 
-      {/* §11 Final CTA with Approved Radial Glow & Deliverables */}
+      {/* §12 Final CTA with Approved Radial Glow & Deliverables */}
       <Section11FinalCTA />
     </>
   );

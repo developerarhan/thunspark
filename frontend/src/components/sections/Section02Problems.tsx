@@ -1,5 +1,8 @@
+'use client';
+
 import React from 'react';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 import { Container } from '@/components/ui/Container';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { PROBLEMS_COPY } from '@/lib/constants';
@@ -15,11 +18,19 @@ export function Section02Problems() {
           copy={PROBLEMS_COPY.intro}
         />
 
-        {/* 3x2 Grid of Problem Cards */}
+        {/* 3x2 Grid of Problem Cards with Staggered Motion */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {PROBLEMS_COPY.items.map((item) => (
-            <div
+          {PROBLEMS_COPY.items.map((item, idx) => (
+            <motion.div
               key={item.index}
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.15 }}
+              transition={{
+                duration: 0.45,
+                delay: idx * 0.08,
+                ease: [0.22, 1, 0.36, 1],
+              }}
               className="group p-8 rounded-xl bg-[#111111] border border-[#252525] hover:border-[#353535] hover:bg-[#171717] transition-all duration-200 flex flex-col justify-between"
             >
               <div>
@@ -50,7 +61,7 @@ export function Section02Problems() {
                   <ArrowUpRight size={14} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                 </Link>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       </Container>

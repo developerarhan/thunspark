@@ -24,7 +24,7 @@ export function Section09Insights({ posts = [] }: { posts?: ArticleItem[] }) {
       <Container>
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
           <SectionHeading
-            eyebrow="07 / INSIGHTS"
+            eyebrow="08 / INSIGHTS"
             title={
               <>
                 Thinking that <span className="font-italic-accent">earns</span> its keep.
