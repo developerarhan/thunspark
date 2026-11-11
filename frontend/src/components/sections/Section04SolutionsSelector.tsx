@@ -7,7 +7,7 @@ export function Section04SolutionsSelector() {
   return (
     <ServicesShowcase
       pinned
-      eyebrow="02 / WHAT WE DO"
+      eyebrow="WHAT WE DO"
       title={
         <>
           Complete growth solutions, <span className="font-italic-accent">connected.</span>

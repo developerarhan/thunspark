@@ -1,26 +1,33 @@
 import React from 'react';
-import { Container } from '@/components/ui/Container';
+import { Container, Section } from '@/components/ui/Container';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { INDUSTRIES_COPY } from '@/lib/constants';
 import { Rocket, ShoppingBag, Briefcase, Users } from 'lucide-react';
+
+const CELL_DIVIDER_CLASSES = [
+  'border-b border-line md:border-r lg:border-b-0',
+  'border-b border-line lg:border-r lg:border-b-0',
+  'border-b border-line md:border-b-0 md:border-r',
+  '',
+] as const;
 
 export function Section06Industries() {
   const getIndustryIcon = (icon: string) => {
     switch (icon) {
       case 'rocket':
-        return <Rocket size={24} className="text-accent" />;
+        return <Rocket size={20} className="text-accent" />;
       case 'shopping-bag':
-        return <ShoppingBag size={24} className="text-accent" />;
+        return <ShoppingBag size={20} className="text-accent" />;
       case 'briefcase':
-        return <Briefcase size={24} className="text-accent" />;
+        return <Briefcase size={20} className="text-accent" />;
       case 'users':
       default:
-        return <Users size={24} className="text-accent" />;
+        return <Users size={20} className="text-accent" />;
     }
   };
 
   return (
-    <section className="py-24 md:py-32 bg-base">
+    <Section tone="base">
       <Container>
         <SectionHeading
           eyebrow={INDUSTRIES_COPY.eyebrow}
@@ -32,27 +39,30 @@ export function Section06Industries() {
           copy="Tailored strategies that respect the operational realities, sales cycles, and margins of your business model."
         />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 rounded-xl border border-line bg-card overflow-hidden">
           {INDUSTRIES_COPY.items.map((item, idx) => (
             <div
-              key={idx}
-              className="p-8 rounded-xl bg-card border border-line hover:border-line-strong hover:bg-elevated transition-all flex flex-col justify-between"
+              key={item.title}
+              className={`p-6 lg:p-7 flex flex-col gap-3 hover:bg-elevated transition-colors ${
+                CELL_DIVIDER_CLASSES[idx] ?? ''
+              }`}
             >
-              <div>
-                <div className="p-3.5 rounded-xl bg-elevated border border-line w-fit mb-6">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-lg bg-elevated border border-line flex items-center justify-center shrink-0">
                   {getIndustryIcon(item.icon)}
                 </div>
-                <h3 className="font-display font-bold text-xl text-ink mb-3">
+                <h3 className="font-display font-bold text-lg text-ink leading-snug">
                   {item.title}
                 </h3>
-                <p className="text-sm text-soft leading-relaxed">
-                  {item.description}
-                </p>
               </div>
+
+              <p className="text-sm text-soft leading-relaxed">
+                {item.description}
+              </p>
             </div>
           ))}
         </div>
       </Container>
-    </section>
+    </Section>
   );
 }

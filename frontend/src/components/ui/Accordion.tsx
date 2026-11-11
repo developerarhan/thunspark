@@ -63,7 +63,7 @@ export function Accordion({
                   transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
                   className="overflow-hidden"
                 >
-                  <p className="pt-4 text-soft text-base leading-relaxed max-w-2xl">
+                  <p className="pt-4 text-soft text-base leading-relaxed max-w-3xl">
                     {item.a}
                   </p>
                 </motion.div>

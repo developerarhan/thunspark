@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
-import { Container } from '@/components/ui/Container';
+import { Container, Section } from '@/components/ui/Container';
+import { SectionHeading } from '@/components/ui/SectionHeading';
 import { Button } from '@/components/ui/Button';
 import { FINAL_CTA } from '@/lib/constants';
 import { siteConfig } from '@/site.config';
@@ -8,7 +9,7 @@ import { ArrowRight, Mail, MapPin, CheckCircle2 } from 'lucide-react';
 
 export function Section12FinalCTA() {
   return (
-    <section className="py-24 md:py-36 bg-alt border-t border-line relative overflow-hidden bg-grain">
+    <Section tone="alt" className="overflow-hidden bg-grain">
       {/* Approved Radial Yellow Glow Gradient per Guide §D1 §11 */}
       <div
         className="absolute inset-0 pointer-events-none"
@@ -61,14 +62,18 @@ export function Section12FinalCTA() {
 
           {/* Right Column: H2 & Conversion CTA Panel (7 cols) */}
           <div className="lg:col-span-7 space-y-8 order-1 lg:order-2">
-            <h2 className="font-display font-extrabold text-4xl sm:text-5xl lg:text-6xl leading-[1.05] tracking-[-0.03em] text-ink">
-              Ready to find your{' '}
-              <span className="font-italic-accent">bottleneck?</span>
-            </h2>
-
-            <p className="text-soft text-lg sm:text-xl leading-relaxed max-w-xl font-sans">
-              {FINAL_CTA.copy}
-            </p>
+            <SectionHeading
+              align="left"
+              eyebrow="GET STARTED"
+              title={
+                <>
+                  Ready to find your{' '}
+                  <span className="font-italic-accent">bottleneck?</span>
+                </>
+              }
+              copy={FINAL_CTA.copy}
+              className="mb-0"
+            />
 
             <div className="flex flex-wrap items-center gap-4 pt-2">
               <Button
@@ -91,6 +96,6 @@ export function Section12FinalCTA() {
           </div>
         </div>
       </Container>
-    </section>
+    </Section>
   );
 }

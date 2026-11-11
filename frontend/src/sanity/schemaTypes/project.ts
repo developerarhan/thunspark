@@ -34,6 +34,13 @@ export const projectType = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: 'shortDescription',
+      title: 'Homepage Short Description',
+      type: 'string',
+      description: 'Concise one-line summary shown in the homepage client selector (max 110 characters).',
+      validation: (Rule) => Rule.max(110),
+    }),
+    defineField({
       name: 'headline',
       title: 'Case Headline',
       type: 'string',
@@ -77,9 +84,28 @@ export const projectType = defineType({
       initialValue: false,
     }),
     defineField({
-      name: 'coverImage',
+      name: 'logo',
+      title: 'Client Logo',
+      type: 'image',
+      description: 'Optional client logo (rendered on a light rounded tile when no cover image is set).',
+      options: {
+        hotspot: false,
+      },
+    }),
+    defineField({
+      name: 'cover',
       title: 'Cover Image',
       type: 'image',
+      description: 'Featured project visual displayed in the homepage selector.',
+      options: {
+        hotspot: true,
+      },
+    }),
+    defineField({
+      name: 'coverImage',
+      title: 'Legacy Cover Image (Deprecated)',
+      type: 'image',
+      hidden: true,
       options: {
         hotspot: true,
       },

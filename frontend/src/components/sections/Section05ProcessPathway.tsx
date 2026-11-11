@@ -1,11 +1,11 @@
 import React from 'react';
-import { Container } from '@/components/ui/Container';
+import { Container, Section } from '@/components/ui/Container';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { PROCESS_PATHWAY } from '@/lib/constants';
 
 export function Section05ProcessPathway() {
   return (
-    <section className="py-24 md:py-32 bg-alt border-y border-line">
+    <Section tone="alt">
       <Container>
         <SectionHeading
           eyebrow={PROCESS_PATHWAY.eyebrow}
@@ -18,13 +18,13 @@ export function Section05ProcessPathway() {
         />
 
         {/* 5-Node Process Track */}
-        <div className="relative mt-16">
+        <div className="relative">
           {/* Desktop Horizontal Connecting Line */}
           <div className="hidden lg:block absolute top-10 left-12 right-12 h-[2px] bg-line z-0">
             <div className="h-full bg-gradient-to-r from-accent via-accent/60 to-accent/20 w-full" />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 relative z-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 xl:gap-8 relative z-10">
             {PROCESS_PATHWAY.steps.map((step) => (
               <div
                 key={step.number}
@@ -61,6 +61,6 @@ export function Section05ProcessPathway() {
           </div>
         </div>
       </Container>
-    </section>
+    </Section>
   );
 }

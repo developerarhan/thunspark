@@ -5,7 +5,8 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import { ArrowDown } from 'lucide-react';
-import { Container } from '@/components/ui/Container';
+import { Container, Section } from '@/components/ui/Container';
+import { SectionHeading } from '@/components/ui/SectionHeading';
 import { useMotion } from '@/components/motion/MotionProvider';
 import { SERVICES_DATA } from '@/lib/services-data';
 import { siteConfig } from '@/site.config';
@@ -116,11 +117,12 @@ interface ServicesShowcaseProps {
   title?: React.ReactNode;
   copy?: string;
   sectionId?: string;
+  tone?: 'base' | 'alt';
 }
 
 export function ServicesShowcase({
   pinned = true,
-  eyebrow = '02 / WHAT WE DO',
+  eyebrow = 'WHAT WE DO',
   title = (
     <>
       Complete growth solutions, <span className="font-italic-accent">connected.</span>
@@ -128,6 +130,7 @@ export function ServicesShowcase({
   ),
   copy = 'Four strategic disciplines working in synergy to acquire, engage, convert, and scale your audience.',
   sectionId = 'services-selector',
+  tone = 'alt',
 }: ServicesShowcaseProps) {
   const { reduced, lenis } = useMotion();
 
@@ -510,45 +513,37 @@ export function ServicesShowcase({
   const useDesktopPinnedLayout = pinned && !reduced;
 
   return (
-    <section
+    <Section
       id={sectionId}
       ref={sectionRef}
-      className="relative bg-base border-y border-line/60 overflow-x-clip"
+      tone={tone}
+      spacing="none"
+      className="overflow-x-clip"
     >
       <div
         ref={stageRef}
         className={
           useDesktopPinnedLayout
-            ? 'py-16 md:py-20 lg:py-[clamp(14px,2vh,28px)] lg:[height:calc(100vh-80px)] lg:supports-[height:100svh]:[height:calc(100svh-80px)] lg:flex lg:flex-col lg:justify-between lg:gap-[clamp(10px,1.4vh,18px)]'
-            : 'py-16 md:py-24 flex flex-col gap-6'
+            ? 'py-14 md:py-20 lg:py-[clamp(14px,2vh,28px)] lg:[height:calc(100vh-80px)] lg:supports-[height:100svh]:[height:calc(100svh-80px)] lg:flex lg:flex-col lg:justify-between lg:gap-[clamp(10px,1.4vh,18px)]'
+            : 'py-14 md:py-20 lg:py-24 flex flex-col gap-6'
         }
       >
-        {/* Compact Header Block & Wrapped Filter Row */}
+        {/* Compact Header Block & Centered Filter Row */}
         <Container className="shrink-0">
           <div className="flex flex-col gap-[clamp(10px,1.5vh,18px)]">
-            <div className="max-w-3xl">
-              <div className="inline-flex items-center gap-3 mb-2 font-mono text-xs uppercase tracking-widest text-meta">
-                <span className="w-6 h-[2px] bg-accent inline-block shrink-0" />
-                <span>{eyebrow}</span>
-              </div>
+            <SectionHeading
+              size="compact"
+              eyebrow={eyebrow}
+              title={title}
+              copy={copy}
+            />
 
-              <h2 className="font-display font-bold text-[clamp(1.625rem,2.7vw,2.5rem)] leading-[1.08] tracking-[-0.02em] text-ink">
-                {title}
-              </h2>
-
-              {copy && (
-                <p className="mt-1.5 text-soft text-[clamp(0.875rem,1.15vw,1rem)] leading-relaxed lg:line-clamp-1">
-                  {copy}
-                </p>
-              )}
-            </div>
-
-            {/* Filter Pills (wrapped rows) + Desktop NN / TT Counter */}
-            <div className="flex flex-wrap items-center justify-between gap-3">
+            {/* Filter Pills + Inline Desktop NN / TT Counter (centered) */}
+            <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
               <div
                 role="group"
                 aria-label="Filter services by discipline"
-                className="flex flex-wrap items-center gap-2"
+                className="flex flex-wrap items-center justify-center gap-2"
               >
                 {filterOptions.map((option) => {
                   const isSelected = activeGroup === option.id;
@@ -574,7 +569,7 @@ export function ServicesShowcase({
 
               {useDesktopPinnedLayout && (
                 <div
-                  className="hidden lg:block font-mono text-xs text-meta tabular-nums"
+                  className="hidden lg:inline-flex items-center pl-2 border-l border-line font-mono text-xs text-meta tabular-nums"
                   aria-hidden="true"
                 >
                   {String(activeIndex + 1).padStart(2, '0')} /{' '}
@@ -659,6 +654,6 @@ export function ServicesShowcase({
           </div>
         )}
       </div>
-    </section>
+    </Section>
   );
 }

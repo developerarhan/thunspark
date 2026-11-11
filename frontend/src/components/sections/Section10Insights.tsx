@@ -1,7 +1,7 @@
 import React from 'react';
-import Link from 'next/link';
-import { Container } from '@/components/ui/Container';
+import { Container, Section } from '@/components/ui/Container';
 import { SectionHeading } from '@/components/ui/SectionHeading';
+import { Button } from '@/components/ui/Button';
 import { ArrowRight } from 'lucide-react';
 
 interface ArticleItem {
@@ -14,34 +14,23 @@ interface ArticleItem {
 }
 
 export function Section10Insights({ posts = [] }: { posts?: ArticleItem[] }) {
-  // Guide §D1 rule: Hidden when 0 published posts
+  // Hidden when 0 published posts (leaves no wrapper, border, or gap)
   if (!posts || posts.length === 0) {
     return null;
   }
 
   return (
-    <section className="py-24 md:py-32 bg-alt border-t border-line">
+    <Section tone="base">
       <Container>
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
-          <SectionHeading
-            eyebrow="08 / INSIGHTS"
-            title={
-              <>
-                Thinking that <span className="font-italic-accent">earns</span> its keep.
-              </>
-            }
-            copy="Practical strategies on social media, paid media, search, and analytics."
-            className="mb-0"
-          />
-
-          <Link
-            href="/blog"
-            className="inline-flex items-center gap-2 font-mono text-xs text-accent hover:text-accent-hi font-semibold transition-colors shrink-0 group py-2"
-          >
-            <span>View all insights</span>
-            <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
-          </Link>
-        </div>
+        <SectionHeading
+          eyebrow="INSIGHTS"
+          title={
+            <>
+              Thinking that <span className="font-italic-accent">earns</span> its keep.
+            </>
+          }
+          copy="Practical strategies on social media, paid media, search, and analytics."
+        />
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {posts.slice(0, 3).map((post) => (
@@ -70,7 +59,14 @@ export function Section10Insights({ posts = [] }: { posts?: ArticleItem[] }) {
             </article>
           ))}
         </div>
+
+        <div className="mt-12 flex justify-center">
+          <Button href="/blog" variant="secondary" size="md">
+            <span>View all insights</span>
+            <ArrowRight size={16} className="ml-2" />
+          </Button>
+        </div>
       </Container>
-    </section>
+    </Section>
   );
 }

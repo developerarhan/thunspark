@@ -25,7 +25,7 @@ export const HERO_COPY = {
 } as const;
 
 export const PROBLEMS_COPY = {
-  eyebrow: "01 / THE REAL PROBLEMS",
+  eyebrow: "THE REAL PROBLEMS",
   h2: "What's actually holding your growth back?",
   intro:
     "Most agencies start with a channel. We start with the problem. These are the six we see most often.",
@@ -82,7 +82,7 @@ export const POSITIONING_STRIP = [
 ] as const;
 
 export const PROCESS_PATHWAY = {
-  eyebrow: "03 / HOW WE WORK",
+  eyebrow: "HOW WE WORK",
   h2: "A process built to compound.",
   steps: [
     {
@@ -119,7 +119,7 @@ export const PROCESS_PATHWAY = {
 } as const;
 
 export const INDUSTRIES_COPY = {
-  eyebrow: "04 / WHO WE HELP",
+  eyebrow: "WHO WE HELP",
   h2: "Built for ambitious businesses.",
   items: [
     {
@@ -146,7 +146,7 @@ export const INDUSTRIES_COPY = {
 } as const;
 
 export const WHY_THUNSPARK = {
-  eyebrow: "07 / WHY THUNSPARK",
+  eyebrow: "WHY THUNSPARK",
   h2: "An agency built like a growth partner.",
   copy: "We don't sell marketing services. We solve business problems — and stay until the numbers move.",
   cta: {
@@ -182,7 +182,7 @@ export const CASE_STUDIES = [
     slug: "coo-and-cry",
     client: "Coo & Cry",
     industry: "Baby Care / E-commerce",
-    headline: "Building a Connected Digital Brand Experience for Coo & Cry.",
+    headline: "Building a Connected Digital Brand Experience for Coo & Cry.", shortDescription: "Connected brand identity, packaging, full-stack e-commerce, social marketing, and content.", // TODO(CONTENT)
     overview:
       "Coo & Cry needed more than isolated marketing assets — it needed a connected brand experience spanning how the brand looks, speaks, sells and shows up online. ThunSpark delivered the full stack: brand identity and packaging design, a full-stack e-commerce website, ongoing social media marketing, blog writing and content creation, so every touchpoint works from the same brand foundation.",
     scope: [
@@ -199,7 +199,7 @@ export const CASE_STUDIES = [
     slug: "medilove",
     client: "Medilove",
     industry: "Adult Care / Consumer Products",
-    headline: "Creating a Consistent Social Presence for Medilove.",
+    headline: "Creating a Consistent Social Presence for Medilove.", shortDescription: "End-to-end social media management, content planning, creative production, and publishing.", // TODO(CONTENT)
     overview:
       "For a care brand, trust is built in the feed. ThunSpark managed Medilove's social media presence end-to-end — content planning, creative production and publishing — keeping the brand's voice consistent and its audience engaged across platforms.",
     scope: [
@@ -215,7 +215,7 @@ export const CASE_STUDIES = [
     slug: "suncity-fire",
     client: "Suncity Fire",
     industry: "B2B Fire-Safety Manufacturing",
-    headline: "Connecting B2B Visibility and Paid Advertising for Suncity Fire.",
+    headline: "Connecting B2B Visibility and Paid Advertising for Suncity Fire.", shortDescription: "B2B organic social presence paired with Google Ads and Facebook Ads to drive qualified enquiries.", // TODO(CONTENT)
     overview:
       "B2B manufacturing doesn't win on follower counts — it wins on qualified inquiries. ThunSpark paired an organic social media presence with Google Ads and Facebook Ads campaigns, building visibility for Suncity Fire's product range and turning search and social attention into enquiry opportunities.",
     scope: [
@@ -231,7 +231,7 @@ export const CASE_STUDIES = [
     slug: "homeware-expo",
     client: "Homeware Expo",
     industry: "Exhibitions & Events",
-    headline: "A Connected Website and Digital Marketing Presence for Homeware Expo.",
+    headline: "A Connected Website and Digital Marketing Presence for Homeware Expo.", shortDescription: "Full-stack event website paired with social media marketing and Facebook and Google Ads.", // TODO(CONTENT)
     overview:
       "An expo lives or dies by attendance and exhibitor interest. ThunSpark built Homeware Expo's digital foundation — a full-stack website — and ran the event's visibility engine with social media marketing plus Facebook and Google Ads campaigns.",
     scope: [

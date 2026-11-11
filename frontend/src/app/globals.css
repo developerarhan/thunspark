@@ -190,3 +190,36 @@ select option {
 html.hide-site-loader #site-loader {
   display: none !important;
 }
+
+/* Adjacent Section Divider (never doubles or leaves orphan border on null sections) */
+[data-site-section] + [data-site-section] {
+  border-top: 1px solid var(--color-line);
+}
+
+/* Work Client Selector: 6s autoplay progress & compact list scrollbar */
+@keyframes work-autoplay-progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.work-list-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-line-strong) transparent;
+}
+
+.work-list-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+
+.work-list-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.work-list-scroll::-webkit-scrollbar-thumb {
+  background-color: var(--color-line-strong);
+  border-radius: 999px;
+}

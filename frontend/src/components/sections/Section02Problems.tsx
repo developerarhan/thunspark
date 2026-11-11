@@ -3,14 +3,14 @@
 import React from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Container } from '@/components/ui/Container';
+import { Container, Section } from '@/components/ui/Container';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { PROBLEMS_COPY } from '@/lib/constants';
 import { ArrowUpRight } from 'lucide-react';
 
 export function Section02Problems() {
   return (
-    <section className="py-24 md:py-32 bg-base">
+    <Section tone="base">
       <Container>
         <SectionHeading
           eyebrow={PROBLEMS_COPY.eyebrow}
@@ -65,6 +65,6 @@ export function Section02Problems() {
           ))}
         </div>
       </Container>
-    </section>
+    </Section>
   );
 }

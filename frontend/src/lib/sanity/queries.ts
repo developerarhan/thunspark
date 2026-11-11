@@ -1,12 +1,13 @@
 import { groq } from 'next-sanity';
 
 export const allProjectsQuery = groq`
-  *[_type == "project"] | order(year desc, _createdAt desc) {
+  *[_type == "project"] | order(featured desc, year desc, _createdAt desc) {
     _id,
     title,
     "slug": slug.current,
     client,
     industry,
+    shortDescription,
     headline,
     overview,
     scope,
@@ -14,7 +15,8 @@ export const allProjectsQuery = groq`
     year,
     honestyNote,
     featured,
-    coverImage
+    logo,
+    "cover": coalesce(cover, coverImage)
   }
 `;
 
@@ -25,6 +27,7 @@ export const projectBySlugQuery = groq`
     "slug": slug.current,
     client,
     industry,
+    shortDescription,
     headline,
     overview,
     scope,
@@ -32,7 +35,8 @@ export const projectBySlugQuery = groq`
     year,
     honestyNote,
     featured,
-    coverImage
+    logo,
+    "cover": coalesce(cover, coverImage)
   }
 `;
 

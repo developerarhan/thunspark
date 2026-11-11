@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Container } from '@/components/ui/Container';
+import { Container, Section } from '@/components/ui/Container';
 import { Button } from '@/components/ui/Button';
 import { HERO_COPY } from '@/lib/constants';
 import { ArrowRight } from 'lucide-react';
@@ -20,13 +20,13 @@ export function Section01Hero() {
   const currentWord = HERO_COPY.rotatingSlots[count % HERO_COPY.rotatingSlots.length];
 
   return (
-    <section className="relative pt-36 md:pt-44 pb-20 md:pb-28 overflow-hidden bg-base bg-grain">
+    <Section tone="base" spacing="hero" className="overflow-hidden bg-grain">
       <Container>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
           {/* Left Column: Headlines & Positioning (7 cols) */}
           <div className="lg:col-span-7 space-y-8">
             {/* Eyebrow */}
-            <div className="inline-flex items-center gap-3 font-mono text-xs uppercase tracking-widest text-meta">
+            <div className="inline-flex items-center gap-3 font-mono text-[13px] md:text-sm font-semibold uppercase tracking-widest text-soft">
               <span className="w-6 h-[2px] bg-accent inline-block shrink-0" />
               <span>{HERO_COPY.eyebrow}</span>
             </div>
@@ -155,6 +155,6 @@ export function Section01Hero() {
           </div>
         </div>
       </Container>
-    </section>
+    </Section>
   );
 }
