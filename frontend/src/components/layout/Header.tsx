@@ -79,12 +79,12 @@ export function Header() {
             : 'h-20 bg-transparent'
         }`}
       >
-        <Container className="h-full">
-          <div className="flex items-center justify-between h-full">
+        <Container className="h-full px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between gap-2 sm:gap-4 h-full min-w-0">
             {/* Logo */}
             <Link
               href="/"
-              className="flex items-center gap-2.5 group focus:outline-none"
+              className="flex items-center gap-2 sm:gap-2.5 min-w-0 shrink group focus:outline-none"
             >
               {/* Lightning Mark */}
               <svg
@@ -93,7 +93,7 @@ export function Header() {
                 viewBox="0 0 24 24"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
-                className="text-accent group-hover:scale-110 transition-transform"
+                className="w-5 h-5 sm:w-[22px] sm:h-[22px] shrink-0 text-accent group-hover:scale-110 transition-transform"
               >
                 <path
                   d="M13 2L3 14H12L11 22L21 10H12L13 2Z"
@@ -104,13 +104,13 @@ export function Header() {
                   strokeLinejoin="round"
                 />
               </svg>
-              <span className="font-display font-extrabold text-xl tracking-tight text-ink">
+              <span className="font-display font-extrabold text-sm sm:text-base md:text-xl tracking-tight text-ink truncate">
                 THUN<span className="text-accent">SPARK</span>
               </span>
             </Link>
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center gap-8">
+            <nav className="hidden md:flex items-center gap-6 lg:gap-8">
               {/* Services with MegaMenu */}
               <div
                 className="relative"
@@ -174,23 +174,39 @@ export function Header() {
             </nav>
 
             {/* Right Action */}
-            <div className="flex items-center gap-4">
-              <Button
-                href="/contact"
-                variant="primary"
-                size="sm"
-                className="hidden lg:inline-flex"
-                data-analytics-cta="header_growth_audit"
-              >
-                Get a growth audit
-              </Button>
+            <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+              <div className="inline-flex lg:hidden shrink-0">
+                <Button
+                  href="/contact"
+                  variant="primary"
+                  size="sm"
+                  className="px-2.5! py-1.5! sm:px-3.5! sm:py-2! text-[11px]! sm:text-xs! whitespace-nowrap"
+                  data-analytics-cta="header_growth_audit_mobile"
+                >
+                  Get Audit
+                </Button>
+              </div>
+
+              <div className="hidden lg:inline-flex shrink-0">
+                <Button
+                  href="/contact"
+                  variant="primary"
+                  size="sm"
+                  className="hidden lg:inline-flex whitespace-nowrap"
+                  data-analytics-cta="header_growth_audit"
+                >
+                  Get a growth audit
+                </Button>
+              </div>
 
               {/* Mobile Hamburger Toggle */}
               <button
                 type="button"
                 onClick={() => setMobileMenuOpen((prev) => !prev)}
-                className="md:hidden p-2 text-ink hover:text-accent focus:outline-none cursor-pointer"
+                className="md:hidden inline-flex items-center justify-center min-w-[44px] min-h-[44px] p-2.5 -mr-2 text-ink hover:text-accent focus:outline-none cursor-pointer shrink-0"
                 aria-label="Toggle navigation menu"
+                aria-expanded={mobileMenuOpen}
+                aria-controls="mobile-navigation-drawer"
               >
                 {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
               </button>
@@ -210,7 +226,10 @@ export function Header() {
 
       {/* Mobile Menu Drawer */}
       {mobileMenuOpen && (
-        <div className="fixed inset-0 z-30 bg-base pt-24 px-6 flex flex-col md:hidden overflow-y-auto">
+        <div
+          id="mobile-navigation-drawer"
+          className="fixed inset-0 z-30 bg-base pt-24 pb-8 px-4 sm:px-6 flex flex-col md:hidden overflow-y-auto"
+        >
           <nav className="space-y-6 text-lg font-display">
             <Link
               href="/"
@@ -266,16 +285,19 @@ export function Header() {
             </Link>
           </nav>
 
-          <div className="mt-auto py-8 border-t border-line space-y-4">
-            <Button
-              href="/contact"
-              variant="primary"
-              size="md"
-              className="w-full text-center"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              Get a growth audit
-            </Button>
+          <div className="mt-auto pt-6 pb-4 border-t border-line space-y-4">
+            <div className="w-full [&>div]:block [&>div]:w-full">
+              <Button
+                href="/contact"
+                variant="primary"
+                size="md"
+                className="w-full text-center"
+                data-analytics-cta="mobile_drawer_growth_audit"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Get a growth audit
+              </Button>
+            </div>
             <div className="text-xs text-meta text-center">
               {siteConfig.contact.email}
             </div>
