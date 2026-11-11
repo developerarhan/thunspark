@@ -1,55 +1,136 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 
+interface CursorHoverState {
+  isHovered: boolean;
+  label?: string;
+}
+
+function resolveInteractiveTarget(
+  target: EventTarget | null,
+  clientX: number,
+  clientY: number
+): Element | null {
+  let element: Element | null = null;
+
+  if (target instanceof Element) {
+    element = target;
+  } else if (target instanceof Node) {
+    element = target.parentElement;
+  }
+
+  // Fallback to coordinates if the event target unmounted mid-interaction
+  if (!element || !element.isConnected) {
+    element = document.elementFromPoint(clientX, clientY);
+  }
+
+  return element && element.isConnected
+    ? element.closest('[data-cursor], a, button')
+    : null;
+}
+
 export function CustomCursor() {
-  const [mounted, setMounted] = useState(false);
   const [pos, setPos] = useState({ x: -100, y: -100 });
-  const [hoverState, setHoverState] = useState<{ isHovered: boolean; label?: string }>({
+  const [hoverState, setHoverState] = useState<CursorHoverState>({
     isHovered: false,
   });
   const [isVisible, setIsVisible] = useState(false);
 
+  const isVisibleRef = useRef(false);
+  const posRef = useRef({ x: -100, y: -100 });
+
   useEffect(() => {
-    // Only enable on desktop pointer devices, not touch
-    const isFinePointer = window.matchMedia('(pointer: fine)').matches;
-    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const finePointerQuery = window.matchMedia('(pointer: fine)');
+    const reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-    if (!isFinePointer || prefersReduced) return;
-    setMounted(true);
-
-    const handleMouseMove = (e: MouseEvent) => {
-      setPos({ x: e.clientX, y: e.clientY });
-      if (!isVisible) setIsVisible(true);
-
-      // Check for contextual hover targets
-      const target = (e.target as HTMLElement)?.closest('[data-cursor], a, button');
-      if (target) {
-        const customLabel = target.getAttribute('data-cursor');
-        setHoverState({
-          isHovered: true,
-          label: customLabel || undefined,
-        });
-      } else {
-        setHoverState({ isHovered: false });
+    const syncVisibility = (visible: boolean) => {
+      if (isVisibleRef.current !== visible) {
+        isVisibleRef.current = visible;
+        setIsVisible(visible);
       }
     };
 
+    const resetHoverState = () => {
+      setHoverState((prev) => (prev.isHovered ? { isHovered: false } : prev));
+    };
+
+    const updateHoverFromTarget = (
+      target: EventTarget | null,
+      clientX: number,
+      clientY: number
+    ) => {
+      const interactive = resolveInteractiveTarget(target, clientX, clientY);
+      const nextState: CursorHoverState = interactive
+        ? {
+            isHovered: true,
+            label: interactive.getAttribute('data-cursor') || undefined,
+          }
+        : { isHovered: false };
+
+      setHoverState((prev) =>
+        prev.isHovered === nextState.isHovered && prev.label === nextState.label
+          ? prev
+          : nextState
+      );
+    };
+
+    const isEnabled = () => finePointerQuery.matches && !reducedMotionQuery.matches;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isEnabled()) return;
+
+      posRef.current = { x: e.clientX, y: e.clientY };
+      setPos(posRef.current);
+      syncVisibility(true);
+      updateHoverFromTarget(e.target, e.clientX, e.clientY);
+    };
+
+    const handlePointerReset = () => {
+      resetHoverState();
+    };
+
+    const handleScroll = () => {
+      if (!isVisibleRef.current || !isEnabled()) return;
+      const { x, y } = posRef.current;
+      updateHoverFromTarget(document.elementFromPoint(x, y), x, y);
+    };
+
     const handleMouseLeave = () => {
-      setIsVisible(false);
+      syncVisibility(false);
+      resetHoverState();
+    };
+
+    const handleCapabilityChange = () => {
+      if (!isEnabled()) {
+        syncVisibility(false);
+        resetHoverState();
+      }
     };
 
     window.addEventListener('mousemove', handleMouseMove, { passive: true });
+    window.addEventListener('mousedown', handlePointerReset, { passive: true });
+    window.addEventListener('click', handlePointerReset, { passive: true });
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('popstate', handlePointerReset);
     document.addEventListener('mouseleave', handleMouseLeave);
+    finePointerQuery.addEventListener('change', handleCapabilityChange);
+    reducedMotionQuery.addEventListener('change', handleCapabilityChange);
 
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mousedown', handlePointerReset);
+      window.removeEventListener('click', handlePointerReset);
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('popstate', handlePointerReset);
       document.removeEventListener('mouseleave', handleMouseLeave);
+      finePointerQuery.removeEventListener('change', handleCapabilityChange);
+      reducedMotionQuery.removeEventListener('change', handleCapabilityChange);
     };
-  }, [isVisible]);
+  }, []);
 
-  if (!mounted || !isVisible) return null;
+  if (!isVisible) return null;
 
   return (
     <>
