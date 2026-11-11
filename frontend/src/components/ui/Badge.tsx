@@ -12,10 +12,10 @@ export function Tag({
   className = '',
 }: TagProps) {
   const variantStyles = {
-    default: 'border-[#252525] bg-transparent text-[#8A8A85]',
-    accent: 'border-[#FFD21F]/40 bg-[#FFD21F]/10 text-[#FFD21F]',
-    outline: 'border-[#252525] text-[#A6A6A0]',
-  }[variant] || 'border-[#252525] bg-transparent text-[#8A8A85]';
+    default: 'border-line bg-transparent text-meta',
+    accent: 'border-accent/40 bg-accent/10 text-accent',
+    outline: 'border-line text-soft',
+  }[variant] || 'border-line bg-transparent text-meta';
 
   return (
     <span
@@ -40,8 +40,8 @@ export function Chip({
   const baseClasses =
     'inline-flex items-center px-3.5 py-1.5 rounded-full font-sans text-xs transition-colors duration-200';
   const activeClasses = active
-    ? 'bg-[#FFD21F] text-[#050505] font-semibold border border-[#FFE75A]'
-    : 'bg-[#171717] text-[#A6A6A0] border border-[#252525] hover:border-[#353535] hover:text-[#F5F5F0]';
+    ? 'bg-accent text-canvas font-semibold border border-accent-hi'
+    : 'bg-elevated text-soft border border-line hover:border-line-strong hover:text-ink';
 
   if (onClick) {
     return (

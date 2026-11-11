@@ -2,7 +2,13 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { SERVICES_DATA } from '@/lib/services-data';
 import { ServiceTemplate } from '@/components/services/ServiceTemplate';
-import Script from 'next/script';
+import {
+  buildAbsoluteUrl,
+  buildBreadcrumbSchema,
+  buildMetadata,
+  ORGANIZATION_SCHEMA_REF,
+  serializeJsonLd,
+} from '@/lib/seo';
 
 interface ServicePageProps {
   params: Promise<{ slug: string }>;
@@ -18,23 +24,18 @@ export async function generateMetadata({ params }: ServicePageProps): Promise<Me
 
   if (!service) {
     return {
-      title: 'Service Not Found | ThunSpark',
+      title: 'Service Not Found',
+      robots: { index: false, follow: false },
     };
   }
 
-  return {
-    title: `${service.name} | ThunSpark Digital Growth`,
+  return buildMetadata({
+    title: { absolute: `${service.name} | ThunSpark Digital Growth` },
     description: service.shortDesc,
-    openGraph: {
-      title: `${service.name} — ${service.oneLineOutcome}`,
-      description: service.shortDesc,
-      type: 'website',
-      url: `https://thunspark.agency/services/${slug}`,
-    },
-    alternates: {
-      canonical: `/services/${slug}`,
-    },
-  };
+    ogTitle: `${service.name} — ${service.oneLineOutcome}`,
+    ogDescription: service.shortDesc,
+    path: `/services/${slug}`,
+  });
 }
 
 export default async function ServiceDetailPage({ params }: ServicePageProps) {
@@ -45,18 +46,17 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
     notFound();
   }
 
-  // Schema: Service & FAQPage JSON-LD
+  const serviceUrl = buildAbsoluteUrl(`/services/${slug}`);
+
+  // Schema: Service, FAQPage & BreadcrumbList JSON-LD
   const serviceSchema = {
     '@context': 'https://schema.org',
     '@type': 'Service',
     name: service.name,
     serviceType: service.groupName,
     description: service.shortDesc,
-    provider: {
-      '@type': 'Organization',
-      name: 'ThunSpark',
-      url: 'https://thunspark.agency',
-    },
+    url: serviceUrl,
+    provider: ORGANIZATION_SCHEMA_REF,
     hasOfferCatalog: {
       '@type': 'OfferCatalog',
       name: service.name,
@@ -71,6 +71,7 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
     },
   };
 
+  // Service FAQs are authored & verified in SERVICES_DATA (no unconfirmed pricing/contract claims)
   const faqSchema = service.faqs?.length
     ? {
         '@context': 'https://schema.org',
@@ -86,18 +87,29 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
       }
     : null;
 
+  const breadcrumbSchema = buildBreadcrumbSchema([
+    { name: 'Home', path: '/' },
+    { name: 'Services', path: '/services' },
+    { name: service.name, path: `/services/${slug}` },
+  ]);
+
   return (
     <>
-      <Script
+      <script
         id={`service-schema-${slug}`}
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(serviceSchema) }}
+      />
+      <script
+        id={`service-breadcrumb-schema-${slug}`}
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(breadcrumbSchema) }}
       />
       {faqSchema && (
-        <Script
+        <script
           id={`service-faq-schema-${slug}`}
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+          dangerouslySetInnerHTML={{ __html: serializeJsonLd(faqSchema) }}
         />
       )}
       <ServiceTemplate service={service} />

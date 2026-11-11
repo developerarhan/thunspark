@@ -11,10 +11,10 @@ export default function NotFound() {
           <Tag variant="accent" className="mb-4">
             404 Not Found
           </Tag>
-          <h1 className="font-display font-medium text-5xl sm:text-6xl text-[#F5F5F0] tracking-tight mb-4">
+          <h1 className="font-display font-medium text-5xl sm:text-6xl text-ink tracking-tight mb-4">
             Page Not Found.
           </h1>
-          <p className="text-[#A6A6A0] text-sm sm:text-base leading-relaxed mb-8">
+          <p className="text-soft text-sm sm:text-base leading-relaxed mb-8">
             The page you are looking for does not exist or may have been relocated. Return home or reach out to our team.
           </p>
           <div className="flex items-center justify-center gap-4">

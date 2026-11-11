@@ -36,7 +36,7 @@ export function MaskWipeTransition({ children }: { children: React.ReactNode }) 
             exit={{ scaleY: 0 }}
             style={{ originY: 0 }}
             transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed inset-0 z-40 bg-[#050505] pointer-events-none border-b-2 border-[#FFD21F]"
+            className="fixed inset-0 z-40 bg-base pointer-events-none border-b-2 border-accent"
           />
         )}
       </AnimatePresence>

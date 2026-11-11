@@ -5,7 +5,7 @@
 Transition the ThunSpark repository into the unified, high-performance architecture specified in the **ThunSpark Master Website Build Guide (v1.2)**.
 
 Following the design alignment decisions:
-1. The **Django backend** will be archived to `_archive/backend/`, removing Docker Compose from active workflows, and shifting 100% of the active site to a **Next.js 16 (App Router)** setup on **Vercel**.
+1. The **legacy Django backend** has been completely removed (along with Docker Compose workflows), shifting 100% of the active site to a **Next.js 16 (App Router)** setup on **Vercel**.
 2. Content management adopts a **Dual-Mode Sanity Architecture**: Sanity Studio embedded at `/studio` with full schemas (`project`, `post`, `author`, `category`, `testimonial`, `siteSettings`), seamlessly falling back to `lib/constants.ts` and `site.config.ts` when credentials are unset.
 3. The **4 confirmed case studies** (Coo & Cry, Medilove, Suncity Fire, Homeware Expo) will be pre-seeded in Scope & Overview mode with unverified metric blocks hidden per the zero-fabrication rule.
 4. The lead submission route (`/api/enquiry/route.ts`) includes a **Dev Simulation Fallback** for Cloudflare Turnstile and Resend, strictly enforcing live delivery in production.
@@ -17,7 +17,7 @@ Following the design alignment decisions:
 
 | Decision Branch | Resolution |
 | :--- | :--- |
-| **Backend & Repo Structure** | Move `backend/` to `_archive/backend/`; decommission `docker-compose.yml` from active development; keep repository root clean for Next.js. |
+| **Backend & Repo Structure** | Remove legacy Django `backend/` and `docker-compose.yml` completely; keep repository root clean for Next.js. |
 | **Sanity CMS Strategy** | Dual-mode fallback: build schemas and embedded `/studio`, but pull default data from `lib/constants.ts` when Sanity env vars are unset so build/dev never fail. |
 | **Projects Initial State** | Pre-seed the 4 confirmed case studies (Coo & Cry, Medilove, Suncity Fire, Homeware Expo) as Scope & Overview showcases; hide unverified metric blocks. |
 | **Lead Submission Pipeline** | Serverless route handler (`/api/enquiry`) with Zod + Turnstile + Resend. Includes dev console simulation fallback when API keys are placeholders. |
@@ -144,7 +144,7 @@ The design system standardizes on a dark, editorial, low-saturation canvas with 
 | **`InteractiveGrowthSystem.tsx`** | 6-stage Discover $\rightarrow$ Grow system | Replaced on homepage by **§4 Solutions Selector** (4 pills: Attract, Engage, Convert, Optimize) and **§5 Process Pathway** (5 nodes: Diagnose, Strategize, Build, Launch, Measure) | **REPLACE** | Create dedicated `SolutionsSelector.tsx` (tilted-pill pinned scrubber) and `ProcessPathway.tsx` (SVG line scrub animation). |
 | **`InteractiveServiceShowcase.tsx`** | Accordion service cards | 4-group solutions selector on homepage; dedicated chapters on `/services` | **REPLACE** | Replace with `SolutionsSelector.tsx` on homepage and `ServicesChapters.tsx` on `/services`. |
 | **`ContactForm.tsx`** | 3-step wizard form with Django API submission | Single-card high-conversion form with Cloudflare Turnstile, Zod validation, and optional budget/timeline selects | **REFACTOR** | Remove wizard stepping; implement single-card layout with Turnstile verification, Resend route handler `/api/enquiry`, and honeypot. |
-| **`BlogListingView.tsx`** | Client-side filterable blog list | Editorial blog listing with search input, category chips, pagination after 9 items, and Sanity GROQ integration | **REFACTOR** | Connect to Sanity `postsQuery` with `lib/constants.ts` fallback; enforce hiding section if 0 published posts. |
+| **`BlogListingView.tsx`** | Client-side filterable blog list | Editorial blog listing with search input, category chips, pagination after 9 items, and Sanity GROQ integration | **REFACTOR** | Connect to Sanity `allPostsQuery` (`getAllPosts`) with `lib/constants.ts` fallback; enforce hiding section if 0 published posts. |
 | **`CookieConsentBanner.tsx`** | Glassmorphic cookie banner | Lightweight custom banner ("We use privacy-friendly analytics... [Accept] [Reject]") with localStorage persistence and footer revoke | **REFACTOR** | Align with Guide §F3; default to Vercel Analytics + Speed Insights (cookieless); GA4 gated strictly behind consent. |
 | **`RouteTracker.tsx`** | Virtual page view tracker | DataLayer virtual page view tracker | **KEEP** | Verify event taxonomy matches Guide §F3 (`page_path`, `page_title`). |
 | **`ScrollDepthTracker.tsx`** | Scroll milestones (25-100%) | SPA-aware scroll depth tracker | **KEEP** | Verify milestone firing and cleanup. |
@@ -171,8 +171,8 @@ flowchart LR
 ### Phase 2 — Foundations & Infrastructure
 
 #### Objectives:
-1. Archive `backend/` to `_archive/backend/` and update `.gitignore`.
-2. Install exact dependencies specified in Guide §A3: `gsap`, `@gsap/react`, `lenis`, `motion`, `zod`, `resend`, `@sanity/client`, `@sanity/image-url`, `next-sanity`, `@portabletext/react`, `@vercel/analytics`, `@vercel/speed-insights`.
+1. Remove the legacy Django `backend/` and `docker-compose.yml` completely from the repository.
+2. Install consolidated runtime dependencies: `gsap`, `@gsap/react`, `lenis`, `framer-motion`, `zod`, `resend`, `@sanity/client`, `@sanity/image-url`, `next-sanity`, `@portabletext/react`, `@vercel/analytics`, `@vercel/speed-insights`.
 3. Configure typography in `app/layout.tsx` with `Space_Grotesk`, `Inter`, and `Space_Mono`.
 4. Update `globals.css` with the complete design token set (`#050505` base, `#FFD21F` accent, etc.), selection styles, custom scrollbar, and `.font-italic-accent` utility.
 5. Build `MotionProvider.tsx` with Lenis smooth scrolling, GSAP ScrollTrigger registration, reduced-motion guards, and `SiteLoader.tsx` (first visit only).
@@ -198,7 +198,7 @@ Implement the 12 editorial sections strictly according to Guide §D1 using verba
 
 1. **§1 Hero (`Section01Hero.tsx`)**:
    - Eyebrow: `DIGITAL GROWTH AGENCY` (Space Mono).
-   - H1 Display: *"We turn growth bottlenecks into breakthroughs."* with rotating dynamic slot (`breakthroughs` / `pipeline` / `momentum` every 3.5s with y-mask swap, static text fallback for SEO).
+   - H1 Display: *"We turn growth bottlenecks into breakthroughs."* with rotating dynamic slot (`breakthroughs` / `pipeline` / `momentum` every 5s with horizontal left-to-right conveyor slide, static text fallback for SEO).
    - Primary CTA *"Book a strategy call"* $\rightarrow$ `/contact`; Ghost CTA *"See our work"* $\rightarrow$ `#work`.
    - Floating interactive chips (`SEO`, `Paid Media`, `CRO`, `Content`) with 6s yoyo float and desktop pointer parallax ($\pm 8\text{px}$).
 2. **§2 Problems (`Section02Problems.tsx`)**:
@@ -222,28 +222,31 @@ Implement the 12 editorial sections strictly according to Guide §D1 using verba
    - 4 cards: Startups & scale-ups, E-commerce & DTC, B2B & professional services, Founders & lean teams.
 7. **§7 Featured Work (`Section07FeaturedWork.tsx`, `id="work"`)**:
    - Eyebrow: `05 / SELECTED WORK`; H2: *"Work we're proud of."*.
-   - 3 project cards pre-seeded from the 4 confirmed case studies (Coo & Cry, Medilove, Suncity Fire, Homeware Expo) as Scope & Overview showcases.
-8. **§8 Why ThunSpark (`Section08WhyThunSpark.tsx`)**:
-   - Eyebrow: `06 / WHY THUNSPARK`; Sticky left column with H2 *"An agency built like a growth partner."* + CTA *"Let's talk growth"*.
+   - 4 project cards pre-seeded from the 4 confirmed case studies (Coo & Cry, Medilove, Suncity Fire, Homeware Expo) as Scope & Overview showcases.
+8. **§8 Client Love / Client Voices (`Section08ClientLove.tsx`, `id="testimonials"`)**:
+   - Eyebrow: `06 / CLIENT VOICES`; H2: *"Direct words from real partners."*.
+   - Verified testimonial grid with transparent anti-fabrication empty-state slots when 0 verified testimonials exist.
+9. **§9 Why ThunSpark (`Section09WhyThunSpark.tsx`)**:
+   - Eyebrow: `07 / WHY THUNSPARK`; Sticky left column with H2 *"An agency built like a growth partner."* + CTA *"Let's talk growth"*.
    - Right column: 4 cards (**Problem-first**, **Full-funnel integration**, **Senior-led delivery**, **Radical transparency**).
-9. **§9 Insights (`Section09Insights.tsx`)**:
-   - Eyebrow: `07 / INSIGHTS`; H2: *"Thinking that earns its keep."*.
-   - 3 recent article cards. **Strictly hidden when 0 published posts exist**.
-10. **§10 FAQ (`Section10FAQ.tsx`)**:
-    - Eyebrow: `08 / QUESTIONS`; H2: *"Answers, before you ask."*.
+10. **§10 Insights (`Section10Insights.tsx`)**:
+    - Eyebrow: `08 / INSIGHTS`; H2: *"Thinking that earns its keep."*.
+    - 3 recent article cards. **Strictly hidden when 0 published posts exist**.
+11. **§11 FAQ (`Section11FAQ.tsx`)**:
+    - Eyebrow: `09 / QUESTIONS`; H2: *"Answers, before you ask."*.
     - Single-open accordion containing the 8 merged questions from Guide §R8 with `FAQPage` JSON-LD schema (excluding unconfirmed TBD questions).
-11. **§11 Final CTA (`Section11FinalCTA.tsx`)**:
+12. **§12 Final CTA (`Section12FinalCTA.tsx`)**:
     - Full-width panel on `alt` with radial yellow glow gradient and clip-path wipe reveal.
     - H2 Display: *"Ready to find your bottleneck?"*.
     - Primary CTA *"Book a strategy call"* + direct email link.
-12. **§12 Footer Integration**: Full footer with legal notices and back-to-top trigger.
+13. **Footer Integration (`Footer.tsx`)**: Full footer with legal notices and back-to-top trigger.
 
 #### Testing Checkpoints:
-- [ ] Homepage renders all 12 sections with zero hydration mismatches.
+- [ ] Homepage renders all 12 page sections and Footer with zero hydration mismatches.
 - [ ] Heading hierarchy adheres to strictly one `h1`, sections `h2`, cards `h3`.
 - [ ] Hero LCP $\le$ 2.5s on simulated 4G mobile.
 - [ ] Section 4 solutions selector scrubs smoothly with arrow keys and mouse wheel.
-- [ ] Section 9 Insights hides automatically when no posts exist.
+- [ ] Section 10 Insights hides automatically when no posts exist.
 - [ ] FAQ accordion toggles with keyboard navigation (`Enter`/`Space`) and updates `aria-expanded`.
 
 ---
@@ -285,7 +288,7 @@ Implement the 12 editorial sections strictly according to Guide §D1 using verba
   - `project.ts`: title, slug, client, clientPermission, industry, services, year, summary, challenge/strategy/scope rich text, verified stats, gallery, cover, seo, status.
   - `post.ts`: title, slug, author, publishedAt, category, featuredImage, summary, body, related, seo, status.
   - `author.ts`, `category.ts`, `testimonial.ts` (with `publishPermission` boolean check), `siteSettings.ts` (singleton).
-- Connect `lib/sanity/client.ts` with GROQ queries (`projectsQuery`, `postsQuery`, `siteSettingsQuery`) with fallback to `lib/constants.ts` when credentials are not configured.
+- Connect `lib/sanity/client.ts` with GROQ queries (`allProjectsQuery`, `projectBySlugQuery`, `allPostsQuery`, `postBySlugQuery`, `siteSettingsQuery`) and cached read fetchers (`lib/sanity/fetchers.ts`: `getAllPosts`, `getPostBySlug`), falling back cleanly to `lib/constants.ts` when credentials are not configured.
 
 #### Testing Checkpoints:
 - [ ] All 10 service routes resolve statically and dynamically without 404s.

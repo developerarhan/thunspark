@@ -4,11 +4,11 @@ import React, { useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/Button';
-import { updateGoogleConsent } from '@/lib/analytics/gtm';
+import { CONSENT_COOKIE_KEY, updateGoogleConsent } from '@/lib/analytics/gtm';
 import { ShieldCheck, Settings } from 'lucide-react';
 import Link from 'next/link';
 
-const CONSENT_COOKIE_KEY = 'thunspark_cookie_consent';
+
 
 export function CookieConsentBanner() {
   const [mounted, setMounted] = useState(false);
@@ -75,19 +75,19 @@ export function CookieConsentBanner() {
         transition={{ duration: 0.3 }}
         className="fixed bottom-4 left-4 right-4 sm:left-6 sm:right-auto sm:max-w-md z-50"
       >
-        <div className="p-6 rounded-2xl bg-[#111111]/95 backdrop-blur-xl border border-[#252525] text-[#F5F5F0]">
+        <div className="p-6 rounded-2xl bg-card/95 backdrop-blur-xl border border-line text-ink">
           <div className="flex items-center gap-3 mb-3">
-            <div className="p-2 rounded-lg bg-[#171717] text-[#FFD21F] border border-[#252525]">
+            <div className="p-2 rounded-lg bg-elevated text-accent border border-line">
               <ShieldCheck size={18} />
             </div>
-            <h4 className="font-display font-medium text-sm text-[#F5F5F0]">
+            <h4 className="font-display font-medium text-sm text-ink">
               Privacy & Cookie Preferences
             </h4>
           </div>
 
-          <p className="text-[#8A8A85] text-xs leading-relaxed mb-4">
+          <p className="text-soft text-xs leading-relaxed mb-4">
             We use privacy-first telemetry to understand engagement and improve our growth architecture in compliance with GDPR and Indian DPDP. See our{' '}
-            <Link href="/privacy-policy" className="text-[#FFD21F] underline hover:text-[#F2C718]">
+            <Link href="/privacy-policy" className="text-accent underline hover:text-[#F2C718]">
               Privacy Policy
             </Link>.
           </p>
@@ -97,39 +97,39 @@ export function CookieConsentBanner() {
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              className="space-y-3 pt-3 pb-4 border-t border-[#252525] text-xs"
+              className="space-y-3 pt-3 pb-4 border-t border-line text-xs"
             >
               <div className="flex items-center justify-between">
                 <div>
-                  <span className="font-medium block text-[#F5F5F0]">Strictly Necessary</span>
-                  <span className="text-[11px] text-[#8A8A85]">Required for site routing and enquiry dispatch.</span>
+                  <span className="font-medium block text-ink">Strictly Necessary</span>
+                  <span className="text-[11px] text-meta">Required for site routing and enquiry dispatch.</span>
                 </div>
-                <span className="font-mono text-[10px] text-[#FFD21F] uppercase font-bold">Always Active</span>
+                <span className="font-mono text-[10px] text-accent uppercase font-bold">Always Active</span>
               </div>
 
               <div className="flex items-center justify-between">
                 <div>
-                  <span className="font-medium block text-[#F5F5F0]">Analytics & Performance</span>
-                  <span className="text-[11px] text-[#8A8A85]">Helps us measure page speed and scroll depth.</span>
+                  <span className="font-medium block text-ink">Analytics & Performance</span>
+                  <span className="text-[11px] text-meta">Helps us measure page speed and scroll depth.</span>
                 </div>
                 <input
                   type="checkbox"
                   checked={consentAnalytics}
                   onChange={(e) => setConsentAnalytics(e.target.checked)}
-                  className="accent-[#FFD21F] w-4 h-4 rounded cursor-pointer"
+                  className="accent-accent w-4 h-4 rounded cursor-pointer"
                 />
               </div>
 
               <div className="flex items-center justify-between">
                 <div>
-                  <span className="font-medium block text-[#F5F5F0]">Marketing & Conversion Tags</span>
-                  <span className="text-[11px] text-[#8A8A85]">Measures ad attribution and campaign signals.</span>
+                  <span className="font-medium block text-ink">Marketing & Conversion Tags</span>
+                  <span className="text-[11px] text-meta">Measures ad attribution and campaign signals.</span>
                 </div>
                 <input
                   type="checkbox"
                   checked={consentMarketing}
                   onChange={(e) => setConsentMarketing(e.target.checked)}
-                  className="accent-[#FFD21F] w-4 h-4 rounded cursor-pointer"
+                  className="accent-accent w-4 h-4 rounded cursor-pointer"
                 />
               </div>
             </motion.div>
@@ -157,7 +157,7 @@ export function CookieConsentBanner() {
                 <button
                   type="button"
                   onClick={() => setShowPreferences(true)}
-                  className="text-xs text-[#8A8A85] hover:text-[#F5F5F0] transition-colors flex items-center gap-1 sm:ml-auto p-1 cursor-pointer"
+                  className="text-xs text-meta hover:text-ink transition-colors flex items-center gap-1 sm:ml-auto p-1 cursor-pointer"
                 >
                   <Settings size={13} />
                   <span>Customize</span>

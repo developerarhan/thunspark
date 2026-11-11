@@ -3,9 +3,11 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowUp } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useMotion } from '@/components/motion/MotionProvider';
 
 export function BackToTop() {
   const [visible, setVisible] = useState(false);
+  const { lenis, reduced } = useMotion();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -17,9 +19,13 @@ export function BackToTop() {
   }, []);
 
   const scrollToTop = () => {
+    if (lenis) {
+      lenis.scrollTo(0);
+      return;
+    }
     window.scrollTo({
       top: 0,
-      behavior: 'smooth',
+      behavior: reduced ? 'auto' : 'smooth',
     });
   };
 
@@ -32,7 +38,7 @@ export function BackToTop() {
           exit={{ opacity: 0, scale: 0.8 }}
           onClick={scrollToTop}
           aria-label="Back to top"
-          className="fixed bottom-6 right-6 z-40 w-11 h-11 rounded-full bg-[#FFD21F] text-[#050505] border border-[#FFE75A] flex items-center justify-center hover:bg-[#FFE75A] active:bg-[#C9A900] transition-colors cursor-pointer"
+          className="fixed bottom-6 right-6 z-40 w-11 h-11 rounded-full bg-accent text-canvas border border-accent-hi flex items-center justify-center hover:bg-accent-hi active:bg-accent-deep transition-colors cursor-pointer"
         >
           <ArrowUp size={20} />
         </motion.button>

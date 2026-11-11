@@ -33,61 +33,79 @@ export function MotionProvider({ children }: { children: React.ReactNode }) {
   const [lenis, setLenis] = useState<Lenis | null>(null);
   const pathname = usePathname();
 
+  // Track prefers-reduced-motion changes at runtime
   useEffect(() => {
-    // Check reduced motion preference
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const updateMotionPreference = () => {
+    const syncPreference = () => {
       const prefersReduced = mediaQuery.matches;
       setReduced(prefersReduced);
-      if (prefersReduced) {
-        document.documentElement.classList.add('rm');
-      } else {
-        document.documentElement.classList.remove('rm');
-      }
+      document.documentElement.classList.toggle('rm', prefersReduced);
     };
 
-    updateMotionPreference();
-    mediaQuery.addEventListener('change', updateMotionPreference);
-
-    // Initialize Lenis only if reduced motion is disabled
-    let lenisInstance: Lenis | null = null;
-    if (!mediaQuery.matches) {
-      lenisInstance = new Lenis({
-        duration: 1.2,
-        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // standard outexpo
-        orientation: 'vertical',
-        gestureOrientation: 'vertical',
-        smoothWheel: true,
-      });
-
-      setLenis(lenisInstance);
-
-      // Connect Lenis to GSAP ScrollTrigger
-      lenisInstance.on('scroll', ScrollTrigger.update);
-
-      const rafCallback = (time: number) => {
-        lenisInstance?.raf(time * 1000);
-      };
-
-      gsap.ticker.add(rafCallback);
-      gsap.ticker.lagSmoothing(0);
-
-      return () => {
-        gsap.ticker.remove(rafCallback);
-        lenisInstance?.destroy();
-        mediaQuery.removeEventListener('change', updateMotionPreference);
-      };
-    }
-
+    syncPreference();
+    mediaQuery.addEventListener('change', syncPreference);
     return () => {
-      mediaQuery.removeEventListener('change', updateMotionPreference);
+      mediaQuery.removeEventListener('change', syncPreference);
     };
   }, []);
 
-  // Refresh ScrollTrigger calculations on route change
+  // Create or destroy Lenis cleanly when reduced-motion preference changes
+  useEffect(() => {
+    if (reduced) return;
+
+    const lenisInstance = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // standard outexpo
+      orientation: 'vertical',
+      gestureOrientation: 'vertical',
+      smoothWheel: true,
+      anchors: true,
+      stopInertiaOnNavigate: true,
+    });
+
+    setLenis(lenisInstance);
+
+    // Connect Lenis to GSAP ScrollTrigger
+    lenisInstance.on('scroll', ScrollTrigger.update);
+
+    const rafCallback = (time: number) => {
+      lenisInstance.raf(time * 1000);
+    };
+
+    gsap.ticker.add(rafCallback);
+    gsap.ticker.lagSmoothing(0);
+
+    return () => {
+      gsap.ticker.remove(rafCallback);
+      lenisInstance.destroy();
+      setLenis(null);
+    };
+  }, [reduced]);
+
+  // Refresh ScrollTrigger calculations and honor hash anchors on route change
   useEffect(() => {
     ScrollTrigger.refresh();
-  }, [pathname]);
+
+    if (typeof window === 'undefined' || !window.location.hash) return;
+
+    const rawHash = window.location.hash.slice(1);
+    const decodedId = decodeURIComponent(rawHash);
+    const frameId = window.requestAnimationFrame(() => {
+      const targetEl = document.getElementById(decodedId);
+      if (!targetEl) return;
+
+      if (lenis) {
+        // Lenis automatically accounts for html scroll-padding-top (96px)
+        lenis.scrollTo(targetEl);
+      } else {
+        targetEl.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth' });
+      }
+    });
+
+    return () => {
+      window.cancelAnimationFrame(frameId);
+    };
+  }, [pathname, lenis, reduced]);
 
   return (
     <MotionContext.Provider value={{ reduced, lenis }}>

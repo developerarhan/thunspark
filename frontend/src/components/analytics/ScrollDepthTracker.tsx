@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
-import { pushDataLayer } from '@/lib/analytics/gtm';
+import { getStoredConsent, pushDataLayer } from '@/lib/analytics/gtm';
 
 const MILESTONES = [25, 50, 75, 90, 100];
 
@@ -19,6 +19,8 @@ export function ScrollDepthTracker() {
     if (typeof window === 'undefined') return;
 
     const handleScroll = () => {
+      if (!getStoredConsent()?.analytics) return;
+
       const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
       if (scrollHeight <= 0) return;
 

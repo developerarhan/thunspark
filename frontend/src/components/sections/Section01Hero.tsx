@@ -20,24 +20,21 @@ export function Section01Hero() {
   const currentWord = HERO_COPY.rotatingSlots[count % HERO_COPY.rotatingSlots.length];
 
   return (
-    <section className="relative pt-36 md:pt-44 pb-20 md:pb-28 overflow-hidden bg-[#050505] bg-grain">
-      {/* Background Subtle Accent Glow */}
-      <div className="absolute top-1/4 right-0 w-[500px] h-[500px] bg-[#FFD21F]/[0.03] rounded-full blur-3xl pointer-events-none" />
-
+    <section className="relative pt-36 md:pt-44 pb-20 md:pb-28 overflow-hidden bg-base bg-grain">
       <Container>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
           {/* Left Column: Headlines & Positioning (7 cols) */}
           <div className="lg:col-span-7 space-y-8">
             {/* Eyebrow */}
-            <div className="inline-flex items-center gap-3 font-mono text-xs uppercase tracking-widest text-[#8A8A85]">
-              <span className="w-6 h-[2px] bg-[#FFD21F] inline-block shrink-0" />
+            <div className="inline-flex items-center gap-3 font-mono text-xs uppercase tracking-widest text-meta">
+              <span className="w-6 h-[2px] bg-accent inline-block shrink-0" />
               <span>{HERO_COPY.eyebrow}</span>
             </div>
 
             {/* H1 with Rotating Word Slot */}
-            <h1 className="font-display font-extrabold text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-[1.04] tracking-[-0.03em] text-[#F5F5F0]">
+            <h1 className="font-display font-extrabold text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-[1.04] tracking-[-0.03em] text-ink">
               We turn growth bottlenecks into{' '}
-              <span className="relative inline-block h-[1.15em] overflow-hidden align-top text-[#FFD21F] pr-1.5">
+              <span className="relative inline-block h-[1.15em] overflow-hidden align-top text-accent pr-1.5">
                 {/* Static text for SEO crawlers */}
                 <span className="sr-only">breakthroughs</span>
 
@@ -59,7 +56,7 @@ export function Section01Hero() {
             </h1>
 
             {/* Lead Narrative */}
-            <p className="text-[#A6A6A0] text-lg sm:text-xl leading-relaxed max-w-2xl font-sans">
+            <p className="text-soft text-lg sm:text-xl leading-relaxed max-w-2xl font-sans">
               {HERO_COPY.lead}
             </p>
 
@@ -88,21 +85,19 @@ export function Section01Hero() {
           {/* Right Column: Abstract Sculptural Visual + 4 Floating Chips (5 cols) */}
           <div className="lg:col-span-5 relative flex items-center justify-center min-h-[360px] md:min-h-[440px]">
             {/* Dark Obsidian Sculptural Render Canvas */}
-            <div className="relative w-full max-w-sm aspect-[4/5] rounded-2xl bg-gradient-to-b from-[#171717] via-[#111111] to-[#050505] border border-[#252525] p-6 flex flex-col items-center justify-center overflow-hidden group">
-              {/* Sleek Golden Light Streak Accent */}
-              <div className="absolute -top-24 -right-24 w-60 h-60 bg-[#FFD21F]/10 rounded-full blur-3xl group-hover:bg-[#FFD21F]/20 transition-all duration-700" />
-              <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-[#FFD21F]/[0.03] to-transparent pointer-events-none" />
+            <div className="relative w-full max-w-sm aspect-[4/5] rounded-2xl bg-gradient-to-b from-elevated via-card to-canvas border border-line p-6 flex flex-col items-center justify-center overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-accent/[0.03] to-transparent pointer-events-none" />
 
               {/* Central Geometric Obsidian Motif */}
-              <div className="relative z-10 w-44 h-44 rounded-full border border-[#353535] bg-[#0A0A0A]/90 flex items-center justify-center p-4">
-                <div className="w-32 h-32 rounded-full border border-[#FFD21F]/30 bg-[#111111] flex items-center justify-center">
+              <div className="relative z-10 w-44 h-44 rounded-full border border-line-strong bg-alt/90 flex items-center justify-center p-4">
+                <div className="w-32 h-32 rounded-full border border-accent/30 bg-card flex items-center justify-center">
                   <svg
                     width="64"
                     height="64"
                     viewBox="0 0 24 24"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
-                    className="text-[#FFD21F]"
+                    className="text-accent"
                   >
                     <path
                       d="M13 2L3 14H12L11 22L21 10H12L13 2Z"
@@ -116,10 +111,10 @@ export function Section01Hero() {
 
               {/* Bottom Caption */}
               <div className="relative z-10 mt-8 text-center space-y-1">
-                <div className="font-mono text-[11px] uppercase tracking-widest text-[#FFD21F]">
+                <div className="font-mono text-[11px] uppercase tracking-widest text-accent">
                   Strategy &bull; Execution &bull; Measurement
                 </div>
-                <p className="text-xs text-[#8A8A85]">
+                <p className="text-xs text-meta">
                   Connected growth architecture
                 </p>
               </div>
@@ -128,7 +123,7 @@ export function Section01Hero() {
               <motion.div
                 animate={{ y: [-4, 4, -4] }}
                 transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-                className="absolute top-6 left-4 px-3 py-1.5 rounded-full bg-[#171717] border border-[#353535] text-xs font-mono text-[#F5F5F0]"
+                className="absolute top-6 left-4 px-3 py-1.5 rounded-full bg-elevated border border-line-strong text-xs font-mono text-ink"
               >
                 SEO
               </motion.div>
@@ -136,7 +131,7 @@ export function Section01Hero() {
               <motion.div
                 animate={{ y: [4, -4, 4] }}
                 transition={{ duration: 6.5, repeat: Infinity, ease: 'easeInOut' }}
-                className="absolute top-8 right-4 px-3 py-1.5 rounded-full bg-[#171717] border border-[#353535] text-xs font-mono text-[#F5F5F0]"
+                className="absolute top-8 right-4 px-3 py-1.5 rounded-full bg-elevated border border-line-strong text-xs font-mono text-ink"
               >
                 Paid Media
               </motion.div>
@@ -144,7 +139,7 @@ export function Section01Hero() {
               <motion.div
                 animate={{ y: [-5, 5, -5] }}
                 transition={{ duration: 5.8, repeat: Infinity, ease: 'easeInOut' }}
-                className="absolute bottom-16 left-4 px-3 py-1.5 rounded-full bg-[#171717] border border-[#353535] text-xs font-mono text-[#F5F5F0]"
+                className="absolute bottom-16 left-4 px-3 py-1.5 rounded-full bg-elevated border border-line-strong text-xs font-mono text-ink"
               >
                 CRO
               </motion.div>
@@ -152,7 +147,7 @@ export function Section01Hero() {
               <motion.div
                 animate={{ y: [5, -5, 5] }}
                 transition={{ duration: 6.2, repeat: Infinity, ease: 'easeInOut' }}
-                className="absolute bottom-12 right-4 px-3 py-1.5 rounded-full bg-[#171717] border border-[#353535] text-xs font-mono text-[#F5F5F0]"
+                className="absolute bottom-12 right-4 px-3 py-1.5 rounded-full bg-elevated border border-line-strong text-xs font-mono text-ink"
               >
                 Content
               </motion.div>

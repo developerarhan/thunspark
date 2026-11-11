@@ -10,7 +10,7 @@ import { BackToTop } from './BackToTop';
 
 export function Footer() {
   return (
-    <footer className="bg-[#0A0A0A] border-t border-[#252525] text-[#A6A6A0] pt-16 pb-12 text-sm relative">
+    <footer className="bg-alt border-t border-line text-soft pt-16 pb-12 text-sm relative">
       <Container>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
           {/* Column 1: Brand & Tagline */}
@@ -22,7 +22,7 @@ export function Footer() {
                 viewBox="0 0 24 24"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
-                className="text-[#FFD21F]"
+                className="text-accent"
               >
                 <path
                   d="M13 2L3 14H12L11 22L21 10H12L13 2Z"
@@ -31,11 +31,11 @@ export function Footer() {
                   strokeWidth="1.5"
                 />
               </svg>
-              <span className="font-display font-extrabold text-xl tracking-tight text-[#F5F5F0]">
-                THUN<span className="text-[#FFD21F]">SPARK</span>
+              <span className="font-display font-extrabold text-xl tracking-tight text-ink">
+                THUN<span className="text-accent">SPARK</span>
               </span>
             </Link>
-            <p className="text-xs text-[#8A8A85] leading-relaxed max-w-xs">
+            <p className="text-xs text-meta leading-relaxed max-w-xs">
               Strategy, execution, and measurement — for businesses that want growth they can prove.
             </p>
             <div className="flex items-center gap-4 pt-2 text-xs">
@@ -43,7 +43,7 @@ export function Footer() {
                 href={siteConfig.contact.socials.linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:text-[#FFD21F] transition-colors"
+                className="hover:text-accent transition-colors"
               >
                 LinkedIn
               </a>
@@ -51,7 +51,7 @@ export function Footer() {
                 href={siteConfig.contact.socials.instagram}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:text-[#FFD21F] transition-colors"
+                className="hover:text-accent transition-colors"
               >
                 Instagram
               </a>
@@ -59,7 +59,7 @@ export function Footer() {
                 href={siteConfig.contact.socials.twitter}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:text-[#FFD21F] transition-colors"
+                className="hover:text-accent transition-colors"
               >
                 Twitter
               </a>
@@ -68,7 +68,7 @@ export function Footer() {
 
           {/* Column 2: Strategic Services */}
           <div>
-            <h4 className="font-mono text-xs uppercase tracking-wider text-[#F5F5F0] mb-4 font-semibold">
+            <h4 className="font-mono text-xs uppercase tracking-wider text-ink mb-4 font-semibold">
               Capabilities
             </h4>
             <ul className="space-y-2 text-xs">
@@ -76,17 +76,17 @@ export function Footer() {
                 <li key={g.id}>
                   <Link
                     href={`/services#${g.id}`}
-                    className="hover:text-[#FFD21F] transition-colors flex items-center gap-1.5"
+                    className="hover:text-accent transition-colors flex items-center gap-1.5"
                   >
-                    <span className="text-[#8A8A85] font-mono text-[10px]">{g.number}</span>
+                    <span className="text-meta font-mono text-[10px]">{g.number}</span>
                     <span>{g.name}</span>
                   </Link>
                 </li>
               ))}
-              <li className="pt-2 border-t border-[#252525]">
+              <li className="pt-2 border-t border-line">
                 <Link
                   href="/services"
-                  className="text-[#FFD21F] hover:text-[#FFE75A] font-medium"
+                  className="text-accent hover:text-accent-hi font-medium"
                 >
                   All 10 Services &rarr;
                 </Link>
@@ -96,32 +96,32 @@ export function Footer() {
 
           {/* Column 3: Company */}
           <div>
-            <h4 className="font-mono text-xs uppercase tracking-wider text-[#F5F5F0] mb-4 font-semibold">
+            <h4 className="font-mono text-xs uppercase tracking-wider text-ink mb-4 font-semibold">
               Company
             </h4>
             <ul className="space-y-2 text-xs">
               <li>
-                <Link href="/about" className="hover:text-[#FFD21F] transition-colors">
+                <Link href="/about" className="hover:text-accent transition-colors">
                   About ThunSpark
                 </Link>
               </li>
               <li>
-                <Link href="/projects" className="hover:text-[#FFD21F] transition-colors">
+                <Link href="/projects" className="hover:text-accent transition-colors">
                   Selected Work
                 </Link>
               </li>
               <li>
-                <Link href="/blog" className="hover:text-[#FFD21F] transition-colors">
+                <Link href="/blog" className="hover:text-accent transition-colors">
                   Insights & Thinking
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className="hover:text-[#FFD21F] transition-colors">
+                <Link href="/contact" className="hover:text-accent transition-colors">
                   Contact & Diagnostics
                 </Link>
               </li>
               <li>
-                <Link href="/privacy-policy" className="hover:text-[#FFD21F] transition-colors">
+                <Link href="/privacy-policy" className="hover:text-accent transition-colors">
                   Privacy Policy
                 </Link>
               </li>
@@ -130,10 +130,10 @@ export function Footer() {
 
           {/* Column 4: Contact & Direct Inquiries */}
           <div className="space-y-4">
-            <h4 className="font-mono text-xs uppercase tracking-wider text-[#F5F5F0] mb-4 font-semibold">
+            <h4 className="font-mono text-xs uppercase tracking-wider text-ink mb-4 font-semibold">
               Start a Conversation
             </h4>
-            <p className="text-xs text-[#8A8A85] leading-relaxed">
+            <p className="text-xs text-meta leading-relaxed">
               Tell us what&apos;s holding your growth back. We diagnose before we prescribe.
             </p>
             <Button
@@ -145,22 +145,22 @@ export function Footer() {
             >
               Book a strategy call
             </Button>
-            <div className="text-xs text-[#8A8A85]">
-              Direct: <a href={`mailto:${siteConfig.contact.email}`} className="text-[#F5F5F0] hover:text-[#FFD21F]">{siteConfig.contact.email}</a>
+            <div className="text-xs text-meta">
+              Direct: <a href={`mailto:${siteConfig.contact.email}`} className="text-ink hover:text-accent">{siteConfig.contact.email}</a>
             </div>
           </div>
         </div>
 
         {/* Legal Disclaimer & Performance Clause per Guide §R9 */}
-        <div className="pt-8 border-t border-[#252525] text-xs text-[#6F6F6A] leading-relaxed space-y-3">
+        <div className="pt-8 border-t border-line text-xs text-meta leading-relaxed space-y-3">
           <p>{LEGAL_DISCLAIMER}</p>
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-[#8A8A85] pt-2">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-meta pt-2">
             <span>&copy; {new Date().getFullYear()} {siteConfig.name}. All rights reserved.</span>
             <div className="flex items-center gap-6">
-              <Link href="/privacy-policy" className="hover:text-[#FFD21F] transition-colors">
+              <Link href="/privacy-policy" className="hover:text-accent transition-colors">
                 Privacy Policy
               </Link>
-              <Link href="/terms" className="hover:text-[#FFD21F] transition-colors">
+              <Link href="/terms" className="hover:text-accent transition-colors">
                 Terms of Service
               </Link>
             </div>

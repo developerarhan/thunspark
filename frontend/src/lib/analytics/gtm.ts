@@ -1,10 +1,25 @@
+import Cookies from 'js-cookie';
+
 /**
  * Type-safe DataLayer & Google Tag Manager helper.
  */
 
+export const CONSENT_COOKIE_KEY = 'thunspark_cookie_consent';
+export const CONSENT_UPDATED_EVENT = 'thunspark:consent-updated';
+
+export interface ConsentState {
+  analytics: boolean;
+  marketing: boolean;
+}
+
+export type DataLayerPayload = Record<string, unknown>;
+
+type GtagFunction = (...args: unknown[]) => void;
+
 declare global {
   interface Window {
-    dataLayer?: Record<string, any>[];
+    dataLayer?: DataLayerPayload[];
+    gtag?: GtagFunction;
   }
 }
 
@@ -17,19 +32,32 @@ export interface ConsentConfig {
   ad_personalization: ConsentStatus;
 }
 
-export function pushDataLayer(eventData: Record<string, any>) {
+export function getStoredConsent(): ConsentState | null {
+  if (typeof window === 'undefined') return null;
+  const raw = Cookies.get(CONSENT_COOKIE_KEY);
+  if (!raw) return null;
+
+  try {
+    const parsed = JSON.parse(raw) as { analytics?: unknown; marketing?: unknown };
+    return {
+      analytics: Boolean(parsed.analytics),
+      marketing: Boolean(parsed.marketing),
+    };
+  } catch {
+    return null;
+  }
+}
+
+export function pushDataLayer(eventData: DataLayerPayload) {
   if (typeof window === 'undefined') return;
   window.dataLayer = window.dataLayer || [];
   window.dataLayer.push(eventData);
 }
 
 /**
- * Updates Google Consent Mode v2 state across tag containers.
+ * Updates Google Consent Mode v2 state across tag containers and notifies client trackers.
  */
-export function updateGoogleConsent(consent: {
-  analytics: boolean;
-  marketing: boolean;
-}) {
+export function updateGoogleConsent(consent: ConsentState) {
   const consentParams: ConsentConfig = {
     analytics_storage: consent.analytics ? 'granted' : 'denied',
     ad_storage: consent.marketing ? 'granted' : 'denied',
@@ -37,20 +65,32 @@ export function updateGoogleConsent(consent: {
     ad_personalization: consent.marketing ? 'granted' : 'denied',
   };
 
+  if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
+    window.gtag('consent', 'update', consentParams);
+  }
+
   pushDataLayer({
     event: 'consent_update',
     consent: consentParams,
   });
 
-  if (typeof (window as any).gtag === 'function') {
-    (window as any).gtag('consent', 'update', consentParams);
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(
+      new CustomEvent<ConsentState>(CONSENT_UPDATED_EVENT, { detail: consent })
+    );
   }
 }
 
 /**
  * Tracks CTA clicks across site components with location metadata.
  */
-export function trackCTAClick(ctaName: string, location: string, metadata?: Record<string, any>) {
+export function trackCTAClick(
+  ctaName: string,
+  location: string,
+  metadata?: DataLayerPayload
+) {
+  if (!getStoredConsent()?.analytics) return;
+
   pushDataLayer({
     event: 'cta_click',
     cta_name: ctaName,
@@ -67,8 +107,10 @@ export function trackFormEvent(
   formName: string,
   action: 'start' | 'step_advance' | 'submit' | 'success' | 'error',
   stepNumber?: number,
-  extra?: Record<string, any>
+  extra?: DataLayerPayload
 ) {
+  if (!getStoredConsent()?.analytics) return;
+
   pushDataLayer({
     event: `form_${action}`,
     form_name: formName,

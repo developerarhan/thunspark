@@ -27,7 +27,7 @@ export const siteConfig = {
     phone: "+91 00000 00000", // TODO(CONTENT): confirm primary WhatsApp/phone
     whatsapp: "+91 00000 00000",
     location: "India", // TODO(CONTENT): confirm registered office location
-    socials: {
+    socials: { // TODO(CONTENT): verify official social profile URLs before enabling in Organization.sameAs JSON-LD
       linkedin: "https://linkedin.com/company/thunspark",
       instagram: "https://instagram.com/thunspark",
       twitter: "https://twitter.com/thunspark",

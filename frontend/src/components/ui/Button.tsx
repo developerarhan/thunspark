@@ -24,15 +24,15 @@ export function Button({
   ...props
 }: ButtonProps) {
   const baseStyles =
-    'inline-flex items-center justify-center font-medium transition-all duration-200 cursor-pointer select-none rounded-full focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-[#FFD21F] disabled:opacity-50 disabled:pointer-events-none';
+    'inline-flex items-center justify-center font-medium transition-all duration-200 cursor-pointer select-none rounded-full focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-accent disabled:opacity-50 disabled:pointer-events-none';
 
   const variants = {
     primary:
-      'bg-[#FFD21F] text-[#050505] font-semibold hover:bg-[#FFE75A] active:bg-[#C9A900]',
+      'bg-accent text-canvas font-semibold hover:bg-accent-hi active:bg-accent-deep',
     secondary:
-      'bg-[#111111] text-[#F5F5F0] border border-[#252525] hover:border-[#353535] hover:bg-[#171717]',
+      'bg-card text-ink border border-line hover:border-line-strong hover:bg-elevated',
     ghost:
-      'text-[#A6A6A0] hover:text-[#F5F5F0] hover:bg-[#171717]',
+      'text-soft hover:text-ink hover:bg-elevated',
   };
 
   const sizes = {

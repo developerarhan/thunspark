@@ -31,7 +31,7 @@ export function Accordion({
   };
 
   return (
-    <div className={`divide-y divide-[#252525] border-y border-[#252525] ${className}`}>
+    <div className={`divide-y divide-line border-y border-line ${className}`}>
       {items.map((item, idx) => {
         const isOpen = openIndices.includes(idx);
         return (
@@ -40,15 +40,15 @@ export function Accordion({
               type="button"
               onClick={() => toggleIndex(idx)}
               aria-expanded={isOpen}
-              className="w-full flex items-center justify-between text-left group focus:outline-none focus-visible:outline-2 focus-visible:outline-[#FFD21F] rounded-lg py-1"
+              className="w-full flex items-center justify-between text-left group focus:outline-none focus-visible:outline-2 focus-visible:outline-accent rounded-lg py-1"
             >
-              <span className="font-display font-medium text-lg md:text-xl text-[#F5F5F0] group-hover:text-[#FFD21F] transition-colors pr-6">
+              <span className="font-display font-medium text-lg md:text-xl text-ink group-hover:text-accent transition-colors pr-6">
                 {item.q}
               </span>
               <motion.div
                 animate={{ rotate: isOpen ? 180 : 0 }}
                 transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-                className="shrink-0 text-[#8A8A85] group-hover:text-[#FFD21F] transition-colors"
+                className="shrink-0 text-meta group-hover:text-accent transition-colors"
               >
                 <ChevronDown size={20} />
               </motion.div>
@@ -63,7 +63,7 @@ export function Accordion({
                   transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
                   className="overflow-hidden"
                 >
-                  <p className="pt-4 text-[#A6A6A0] text-base leading-relaxed max-w-2xl">
+                  <p className="pt-4 text-soft text-base leading-relaxed max-w-2xl">
                     {item.a}
                   </p>
                 </motion.div>

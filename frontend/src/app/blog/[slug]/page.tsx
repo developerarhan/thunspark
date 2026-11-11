@@ -1,92 +1,160 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import { PortableText } from '@portabletext/react';
 import { Container } from '@/components/ui/Container';
 import { Tag } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { ArrowLeft, Clock, ArrowRight } from 'lucide-react';
-import Script from 'next/script';
+import { getAllPosts, getPostBySlug } from '@/lib/sanity/fetchers';
+import { urlForImage } from '@/lib/sanity/image';
+import {
+  buildAbsoluteUrl,
+  buildBreadcrumbSchema,
+  buildMetadata,
+  ORGANIZATION_SCHEMA_REF,
+  serializeJsonLd,
+} from '@/lib/seo';
 
 interface ArticleDetailPageProps {
   params: Promise<{ slug: string }>;
 }
 
-// Stub/Sanity query function for dynamic article fetching
-async function getArticle(_slug: string) {
-  // If Sanity client query is added, it will fetch here.
-  // Until articles are published in Sanity, return null to show standard 404
-  return null;
+export async function generateStaticParams() {
+  const posts = await getAllPosts();
+  return posts.map((post) => ({ slug: post.slug }));
 }
 
-export async function generateMetadata({ params }: ArticleDetailPageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: ArticleDetailPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const article = await getArticle(slug);
-  if (!article) return { title: 'Article Not Found | ThunSpark' };
+  const article = await getPostBySlug(slug);
 
-  return {
-    title: `${(article as any).title} | ThunSpark`,
-    description: (article as any).excerpt,
-  };
+  if (!article) {
+    return {
+      title: 'Article Not Found',
+      robots: { index: false, follow: false },
+    };
+  }
+
+  const ogImageUrl = article.coverImage
+    ? urlForImage(article.coverImage)?.width(1200).height(630).url() ?? undefined
+    : undefined;
+
+  return buildMetadata({
+    title: { absolute: `${article.title} | ThunSpark` },
+    description: article.excerpt,
+    path: `/blog/${slug}`,
+    type: 'article',
+    image: ogImageUrl,
+  });
 }
 
 export default async function ArticleDetailPage({ params }: ArticleDetailPageProps) {
   const { slug } = await params;
-  const article = (await getArticle(slug)) as any;
+  const article = await getPostBySlug(slug);
 
   if (!article) {
     notFound();
   }
 
-  const articleSchema = {
+  const canonicalUrl = buildAbsoluteUrl(`/blog/${slug}`);
+  const coverImageUrl = article.coverImage
+    ? urlForImage(article.coverImage)?.width(1200).height(675).url() ?? undefined
+    : undefined;
+
+  const authorSchema = article.author?.name
+    ? {
+        '@type': 'Person',
+        name: article.author.name,
+        ...(article.author.role ? { jobTitle: article.author.role } : {}),
+      }
+    : ORGANIZATION_SCHEMA_REF;
+
+  const blogPostingSchema = {
     '@context': 'https://schema.org',
-    '@type': 'Article',
+    '@type': 'BlogPosting',
     headline: article.title,
     description: article.excerpt,
-    datePublished: article.published_at,
-    author: {
-      '@type': 'Organization',
-      name: 'ThunSpark',
-      url: 'https://thunspark.agency',
+    url: canonicalUrl,
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': canonicalUrl,
     },
+    ...(article.publishedAt ? { datePublished: article.publishedAt } : {}),
+    ...(coverImageUrl ? { image: [coverImageUrl] } : {}),
+    author: authorSchema,
+    publisher: ORGANIZATION_SCHEMA_REF,
   };
+
+  const breadcrumbSchema = buildBreadcrumbSchema([
+    { name: 'Home', path: '/' },
+    { name: 'Blog', path: '/blog' },
+    { name: article.title, path: `/blog/${slug}` },
+  ]);
 
   return (
     <>
-      <Script
+      <script
         id={`article-schema-${slug}`}
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(blogPostingSchema) }}
+      />
+      <script
+        id={`article-breadcrumb-schema-${slug}`}
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(breadcrumbSchema) }}
       />
       <div className="flex flex-col">
-        <section className="pt-28 pb-16 md:pt-36 md:pb-24 border-b border-[#252525]">
+        <section className="pt-28 pb-16 md:pt-36 md:pb-24 border-b border-line">
           <Container>
             <div className="max-w-3xl mx-auto">
               <Link
                 href="/blog"
-                className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-[#8A8A85] hover:text-[#FFD21F] transition-colors mb-6"
+                className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-meta hover:text-accent transition-colors mb-6"
               >
                 <ArrowLeft size={14} />
                 <span>All Insights</span>
               </Link>
 
-              <div className="flex items-center gap-3 mb-4">
-                <Tag variant="accent">{article.category?.name || 'Growth Strategy'}</Tag>
-                {article.reading_time && (
-                  <span className="flex items-center gap-1 text-xs font-mono text-[#8A8A85]">
+              <div className="flex flex-wrap items-center gap-3 mb-4">
+                <Tag variant="accent">{article.category?.title || 'Growth Strategy'}</Tag>
+                {article.readingTime && (
+                  <span className="flex items-center gap-1 text-xs font-mono text-meta">
                     <Clock size={12} />
-                    <span>{article.reading_time} min read</span>
+                    <span>{article.readingTime} min read</span>
                   </span>
+                )}
+                {article.publishedAt && (
+                  <time
+                    dateTime={article.publishedAt}
+                    className="text-xs font-mono text-meta"
+                  >
+                    {new Date(article.publishedAt).toLocaleDateString('en-IN', {
+                      year: 'numeric',
+                      month: 'short',
+                      day: 'numeric',
+                    })}
+                  </time>
                 )}
               </div>
 
-              <h1 className="font-display font-medium text-3xl sm:text-4xl lg:text-5xl text-[#F5F5F0] tracking-tight mb-6">
+              <h1 className="font-display font-medium text-3xl sm:text-4xl lg:text-5xl text-ink tracking-tight mb-6">
                 {article.title}
               </h1>
 
-              <p className="text-[#8A8A85] text-base sm:text-lg leading-relaxed mb-8">
+              <p className="text-soft text-base sm:text-lg leading-relaxed mb-6">
                 {article.excerpt}
               </p>
+
+              {article.author?.name && (
+                <div className="text-xs font-mono text-meta">
+                  By <span className="text-ink">{article.author.name}</span>
+                  {article.author.role ? ` · ${article.author.role}` : ''}
+                </div>
+              )}
             </div>
           </Container>
         </section>
@@ -95,19 +163,21 @@ export default async function ArticleDetailPage({ params }: ArticleDetailPagePro
         <section className="py-16 md:py-24">
           <Container>
             <div className="max-w-3xl mx-auto space-y-12">
-              <div className="prose prose-invert max-w-none text-[#F5F5F0] leading-relaxed">
-                {article.content}
-              </div>
+              {article.body && article.body.length > 0 && (
+                <div className="prose prose-invert max-w-none text-soft leading-relaxed space-y-6">
+                  <PortableText value={article.body} />
+                </div>
+              )}
 
               {/* Inline Conversion CTA */}
-              <Card className="p-8 md:p-10 bg-[#111111] border-[#252525] relative overflow-hidden">
-                <span className="font-mono text-xs uppercase tracking-widest text-[#FFD21F] block mb-2">
+              <Card className="p-8 md:p-10 bg-card border-line relative overflow-hidden">
+                <span className="font-mono text-xs uppercase tracking-widest text-accent block mb-2">
                   APPLY THIS TO YOUR BUSINESS
                 </span>
-                <h3 className="font-display font-medium text-2xl text-[#F5F5F0] mb-3">
+                <h3 className="font-display font-medium text-2xl text-ink mb-3">
                   Ready to diagnose your growth bottleneck?
                 </h3>
-                <p className="text-[#8A8A85] text-sm leading-relaxed mb-6">
+                <p className="text-soft text-sm leading-relaxed mb-6">
                   Book a 30-minute strategy call with our senior growth strategists. We will review your acquisition funnel and tell you what we would fix first.
                 </p>
                 <Button href="/contact" variant="primary" size="md">

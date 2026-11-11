@@ -64,7 +64,7 @@ export function MegaMenu({
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -8 }}
           transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
-          className="absolute top-full left-0 right-0 bg-[#050505]/95 backdrop-blur-xl border-b border-[#252525] z-40 py-10 before:absolute before:-top-4 before:left-0 before:right-0 before:h-4 before:content-['']"
+          className="absolute top-full left-0 right-0 bg-base/95 backdrop-blur-xl border-b border-line z-40 py-10 before:absolute before:-top-4 before:left-0 before:right-0 before:h-4 before:content-['']"
         >
           <div className="max-w-7xl mx-auto px-6 lg:px-8">
             <div className="grid grid-cols-4 gap-8">
@@ -77,27 +77,27 @@ export function MegaMenu({
                     className="group block"
                   >
                     <div className="flex items-center gap-2 mb-1">
-                      <span className="font-mono text-xs text-[#FFD21F] font-bold">
+                      <span className="font-mono text-xs text-accent font-bold">
                         {group.number}
                       </span>
-                      <span className="font-display font-bold text-base text-[#F5F5F0] group-hover:text-[#FFD21F] transition-colors">
+                      <span className="font-display font-bold text-base text-ink group-hover:text-accent transition-colors">
                         {group.name}
                       </span>
                     </div>
-                    <p className="text-xs text-[#8A8A85] line-clamp-1">
+                    <p className="text-xs text-meta line-clamp-1">
                       {group.role}
                     </p>
                   </Link>
 
                   {/* Sub-Services List */}
-                  <ul className="space-y-2.5 pt-2 border-t border-[#252525]">
+                  <ul className="space-y-2.5 pt-2 border-t border-line">
                     {group.services.map((service) => (
                       <li key={service.slug}>
                         <Link
                           href={`/services/${service.slug}`}
                           onClick={onClose}
                           data-cursor="EXPLORE"
-                          className="text-xs text-[#A6A6A0] hover:text-[#FFD21F] hover:translate-x-1 transition-all duration-150 block py-0.5"
+                          className="text-xs text-soft hover:text-accent hover:translate-x-1 transition-all duration-150 block py-0.5"
                         >
                           {service.name}
                         </Link>
@@ -109,12 +109,12 @@ export function MegaMenu({
             </div>
 
             {/* Bottom Overview Bar */}
-            <div className="mt-8 pt-6 border-t border-[#252525] flex items-center justify-between text-xs text-[#8A8A85]">
+            <div className="mt-8 pt-6 border-t border-line flex items-center justify-between text-xs text-meta">
               <span>Four connected growth disciplines built around your business.</span>
               <Link
                 href="/services"
                 onClick={onClose}
-                className="text-[#FFD21F] hover:text-[#FFE75A] font-semibold flex items-center gap-1 group"
+                className="text-accent hover:text-accent-hi font-semibold flex items-center gap-1 group"
               >
                 <span>View all services overview</span>
                 <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />

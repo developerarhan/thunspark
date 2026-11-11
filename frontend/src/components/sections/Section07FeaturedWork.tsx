@@ -12,7 +12,7 @@ export function Section07FeaturedWork() {
   const featuredCases = CASE_STUDIES;
 
   return (
-    <section id="work" className="py-24 md:py-32 bg-[#0A0A0A] border-y border-[#252525]">
+    <section id="work" className="py-24 md:py-32 bg-alt border-y border-line">
       <Container>
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
           <SectionHeading
@@ -28,7 +28,7 @@ export function Section07FeaturedWork() {
 
           <Link
             href="/projects"
-            className="inline-flex items-center gap-2 font-mono text-xs text-[#FFD21F] hover:text-[#FFE75A] font-semibold transition-colors shrink-0 group py-2"
+            className="inline-flex items-center gap-2 font-mono text-xs text-accent hover:text-accent-hi font-semibold transition-colors shrink-0 group py-2"
           >
             <span>View all projects</span>
             <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
@@ -49,37 +49,37 @@ export function Section07FeaturedWork() {
                   delay: idx * 0.1,
                   ease: [0.22, 1, 0.36, 1],
                 }}
-                className="group p-8 md:p-10 rounded-xl bg-[#111111] border border-[#252525] hover:border-[#353535] hover:bg-[#171717] transition-all flex flex-col justify-between"
+                className="group p-8 md:p-10 rounded-xl bg-card border border-line hover:border-line-strong hover:bg-elevated transition-all flex flex-col justify-between"
               >
                 <div>
                   {/* Industry Meta Tag & Year */}
                   <div className="flex items-center justify-between gap-4 mb-4">
-                    <span className="font-mono text-xs text-[#FFD21F] uppercase tracking-wider font-semibold">
+                    <span className="font-mono text-xs text-accent uppercase tracking-wider font-semibold">
                       {project.industry}
                     </span>
-                    <span className="font-mono text-xs text-[#8A8A85]">
+                    <span className="font-mono text-xs text-meta">
                       {project.year}
                     </span>
                   </div>
 
                   {/* Client & Headline */}
-                  <h3 className="font-display font-bold text-2xl md:text-3xl text-[#F5F5F0] mb-3 group-hover:text-[#FFD21F] transition-colors leading-snug">
+                  <h3 className="font-display font-bold text-2xl md:text-3xl text-ink mb-3 group-hover:text-accent transition-colors leading-snug">
                     {project.headline}
                   </h3>
 
-                  <p className="text-sm text-[#A6A6A0] leading-relaxed mb-6">
+                  <p className="text-sm text-soft leading-relaxed mb-6">
                     {project.overview}
                   </p>
 
                   {/* Scope of Work */}
-                  <div className="space-y-2 pt-5 border-t border-[#252525]">
-                    <span className="font-mono text-[11px] uppercase tracking-wider text-[#8A8A85] block font-semibold">
+                  <div className="space-y-2 pt-5 border-t border-line">
+                    <span className="font-mono text-[11px] uppercase tracking-wider text-meta block font-semibold">
                       Scope Delivered:
                     </span>
-                    <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-[#F5F5F0]">
+                    <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-ink">
                       {project.scope.map((item, i) => (
                         <li key={i} className="flex items-center gap-2">
-                          <span className="w-1.5 h-1.5 rounded-full bg-[#FFD21F] shrink-0" />
+                          <span className="w-1.5 h-1.5 rounded-full bg-accent shrink-0" />
                           <span>{item}</span>
                         </li>
                       ))}
@@ -92,7 +92,7 @@ export function Section07FeaturedWork() {
                       {project.servicesRendered.map((service, i) => (
                         <span
                           key={i}
-                          className="px-2.5 py-1 rounded-md text-[11px] font-mono bg-[#171717] group-hover:bg-[#111111] text-[#A6A6A0] border border-[#252525] transition-colors"
+                          className="px-2.5 py-1 rounded-md text-[11px] font-mono bg-elevated group-hover:bg-card text-soft border border-line transition-colors"
                         >
                           {service}
                         </span>
@@ -102,14 +102,14 @@ export function Section07FeaturedWork() {
                 </div>
 
                 {/* Honesty Badge & Detail Link */}
-                <div className="pt-6 mt-6 border-t border-[#252525] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                  <div className="text-[11px] font-mono text-[#8A8A85] italic">
+                <div className="pt-6 mt-6 border-t border-line flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                  <div className="text-[11px] font-mono text-meta italic">
                     {project.honestyNote}
                   </div>
                   <Link
                     href={`/projects/${project.slug}`}
                     data-cursor="VIEW"
-                    className="inline-flex items-center gap-1.5 text-xs font-mono font-semibold text-[#F5F5F0] group-hover:text-[#FFD21F] transition-colors shrink-0"
+                    className="inline-flex items-center gap-1.5 text-xs font-mono font-semibold text-ink group-hover:text-accent transition-colors shrink-0"
                   >
                     <span>View Case Breakdown</span>
                     <ArrowUpRight size={14} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
@@ -120,16 +120,16 @@ export function Section07FeaturedWork() {
           </div>
         ) : (
           /* Premium Empty State per Guide §D1 §7 */
-          <div className="p-12 md:p-16 rounded-2xl bg-[#111111] border border-[#252525] text-center max-w-2xl mx-auto space-y-4">
-            <h3 className="font-display font-bold text-2xl text-[#F5F5F0]">
+          <div className="p-12 md:p-16 rounded-2xl bg-card border border-line text-center max-w-2xl mx-auto space-y-4">
+            <h3 className="font-display font-bold text-2xl text-ink">
               Case studies are on the way.
             </h3>
-            <p className="text-sm text-[#A6A6A0] leading-relaxed">
+            <p className="text-sm text-soft leading-relaxed">
               The work is happening right now across active client engagements. Talk to us about your project and we&apos;ll walk you through our live workflows.
             </p>
             <Link
               href="/contact"
-              className="inline-flex items-center justify-center px-6 py-2.5 rounded-full bg-[#FFD21F] text-[#050505] font-semibold text-sm hover:bg-[#FFE75A] transition-colors mt-2"
+              className="inline-flex items-center justify-center px-6 py-2.5 rounded-full bg-accent text-canvas font-semibold text-sm hover:bg-accent-hi transition-colors mt-2"
             >
               Start a Conversation
             </Link>

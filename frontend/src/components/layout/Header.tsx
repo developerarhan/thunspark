@@ -75,7 +75,7 @@ export function Header() {
       <header
         className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
           isScrolled
-            ? 'h-20 bg-[#050505]/80 backdrop-blur-md border-b border-[#252525]'
+            ? 'h-20 bg-base/80 backdrop-blur-md border-b border-line'
             : 'h-20 bg-transparent'
         }`}
       >
@@ -93,7 +93,7 @@ export function Header() {
                 viewBox="0 0 24 24"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
-                className="text-[#FFD21F] group-hover:scale-110 transition-transform"
+                className="text-accent group-hover:scale-110 transition-transform"
               >
                 <path
                   d="M13 2L3 14H12L11 22L21 10H12L13 2Z"
@@ -104,8 +104,8 @@ export function Header() {
                   strokeLinejoin="round"
                 />
               </svg>
-              <span className="font-display font-extrabold text-xl tracking-tight text-[#F5F5F0]">
-                THUN<span className="text-[#FFD21F]">SPARK</span>
+              <span className="font-display font-extrabold text-xl tracking-tight text-ink">
+                THUN<span className="text-accent">SPARK</span>
               </span>
             </Link>
 
@@ -123,10 +123,10 @@ export function Header() {
                   onClick={() => setServicesOpen((prev) => !prev)}
                   onFocus={handleOpenServices}
                   aria-expanded={servicesOpen}
-                  className={`text-sm font-medium transition-colors hover:text-[#F5F5F0] flex items-center gap-1.5 py-2 cursor-pointer ${
+                  className={`text-sm font-medium transition-colors hover:text-ink flex items-center gap-1.5 py-2 cursor-pointer ${
                     pathname.startsWith('/services') || servicesOpen
-                      ? 'text-[#FFD21F]'
-                      : 'text-[#A6A6A0]'
+                      ? 'text-accent'
+                      : 'text-soft'
                   }`}
                 >
                   <span>Services</span>
@@ -141,32 +141,32 @@ export function Header() {
 
               <Link
                 href="/about"
-                className={`text-sm font-medium transition-colors hover:text-[#F5F5F0] ${
-                  pathname === '/about' ? 'text-[#FFD21F]' : 'text-[#A6A6A0]'
+                className={`text-sm font-medium transition-colors hover:text-ink ${
+                  pathname === '/about' ? 'text-accent' : 'text-soft'
                 }`}
               >
                 About
               </Link>
               <Link
                 href="/projects"
-                className={`text-sm font-medium transition-colors hover:text-[#F5F5F0] ${
-                  pathname.startsWith('/projects') ? 'text-[#FFD21F]' : 'text-[#A6A6A0]'
+                className={`text-sm font-medium transition-colors hover:text-ink ${
+                  pathname.startsWith('/projects') ? 'text-accent' : 'text-soft'
                 }`}
               >
                 Projects
               </Link>
               <Link
                 href="/blog"
-                className={`text-sm font-medium transition-colors hover:text-[#F5F5F0] ${
-                  pathname.startsWith('/blog') ? 'text-[#FFD21F]' : 'text-[#A6A6A0]'
+                className={`text-sm font-medium transition-colors hover:text-ink ${
+                  pathname.startsWith('/blog') ? 'text-accent' : 'text-soft'
                 }`}
               >
                 Blog
               </Link>
               <Link
                 href="/contact"
-                className={`text-sm font-medium transition-colors hover:text-[#F5F5F0] ${
-                  pathname === '/contact' ? 'text-[#FFD21F]' : 'text-[#A6A6A0]'
+                className={`text-sm font-medium transition-colors hover:text-ink ${
+                  pathname === '/contact' ? 'text-accent' : 'text-soft'
                 }`}
               >
                 Contact
@@ -189,7 +189,7 @@ export function Header() {
               <button
                 type="button"
                 onClick={() => setMobileMenuOpen((prev) => !prev)}
-                className="md:hidden p-2 text-[#F5F5F0] hover:text-[#FFD21F] focus:outline-none cursor-pointer"
+                className="md:hidden p-2 text-ink hover:text-accent focus:outline-none cursor-pointer"
                 aria-label="Toggle navigation menu"
               >
                 {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -210,26 +210,26 @@ export function Header() {
 
       {/* Mobile Menu Drawer */}
       {mobileMenuOpen && (
-        <div className="fixed inset-0 z-30 bg-[#050505] pt-24 px-6 flex flex-col md:hidden overflow-y-auto">
+        <div className="fixed inset-0 z-30 bg-base pt-24 px-6 flex flex-col md:hidden overflow-y-auto">
           <nav className="space-y-6 text-lg font-display">
             <Link
               href="/"
               onClick={() => setMobileMenuOpen(false)}
-              className="block text-[#F5F5F0] hover:text-[#FFD21F]"
+              className="block text-ink hover:text-accent"
             >
               Home
             </Link>
             <div className="space-y-3">
-              <span className="font-mono text-xs text-[#8A8A85] uppercase tracking-wider block">
+              <span className="font-mono text-xs text-meta uppercase tracking-wider block">
                 Services
               </span>
-              <div className="pl-3 space-y-2.5 border-l border-[#252525]">
+              <div className="pl-3 space-y-2.5 border-l border-line">
                 {siteConfig.serviceGroups.map((g) => (
                   <Link
                     key={g.id}
                     href={`/services#${g.id}`}
                     onClick={() => setMobileMenuOpen(false)}
-                    className="block text-sm text-[#A6A6A0] hover:text-[#FFD21F]"
+                    className="block text-sm text-soft hover:text-accent"
                   >
                     {g.number} · {g.name}
                   </Link>
@@ -239,34 +239,34 @@ export function Header() {
             <Link
               href="/about"
               onClick={() => setMobileMenuOpen(false)}
-              className="block text-[#F5F5F0] hover:text-[#FFD21F]"
+              className="block text-ink hover:text-accent"
             >
               About
             </Link>
             <Link
               href="/projects"
               onClick={() => setMobileMenuOpen(false)}
-              className="block text-[#F5F5F0] hover:text-[#FFD21F]"
+              className="block text-ink hover:text-accent"
             >
               Projects
             </Link>
             <Link
               href="/blog"
               onClick={() => setMobileMenuOpen(false)}
-              className="block text-[#F5F5F0] hover:text-[#FFD21F]"
+              className="block text-ink hover:text-accent"
             >
               Blog
             </Link>
             <Link
               href="/contact"
               onClick={() => setMobileMenuOpen(false)}
-              className="block text-[#F5F5F0] hover:text-[#FFD21F]"
+              className="block text-ink hover:text-accent"
             >
               Contact
             </Link>
           </nav>
 
-          <div className="mt-auto py-8 border-t border-[#252525] space-y-4">
+          <div className="mt-auto py-8 border-t border-line space-y-4">
             <Button
               href="/contact"
               variant="primary"
@@ -276,7 +276,7 @@ export function Header() {
             >
               Get a growth audit
             </Button>
-            <div className="text-xs text-[#8A8A85] text-center">
+            <div className="text-xs text-meta text-center">
               {siteConfig.contact.email}
             </div>
           </div>

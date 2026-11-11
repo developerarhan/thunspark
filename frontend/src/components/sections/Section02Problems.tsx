@@ -10,7 +10,7 @@ import { ArrowUpRight } from 'lucide-react';
 
 export function Section02Problems() {
   return (
-    <section className="py-24 md:py-32 bg-[#050505]">
+    <section className="py-24 md:py-32 bg-base">
       <Container>
         <SectionHeading
           eyebrow={PROBLEMS_COPY.eyebrow}
@@ -31,31 +31,31 @@ export function Section02Problems() {
                 delay: idx * 0.08,
                 ease: [0.22, 1, 0.36, 1],
               }}
-              className="group p-8 rounded-xl bg-[#111111] border border-[#252525] hover:border-[#353535] hover:bg-[#171717] transition-all duration-200 flex flex-col justify-between"
+              className="group p-8 rounded-xl bg-card border border-line hover:border-line-strong hover:bg-elevated transition-all duration-200 flex flex-col justify-between"
             >
               <div>
                 {/* Yellow Index Chip */}
-                <div className="w-9 h-9 rounded-full border border-[#252525] group-hover:border-[#FFD21F] group-hover:bg-[#FFD21F] flex items-center justify-center font-mono text-xs font-bold text-[#8A8A85] group-hover:text-[#050505] transition-colors mb-6">
+                <div className="w-9 h-9 rounded-full border border-line group-hover:border-accent group-hover:bg-accent flex items-center justify-center font-mono text-xs font-bold text-meta group-hover:text-canvas transition-colors mb-6">
                   {item.index}
                 </div>
 
                 {/* Problem Title */}
-                <h3 className="font-display font-bold text-xl text-[#F5F5F0] mb-3 group-hover:text-[#FFD21F] transition-colors">
+                <h3 className="font-display font-bold text-xl text-ink mb-3 group-hover:text-accent transition-colors">
                   {item.title}
                 </h3>
 
                 {/* Problem Description */}
-                <p className="text-sm text-[#A6A6A0] leading-relaxed">
+                <p className="text-sm text-soft leading-relaxed">
                   {item.description}
                 </p>
               </div>
 
               {/* Anchor Link to Solution */}
-              <div className="pt-6 mt-6 border-t border-[#252525]">
+              <div className="pt-6 mt-6 border-t border-line">
                 <Link
                   href={`/services/${item.fixCategory}`}
                   data-cursor="EXPLORE"
-                  className="inline-flex items-center gap-1.5 text-xs font-mono font-medium text-[#8A8A85] group-hover:text-[#FFD21F] transition-colors"
+                  className="inline-flex items-center gap-1.5 text-xs font-mono font-medium text-meta group-hover:text-accent transition-colors"
                 >
                   <span>How we fix it</span>
                   <ArrowUpRight size={14} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />

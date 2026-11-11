@@ -19,14 +19,14 @@ export function Input({
       {label && (
         <label
           htmlFor={inputId}
-          className="text-xs font-mono uppercase tracking-wider text-[#A6A6A0]"
+          className="text-xs font-mono uppercase tracking-wider text-soft"
         >
           {label}
         </label>
       )}
       <input
         id={inputId}
-        className={`w-full px-4 py-3 rounded-lg bg-[#171717] border border-[#252525] text-[#F5F5F0] placeholder:text-[#6F6F6A] text-sm transition-colors focus:outline-none focus:border-[#FFD21F] ${
+        className={`w-full px-4 py-3 rounded-lg bg-elevated border border-line text-ink placeholder:text-meta text-sm transition-colors focus:outline-none focus:border-accent ${
           error ? 'border-[#FF6464]' : ''
         } ${className}`}
         {...props}
@@ -55,7 +55,7 @@ export function Textarea({
       {label && (
         <label
           htmlFor={inputId}
-          className="text-xs font-mono uppercase tracking-wider text-[#A6A6A0]"
+          className="text-xs font-mono uppercase tracking-wider text-soft"
         >
           {label}
         </label>
@@ -63,7 +63,7 @@ export function Textarea({
       <textarea
         id={inputId}
         rows={4}
-        className={`w-full px-4 py-3 rounded-lg bg-[#171717] border border-[#252525] text-[#F5F5F0] placeholder:text-[#6F6F6A] text-sm transition-colors focus:outline-none focus:border-[#FFD21F] ${
+        className={`w-full px-4 py-3 rounded-lg bg-elevated border border-line text-ink placeholder:text-meta text-sm transition-colors focus:outline-none focus:border-accent ${
           error ? 'border-[#FF6464]' : ''
         } ${className}`}
         {...props}

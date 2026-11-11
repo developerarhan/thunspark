@@ -13,12 +13,12 @@ export interface ArticleItem {
   title: string;
   slug: string;
   excerpt: string;
-  featured_image?: string;
-  featured_image_alt?: string;
-  category?: { name: string; slug: string };
-  author?: { name: string; role?: string };
-  reading_time?: number;
-  published_at?: string;
+  coverImageUrl?: string;
+  coverImageAlt?: string;
+  category?: { title: string; slug: string } | null;
+  author?: { name: string; role?: string | null } | null;
+  readingTime?: number;
+  publishedAt?: string;
 }
 
 interface BlogListingViewProps {
@@ -57,7 +57,7 @@ export function BlogListingView({ initialArticles = [], categories = [] }: BlogL
   return (
     <div className="w-full space-y-12">
       {/* Search & Category Filter Bar */}
-      <div className="flex flex-col md:flex-row items-center justify-between gap-6 pb-6 border-b border-[#252525]">
+      <div className="flex flex-col md:flex-row items-center justify-between gap-6 pb-6 border-b border-line">
         {/* Category Pills */}
         <div className="flex flex-wrap items-center gap-2">
           <button
@@ -65,8 +65,8 @@ export function BlogListingView({ initialArticles = [], categories = [] }: BlogL
             onClick={() => setSelectedCategory('all')}
             className={`px-3.5 py-1.5 rounded-full text-xs font-mono transition-colors ${
               selectedCategory === 'all'
-                ? 'bg-[#FFD21F] text-[#050505] font-bold'
-                : 'bg-[#111111] text-[#8A8A85] border border-[#252525] hover:border-[#353535] hover:text-[#F5F5F0]'
+                ? 'bg-accent text-canvas font-bold'
+                : 'bg-card text-meta border border-line hover:border-line-strong hover:text-ink'
             }`}
           >
             All Insights
@@ -78,8 +78,8 @@ export function BlogListingView({ initialArticles = [], categories = [] }: BlogL
               onClick={() => setSelectedCategory(cat.slug)}
               className={`px-3.5 py-1.5 rounded-full text-xs font-mono transition-colors ${
                 selectedCategory === cat.slug
-                  ? 'bg-[#FFD21F] text-[#050505] font-bold'
-                  : 'bg-[#111111] text-[#8A8A85] border border-[#252525] hover:border-[#353535] hover:text-[#F5F5F0]'
+                  ? 'bg-accent text-canvas font-bold'
+                  : 'bg-card text-meta border border-line hover:border-line-strong hover:text-ink'
               }`}
             >
               {cat.name}
@@ -89,27 +89,27 @@ export function BlogListingView({ initialArticles = [], categories = [] }: BlogL
 
         {/* Search Input */}
         <div className="relative w-full md:w-72">
-          <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#8A8A85]" />
+          <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-meta" />
           <input
             type="text"
             placeholder="Search insights..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 rounded-full bg-[#111111] border border-[#252525] text-xs text-[#F5F5F0] placeholder:text-[#8A8A85] focus:outline-none focus:border-[#FFD21F] transition-colors"
+            className="w-full pl-10 pr-4 py-2 rounded-full bg-card border border-line text-xs text-ink placeholder:text-meta focus:outline-none focus:border-accent transition-colors"
           />
         </div>
       </div>
 
       {/* Articles Grid or Empty State */}
       {filteredArticles.length === 0 ? (
-        <Card className="p-12 text-center border-[#252525] bg-[#111111] max-w-xl mx-auto">
-          <div className="w-14 h-14 rounded-2xl bg-[#171717] border border-[#252525] text-[#FFD21F] flex items-center justify-center mx-auto mb-4">
+        <Card className="p-12 text-center border-line bg-card max-w-xl mx-auto">
+          <div className="w-14 h-14 rounded-2xl bg-elevated border border-line text-accent flex items-center justify-center mx-auto mb-4">
             <BookOpen size={26} />
           </div>
-          <h4 className="font-display font-medium text-2xl text-[#F5F5F0] mb-3">
+          <h4 className="font-display font-medium text-2xl text-ink mb-3">
             Writing What&apos;s Next.
           </h4>
-          <p className="text-[#8A8A85] text-xs md:text-sm leading-relaxed mb-6">
+          <p className="text-soft text-xs md:text-sm leading-relaxed mb-6">
             We publish deep-dive breakdowns on customer acquisition economics, search intent, and digital conversion systems. Check back soon as our senior team publishes new essays.
           </p>
           <Button
@@ -128,47 +128,47 @@ export function BlogListingView({ initialArticles = [], categories = [] }: BlogL
           {visibleArticles.map((article) => (
             <Reveal key={article.slug}>
               <Link href={`/blog/${article.slug}`} className="group block h-full">
-                <Card className="h-full flex flex-col justify-between overflow-hidden border-[#252525] bg-[#111111] hover:border-[#FFD21F]/40 hover:bg-[#171717] transition-all">
+                <Card className="h-full flex flex-col justify-between overflow-hidden border-line bg-card hover:border-accent/40 hover:bg-elevated transition-all">
                   <div>
-                    {article.featured_image ? (
-                      <div className="aspect-[16/10] w-full overflow-hidden bg-[#171717] relative">
+                    {article.coverImageUrl ? (
+                      <div className="aspect-[16/10] w-full overflow-hidden bg-elevated relative">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
-                          src={article.featured_image}
-                          alt={article.featured_image_alt || article.title}
+                          src={article.coverImageUrl}
+                          alt={article.coverImageAlt || article.title}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                         />
                       </div>
                     ) : (
-                      <div className="aspect-[16/10] w-full bg-[#171717] flex items-center justify-center border-b border-[#252525]">
-                        <BookOpen size={28} className="text-[#8A8A85]" />
+                      <div className="aspect-[16/10] w-full bg-elevated flex items-center justify-center border-b border-line">
+                        <BookOpen size={28} className="text-meta" />
                       </div>
                     )}
 
                     <div className="p-6">
                       <div className="flex items-center justify-between gap-2 mb-3">
                         <Tag variant="accent" className="text-[10px] px-2.5 py-0.5">
-                          {article.category?.name || 'Growth Strategy'}
+                          {article.category?.title || 'Growth Strategy'}
                         </Tag>
-                        <span className="flex items-center gap-1 text-[11px] font-mono text-[#8A8A85]">
+                        <span className="flex items-center gap-1 text-[11px] font-mono text-meta">
                           <Clock size={12} />
-                          <span>{article.reading_time || 4} min read</span>
+                          <span>{article.readingTime || 4} min read</span>
                         </span>
                       </div>
 
-                      <h3 className="font-display font-medium text-lg text-[#F5F5F0] mb-2 group-hover:text-[#FFD21F] transition-colors line-clamp-2">
+                      <h3 className="font-display font-medium text-lg text-ink mb-2 group-hover:text-accent transition-colors line-clamp-2">
                         {article.title}
                       </h3>
 
-                      <p className="text-[#8A8A85] text-xs leading-relaxed line-clamp-3">
+                      <p className="text-soft text-xs leading-relaxed line-clamp-3">
                         {article.excerpt}
                       </p>
                     </div>
                   </div>
 
-                  <div className="px-6 pb-6 pt-2 flex items-center justify-between border-t border-[#252525] text-xs text-[#8A8A85]">
+                  <div className="px-6 pb-6 pt-2 flex items-center justify-between border-t border-line text-xs text-meta">
                     <span>{article.author?.name || 'ThunSpark Team'}</span>
-                    <span className="text-[#FFD21F] font-semibold flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                    <span className="text-accent font-semibold flex items-center gap-1 group-hover:translate-x-1 transition-transform">
                       Read
                       <ArrowRight size={13} />
                     </span>

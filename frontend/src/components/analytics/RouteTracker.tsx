@@ -1,23 +1,27 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { pushDataLayer } from '@/lib/analytics/gtm';
+import {
+  CONSENT_UPDATED_EVENT,
+  getStoredConsent,
+  pushDataLayer,
+  type ConsentState,
+} from '@/lib/analytics/gtm';
 
 export function RouteTracker() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const lastPathname = useRef<string>('');
+  const lastTrackedPath = useRef<string>('');
 
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
+  const trackPageView = useCallback((consent: ConsentState | null) => {
+    if (typeof window === 'undefined' || !consent?.analytics) return;
 
-    const fullPath = searchParams?.toString()
-      ? `${pathname}?${searchParams.toString()}`
-      : pathname;
+    const query = searchParams?.toString();
+    const fullPath = query ? `${pathname}?${query}` : pathname;
 
-    if (lastPathname.current !== fullPath) {
-      lastPathname.current = fullPath;
+    if (lastTrackedPath.current !== fullPath) {
+      lastTrackedPath.current = fullPath;
       pushDataLayer({
         event: 'virtual_page_view',
         page_location: window.location.href,
@@ -27,6 +31,23 @@ export function RouteTracker() {
       });
     }
   }, [pathname, searchParams]);
+
+  useEffect(() => {
+    trackPageView(getStoredConsent());
+
+    const handleConsentUpdate = (event: Event) => {
+      const custom = event as CustomEvent<ConsentState>;
+      const consent = custom.detail ?? getStoredConsent();
+      if (!consent?.analytics) {
+        lastTrackedPath.current = '';
+        return;
+      }
+      trackPageView(consent);
+    };
+
+    window.addEventListener(CONSENT_UPDATED_EVENT, handleConsentUpdate);
+    return () => window.removeEventListener(CONSENT_UPDATED_EVENT, handleConsentUpdate);
+  }, [trackPageView]);
 
   return null;
 }

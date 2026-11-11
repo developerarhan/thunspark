@@ -55,7 +55,7 @@ export function CustomCursor() {
     <>
       {/* Precision Center Dot */}
       <motion.div
-        className="fixed top-0 left-0 w-2 h-2 rounded-full bg-[#FFD21F] pointer-events-none z-50 mix-blend-difference"
+        className="fixed top-0 left-0 w-2 h-2 rounded-full bg-accent pointer-events-none z-50 mix-blend-difference"
         animate={{
           x: pos.x - 4,
           y: pos.y - 4,
@@ -66,7 +66,7 @@ export function CustomCursor() {
 
       {/* Expanding Outer Ring */}
       <motion.div
-        className="fixed top-0 left-0 rounded-full border border-[#FFD21F] pointer-events-none z-50 flex items-center justify-center font-mono text-[9px] font-bold tracking-widest text-[#050505] uppercase"
+        className="fixed top-0 left-0 rounded-full border border-accent pointer-events-none z-50 flex items-center justify-center font-mono text-[9px] font-bold tracking-widest text-canvas uppercase"
         animate={{
           x: pos.x - (hoverState.isHovered ? (hoverState.label ? 36 : 22) : 16),
           y: pos.y - (hoverState.isHovered ? (hoverState.label ? 36 : 22) : 16),

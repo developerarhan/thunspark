@@ -4,21 +4,17 @@ import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Reveal } from '@/components/motion/Reveal';
 import { CheckCircle2, Cpu, ArrowRight } from 'lucide-react';
+import { buildMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildMetadata({
   title: 'About ThunSpark — We Solve Business Problems. Marketing Is How.',
   description:
     'Most agencies are built around channels — we are built around the bottleneck. Strategy, creative, web, media, and measurement under one roof.',
-  openGraph: {
-    title: 'About ThunSpark — Strategic Growth Partner',
-    description:
-      'We solve business problems. Marketing is how. Discover our principles, operating manifesto, and compounding growth process.',
-    url: 'https://thunspark.agency/about',
-  },
-  alternates: {
-    canonical: '/about',
-  },
-};
+  ogTitle: 'About ThunSpark — Strategic Growth Partner',
+  ogDescription:
+    'We solve business problems. Marketing is how. Discover our principles, operating manifesto, and compounding growth process.',
+  path: '/about',
+});
 
 const PRINCIPLES = [
   {
@@ -89,18 +85,18 @@ export default function AboutPage() {
   return (
     <div className="flex flex-col">
       {/* 1. HERO */}
-      <section className="pt-28 pb-16 md:pt-36 md:pb-24 border-b border-[#252525]">
+      <section className="pt-28 pb-16 md:pt-36 md:pb-24 border-b border-line">
         <Container>
           <Reveal>
             <div className="max-w-3xl">
-              <span className="font-mono text-xs uppercase tracking-widest text-[#FFD21F] block mb-3">
+              <span className="font-mono text-xs uppercase tracking-widest text-accent block mb-3">
                 ABOUT THUNSPARK
               </span>
-              <h1 className="font-display font-medium text-4xl sm:text-5xl lg:text-6xl text-[#F5F5F0] tracking-tight mb-6">
+              <h1 className="font-display font-medium text-4xl sm:text-5xl lg:text-6xl text-ink tracking-tight mb-6">
                 We solve business problems. <br className="hidden sm:inline" />
-                <span className="text-[#8A8A85]">Marketing is how.</span>
+                <span className="text-meta">Marketing is how.</span>
               </h1>
-              <p className="text-[#8A8A85] text-base sm:text-lg leading-relaxed max-w-2xl">
+              <p className="text-soft text-base sm:text-lg leading-relaxed max-w-2xl">
                 Most agencies are built around channels — we are built around the bottleneck. Strategy, creative, web, media, and measurement under one roof.
               </p>
             </div>
@@ -109,19 +105,19 @@ export default function AboutPage() {
       </section>
 
       {/* 2. MANIFESTO BLOCK */}
-      <section className="py-20 md:py-28 bg-[#0A0A0A] border-b border-[#252525]">
+      <section className="py-20 md:py-28 bg-alt border-b border-line">
         <Container>
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
             <div className="lg:col-span-5">
               <Reveal>
-                <span className="font-mono text-xs uppercase tracking-widest text-[#FFD21F] block mb-2">
+                <span className="font-mono text-xs uppercase tracking-widest text-accent block mb-2">
                   THE MANIFESTO
                 </span>
-                <h2 className="font-display font-medium text-3xl md:text-4xl text-[#F5F5F0] tracking-tight mb-4">
+                <h2 className="font-display font-medium text-3xl md:text-4xl text-ink tracking-tight mb-4">
                   The tools change. <br />
                   The ambition doesn&apos;t.
                 </h2>
-                <p className="text-[#8A8A85] text-sm md:text-base leading-relaxed">
+                <p className="text-soft text-sm md:text-base leading-relaxed">
                   We do not believe in busywork. We do not believe in reporting vanity metrics while sales stall. Every strategy we build is rooted in your unit economics, your distribution reality, and your category dynamics.
                 </p>
               </Reveal>
@@ -129,8 +125,8 @@ export default function AboutPage() {
 
             <div className="lg:col-span-7 space-y-6">
               <Reveal delay={0.1}>
-                <Card className="p-6 md:p-8 bg-[#111111] border-[#252525] space-y-4">
-                  <h3 className="font-display font-medium text-xl text-[#F5F5F0] mb-2">
+                <Card className="p-6 md:p-8 bg-card border-line space-y-4">
+                  <h3 className="font-display font-medium text-xl text-ink mb-2">
                     Our Operating Thesis
                   </h3>
                   <div className="space-y-3">
@@ -141,8 +137,8 @@ export default function AboutPage() {
                       'No metric reporting without revenue accountability.',
                     ].map((rule, idx) => (
                       <div key={idx} className="flex items-start gap-3">
-                        <CheckCircle2 size={16} className="text-[#FFD21F] shrink-0 mt-0.5" />
-                        <span className="text-sm font-medium text-[#F5F5F0]">{rule}</span>
+                        <CheckCircle2 size={16} className="text-accent shrink-0 mt-0.5" />
+                        <span className="text-sm font-medium text-ink">{rule}</span>
                       </div>
                     ))}
                   </div>
@@ -151,16 +147,16 @@ export default function AboutPage() {
 
               {/* AI Honesty Tag */}
               <Reveal delay={0.15}>
-                <Card className="p-6 bg-[#171717] border border-[#353535]">
+                <Card className="p-6 bg-elevated border border-line-strong">
                   <div className="flex items-start gap-4">
-                    <div className="w-9 h-9 rounded-lg bg-[#252525] text-[#FFD21F] flex items-center justify-center shrink-0">
+                    <div className="w-9 h-9 rounded-lg bg-line text-accent flex items-center justify-center shrink-0">
                       <Cpu size={18} />
                     </div>
                     <div>
-                      <h4 className="font-mono text-xs uppercase tracking-wider text-[#FFD21F] mb-1">
+                      <h4 className="font-mono text-xs uppercase tracking-wider text-accent mb-1">
                         AI Honesty Statement
                       </h4>
-                      <p className="text-xs md:text-sm text-[#8A8A85] leading-relaxed">
+                      <p className="text-xs md:text-sm text-soft leading-relaxed">
                         We use modern AI tooling across our research, data processing, and asset generation pipelines. We never use it to replace original thinking, bespoke client strategy, or senior human accountability.
                       </p>
                     </div>
@@ -173,17 +169,17 @@ export default function AboutPage() {
       </section>
 
       {/* 3. PRINCIPLES */}
-      <section className="py-20 md:py-28 border-b border-[#252525]">
+      <section className="py-20 md:py-28 border-b border-line">
         <Container>
           <Reveal>
             <div className="max-w-2xl mb-12">
-              <span className="font-mono text-xs uppercase tracking-widest text-[#FFD21F] block mb-2">
+              <span className="font-mono text-xs uppercase tracking-widest text-accent block mb-2">
                 HOW WE OPERATE
               </span>
-              <h2 className="font-display font-medium text-3xl md:text-4xl text-[#F5F5F0] tracking-tight mb-4">
+              <h2 className="font-display font-medium text-3xl md:text-4xl text-ink tracking-tight mb-4">
                 Four principles we refuse to break.
               </h2>
-              <p className="text-[#8A8A85] text-sm md:text-base">
+              <p className="text-soft text-sm md:text-base">
                 These four commitments guide every engagement, client conversation, and campaign we ship.
               </p>
             </div>
@@ -192,14 +188,14 @@ export default function AboutPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {PRINCIPLES.map((principle, idx) => (
               <Reveal key={principle.number} delay={idx * 0.08}>
-                <Card className="p-6 md:p-8 h-full bg-[#111111] border-[#252525]">
-                  <span className="font-mono text-xs font-bold text-[#FFD21F] block mb-4">
+                <Card className="p-6 md:p-8 h-full bg-card border-line">
+                  <span className="font-mono text-xs font-bold text-accent block mb-4">
                     {principle.number} / COMMITMENT
                   </span>
-                  <h3 className="font-display font-medium text-2xl text-[#F5F5F0] mb-3">
+                  <h3 className="font-display font-medium text-2xl text-ink mb-3">
                     {principle.title}
                   </h3>
-                  <p className="text-[#8A8A85] text-sm md:text-base leading-relaxed">
+                  <p className="text-soft text-sm md:text-base leading-relaxed">
                     {principle.description}
                   </p>
                 </Card>
@@ -210,46 +206,46 @@ export default function AboutPage() {
       </section>
 
       {/* 4. VERTICAL PROCESS PATHWAY */}
-      <section className="py-20 md:py-28 bg-[#0A0A0A] border-b border-[#252525]">
+      <section className="py-20 md:py-28 bg-alt border-b border-line">
         <Container>
           <Reveal>
             <div className="max-w-2xl mb-16">
-              <span className="font-mono text-xs uppercase tracking-widest text-[#FFD21F] block mb-2">
+              <span className="font-mono text-xs uppercase tracking-widest text-accent block mb-2">
                 A COMPOUNDING PROCESS
               </span>
-              <h2 className="font-display font-medium text-3xl md:text-4xl text-[#F5F5F0] tracking-tight mb-4">
+              <h2 className="font-display font-medium text-3xl md:text-4xl text-ink tracking-tight mb-4">
                 How an engagement unfolds.
               </h2>
-              <p className="text-[#8A8A85] text-sm md:text-base">
+              <p className="text-soft text-sm md:text-base">
                 From initial diagnostic to continuous revenue optimization, every stage builds compounding leverage.
               </p>
             </div>
           </Reveal>
 
           {/* Vertical Timeline */}
-          <div className="relative border-l border-[#252525] ml-4 md:ml-8 pl-6 md:pl-10 space-y-12 max-w-3xl">
+          <div className="relative border-l border-line ml-4 md:ml-8 pl-6 md:pl-10 space-y-12 max-w-3xl">
             {PROCESS_STEPS.map((step, idx) => (
               <Reveal key={step.step} delay={idx * 0.08}>
                 <div className="relative">
                   {/* Step Node Dot */}
-                  <div className="absolute -left-[31px] md:-left-[47px] top-1.5 w-4 h-4 rounded-full bg-[#050505] border-2 border-[#FFD21F]" />
+                  <div className="absolute -left-[31px] md:-left-[47px] top-1.5 w-4 h-4 rounded-full bg-base border-2 border-accent" />
 
                   <div>
                     <div className="flex items-center gap-3 mb-2">
-                      <span className="font-mono text-xs font-bold text-[#FFD21F]">
+                      <span className="font-mono text-xs font-bold text-accent">
                         STAGE {step.step}
                       </span>
-                      <span className="text-[#353535]">•</span>
-                      <h3 className="font-display font-medium text-xl md:text-2xl text-[#F5F5F0]">
+                      <span className="text-line-strong">•</span>
+                      <h3 className="font-display font-medium text-xl md:text-2xl text-ink">
                         {step.name}
                       </h3>
                     </div>
 
-                    <p className="font-display text-sm text-[#F5F5F0] italic mb-2">
+                    <p className="font-display text-sm text-ink italic mb-2">
                       {step.tagline}
                     </p>
 
-                    <p className="text-[#8A8A85] text-sm leading-relaxed">
+                    <p className="text-soft text-sm leading-relaxed">
                       {step.description}
                     </p>
                   </div>
@@ -263,15 +259,14 @@ export default function AboutPage() {
       {/* 5. FINAL CTA */}
       <section className="py-24 md:py-32">
         <Container>
-          <div className="max-w-4xl mx-auto rounded-2xl border border-[#252525] bg-[#111111] p-8 sm:p-14 text-center relative overflow-hidden">
-            <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-96 h-96 bg-[radial-gradient(circle,rgba(255,210,31,0.12)_0%,transparent_70%)] pointer-events-none" />
-            <span className="font-mono text-xs uppercase tracking-widest text-[#FFD21F] block mb-3">
+          <div className="max-w-4xl mx-auto rounded-2xl border border-line bg-card p-8 sm:p-14 text-center relative overflow-hidden">
+            <span className="font-mono text-xs uppercase tracking-widest text-accent block mb-3">
               GROWTH PARTNERSHIP
             </span>
-            <h2 className="font-display font-medium text-3xl sm:text-4xl text-[#F5F5F0] tracking-tight mb-4">
+            <h2 className="font-display font-medium text-3xl sm:text-4xl text-ink tracking-tight mb-4">
               Ready to find your growth bottleneck?
             </h2>
-            <p className="text-[#8A8A85] text-base leading-relaxed max-w-xl mx-auto mb-8">
+            <p className="text-soft text-base leading-relaxed max-w-xl mx-auto mb-8">
               Book a 30-minute strategy call. We will review your current channels, isolate where revenue leaks, and tell you what we would fix first.
             </p>
             <div className="flex flex-wrap items-center justify-center gap-4">

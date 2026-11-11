@@ -1,9 +1,11 @@
 @import "tailwindcss";
+@import "lenis/dist/lenis.css";
 @source "../../src";
 
 :root {
   /* ThunSpark Master Design Tokens (Guide v1.2 §B2 & §R6) */
-  --color-canvas: #050505;
+  --color-base: #050505;
+  --color-canvas: var(--color-base);
   --color-alt: #0A0A0A;
   --color-card: #111111;
   --color-elevated: #171717;
@@ -26,7 +28,7 @@
   --color-error: #FF6464;
 
   /* Backward Compatibility Aliases for transitional components */
-  --bg-primary: var(--color-canvas);
+  --bg-primary: var(--color-base);
   --bg-secondary: var(--color-alt);
   --surface: var(--color-card);
   --surface-elevated: var(--color-elevated);
@@ -55,6 +57,8 @@
 
 @theme {
   --color-canvas: #050505;
+  --background-color-base: #050505;
+  --border-color-base: #050505;
   --color-alt: #0A0A0A;
   --color-card: #111111;
   --color-elevated: #171717;
@@ -87,23 +91,30 @@
   --color-border: #252525;
   --color-border-strong: #353535;
 
-  --font-display: var(--font-display), sans-serif;
-  --font-body: var(--font-body), sans-serif;
-  --font-mono: var(--font-mono), monospace;
+  --font-display: var(--font-space-grotesk), sans-serif;
+  --font-sans: var(--font-inter), sans-serif;
+  --font-body: var(--font-inter), sans-serif;
+  --font-mono: var(--font-space-mono), monospace;
 }
 
 html {
-  background-color: var(--color-canvas);
+  background-color: var(--color-base);
   color: var(--color-ink);
   color-scheme: dark;
   scroll-behavior: smooth;
   scroll-padding-top: 96px;
 }
 
+/* Lenis smooth-scroll CSS override: disable native CSS smooth scrolling while Lenis is active */
+html.lenis,
+html.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
 body {
-  background-color: var(--color-canvas);
+  background-color: var(--color-base);
   color: var(--color-ink);
-  font-family: var(--font-body);
+  font-family: var(--font-sans);
   min-height: 100vh;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
@@ -112,13 +123,13 @@ body {
 
 /* Global Selection per Guide §B3 */
 ::selection {
-  background-color: #FFD21F;
-  color: #050505;
+  background-color: var(--color-accent);
+  color: var(--color-base);
 }
 
 /* Global Focus-Visible per Guide §B3 */
 :focus-visible {
-  outline: 2px solid #FFD21F;
+  outline: 2px solid var(--color-accent);
   outline-offset: 3px;
 }
 
@@ -128,7 +139,7 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #050505;
+  background: var(--color-base);
 }
 
 ::-webkit-scrollbar-thumb {
@@ -137,7 +148,7 @@ body {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #353535;
+  background: var(--color-line-strong);
 }
 
 /* Editorial One-Accent-Word Utility per Guide §B3 */
@@ -148,8 +159,8 @@ body {
 
 /* Select & Option Dropdown Dark Mode Contrast */
 select option {
-  background-color: #171717;
-  color: #F5F5F0;
+  background-color: var(--color-elevated);
+  color: var(--color-ink);
 }
 
 /* Reduced Motion Matrix */

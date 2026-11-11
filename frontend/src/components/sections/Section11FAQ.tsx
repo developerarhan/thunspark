@@ -4,7 +4,7 @@ import { SectionHeading } from '@/components/ui/SectionHeading';
 import { Accordion } from '@/components/ui/Accordion';
 import { FAQ_ITEMS } from '@/lib/constants';
 
-export function Section10FAQ() {
+export function Section11FAQ() {
   // Build FAQPage schema only for final verified answers
   const verifiedFaqs = FAQ_ITEMS.filter((item) => item.hasSchema);
   const faqSchema = {
@@ -21,7 +21,7 @@ export function Section10FAQ() {
   };
 
   return (
-    <section className="py-24 md:py-32 bg-[#050505]">
+    <section className="py-24 md:py-32 bg-base">
       <Container>
         <SectionHeading
           eyebrow="09 / QUESTIONS"

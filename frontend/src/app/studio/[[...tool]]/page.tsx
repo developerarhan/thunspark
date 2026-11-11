@@ -6,5 +6,9 @@ import sanityConfig from '../../../../sanity.config';
 export const dynamic = 'force-static';
 
 export default function StudioPage() {
-  return <NextStudio config={sanityConfig} />;
+  return (
+    <div className="pt-20">
+      <NextStudio config={sanityConfig} />
+    </div>
+  );
 }

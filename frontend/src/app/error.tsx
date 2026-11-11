@@ -27,10 +27,10 @@ export default function ErrorPage({
           <div className="w-14 h-14 rounded-full bg-red-950/40 text-red-400 border border-red-500/30 flex items-center justify-center mx-auto mb-6">
             <AlertTriangle size={28} />
           </div>
-          <h1 className="font-display font-medium text-3xl sm:text-4xl text-[#F5F5F0] tracking-tight mb-4">
+          <h1 className="font-display font-medium text-3xl sm:text-4xl text-ink tracking-tight mb-4">
             Something went wrong.
           </h1>
-          <p className="text-[#A6A6A0] text-sm leading-relaxed mb-8">
+          <p className="text-soft text-sm leading-relaxed mb-8">
             An unexpected error occurred while processing this request. Our technical operations team has been notified.
           </p>
           <div className="flex items-center justify-center gap-4">

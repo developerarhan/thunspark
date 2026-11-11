@@ -8,19 +8,19 @@ export function Section06Industries() {
   const getIndustryIcon = (icon: string) => {
     switch (icon) {
       case 'rocket':
-        return <Rocket size={24} className="text-[#FFD21F]" />;
+        return <Rocket size={24} className="text-accent" />;
       case 'shopping-bag':
-        return <ShoppingBag size={24} className="text-[#FFD21F]" />;
+        return <ShoppingBag size={24} className="text-accent" />;
       case 'briefcase':
-        return <Briefcase size={24} className="text-[#FFD21F]" />;
+        return <Briefcase size={24} className="text-accent" />;
       case 'users':
       default:
-        return <Users size={24} className="text-[#FFD21F]" />;
+        return <Users size={24} className="text-accent" />;
     }
   };
 
   return (
-    <section className="py-24 md:py-32 bg-[#050505]">
+    <section className="py-24 md:py-32 bg-base">
       <Container>
         <SectionHeading
           eyebrow={INDUSTRIES_COPY.eyebrow}
@@ -36,16 +36,16 @@ export function Section06Industries() {
           {INDUSTRIES_COPY.items.map((item, idx) => (
             <div
               key={idx}
-              className="p-8 rounded-xl bg-[#111111] border border-[#252525] hover:border-[#353535] hover:bg-[#171717] transition-all flex flex-col justify-between"
+              className="p-8 rounded-xl bg-card border border-line hover:border-line-strong hover:bg-elevated transition-all flex flex-col justify-between"
             >
               <div>
-                <div className="p-3.5 rounded-xl bg-[#171717] border border-[#252525] w-fit mb-6">
+                <div className="p-3.5 rounded-xl bg-elevated border border-line w-fit mb-6">
                   {getIndustryIcon(item.icon)}
                 </div>
-                <h3 className="font-display font-bold text-xl text-[#F5F5F0] mb-3">
+                <h3 className="font-display font-bold text-xl text-ink mb-3">
                   {item.title}
                 </h3>
-                <p className="text-sm text-[#A6A6A0] leading-relaxed">
+                <p className="text-sm text-soft leading-relaxed">
                   {item.description}
                 </p>
               </div>

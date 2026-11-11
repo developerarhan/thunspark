@@ -13,9 +13,10 @@ import { CookieConsentBanner } from "@/components/analytics/CookieConsentBanner"
 import { ScrollDepthTracker } from "@/components/analytics/ScrollDepthTracker";
 import { RouteTracker } from "@/components/analytics/RouteTracker";
 import { siteConfig } from "@/site.config";
+import { SITE_URL, serializeJsonLd } from "@/lib/seo";
 
 const spaceGrotesk = Space_Grotesk({
-  variable: "--font-display",
+  variable: "--font-space-grotesk",
   subsets: ["latin"],
   display: "swap",
   weight: ["500", "700"],
@@ -23,7 +24,7 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 const inter = Inter({
-  variable: "--font-body",
+  variable: "--font-inter",
   subsets: ["latin"],
   display: "swap",
   weight: ["400", "500", "600"],
@@ -31,7 +32,7 @@ const inter = Inter({
 });
 
 const spaceMono = Space_Mono({
-  variable: "--font-mono",
+  variable: "--font-space-mono",
   subsets: ["latin"],
   display: "swap",
   weight: ["400", "700"],
@@ -45,7 +46,7 @@ export const metadata: Metadata = {
   },
   description:
     "Strategy-led digital growth: social media, paid ads, SEO, content & web. We solve business problems, not just post content.",
-  metadataBase: new URL(siteConfig.url),
+  metadataBase: new URL(SITE_URL),
   keywords: [
     "Digital Marketing Agency in India",
     "Social Media Marketing Agency",
@@ -54,12 +55,12 @@ export const metadata: Metadata = {
     "Growth Strategy",
     "Conversion Rate Optimization",
   ],
-  authors: [{ name: "ThunSpark", url: siteConfig.url }],
+  authors: [{ name: "ThunSpark", url: SITE_URL }],
   creator: "ThunSpark",
   openGraph: {
     type: "website",
     locale: "en_IN",
-    url: siteConfig.url,
+    url: SITE_URL,
     siteName: siteConfig.name,
     title: "Digital Marketing Agency in India · ThunSpark",
     description:
@@ -82,41 +83,39 @@ const jsonLd = {
   "@graph": [
     {
       "@type": "Organization",
-      "@id": `${siteConfig.url}/#organization`,
+      "@id": `${SITE_URL}/#organization`,
       name: siteConfig.name,
-      url: siteConfig.url,
-      logo: `${siteConfig.url}/logo.svg`,
+      url: SITE_URL,
+      logo: `${SITE_URL}/logo.svg`,
       description: siteConfig.description,
-      sameAs: [
-        siteConfig.contact.socials.linkedin,
-        siteConfig.contact.socials.instagram,
-        siteConfig.contact.socials.twitter,
-      ],
     },
     {
       "@type": "WebSite",
-      "@id": `${siteConfig.url}/#website`,
-      url: siteConfig.url,
+      "@id": `${SITE_URL}/#website`,
+      url: SITE_URL,
       name: siteConfig.name,
       publisher: {
-        "@id": `${siteConfig.url}/#organization`,
+        "@id": `${SITE_URL}/#organization`,
       },
     },
   ],
 };
+
+const rawGtmId = process.env.NEXT_PUBLIC_GTM_ID?.trim();
+const gtmId =
+  rawGtmId && /^GTM-[A-Z0-9]+$/.test(rawGtmId) ? rawGtmId : null;
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const gtmId = process.env.NEXT_PUBLIC_GTM_ID || "GTM-THUNSPARK";
 
   return (
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${spaceGrotesk.variable} ${inter.variable} ${spaceMono.variable} dark antialiased scroll-smooth`}
+      className={`${spaceGrotesk.variable} ${inter.variable} ${spaceMono.variable} dark antialiased`}
     >
       <head>
         {/* Fast Preloader Session Check: executes synchronously before paint to prevent flash for returning visitors */}
@@ -150,10 +149,10 @@ export default function RootLayout({
         {/* Organization & WebSite JSON-LD */}
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
         />
       </head>
-      <body className="min-h-screen flex flex-col bg-[#050505] text-[#F5F5F0] font-sans selection:bg-[#FFD21F] selection:text-[#050505]">
+      <body className="min-h-screen flex flex-col bg-base text-ink font-sans selection:bg-accent selection:text-canvas">
         {gtmId && <GoogleTagManager gtmId={gtmId} />}
         <Suspense fallback={null}>
           <RouteTracker />
@@ -163,7 +162,7 @@ export default function RootLayout({
         <AttributionTracker />
         <MotionProvider>
           <Header />
-          <main className="flex-1 pt-20">{children}</main>
+          <main className="flex-1">{children}</main>
           <Footer />
         </MotionProvider>
         <Analytics />

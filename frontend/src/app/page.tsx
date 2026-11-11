@@ -1,4 +1,6 @@
 import React from 'react';
+import type { Metadata } from 'next';
+import { buildMetadata } from '@/lib/seo';
 import { Section01Hero } from '@/components/sections/Section01Hero';
 import { Section02Problems } from '@/components/sections/Section02Problems';
 import { Section03PositioningStrip } from '@/components/sections/Section03PositioningStrip';
@@ -7,10 +9,20 @@ import { Section05ProcessPathway } from '@/components/sections/Section05ProcessP
 import { Section06Industries } from '@/components/sections/Section06Industries';
 import { Section07FeaturedWork } from '@/components/sections/Section07FeaturedWork';
 import { Section08ClientLove } from '@/components/sections/Section08ClientLove';
-import { Section08WhyThunSpark } from '@/components/sections/Section08WhyThunSpark';
-import { Section09Insights } from '@/components/sections/Section09Insights';
-import { Section10FAQ } from '@/components/sections/Section10FAQ';
-import { Section11FinalCTA } from '@/components/sections/Section11FinalCTA';
+import { Section09WhyThunSpark } from '@/components/sections/Section09WhyThunSpark';
+import { Section10Insights } from '@/components/sections/Section10Insights';
+import { Section11FAQ } from '@/components/sections/Section11FAQ';
+import { Section12FinalCTA } from '@/components/sections/Section12FinalCTA';
+
+export const metadata: Metadata = buildMetadata({
+  title: { absolute: 'Digital Marketing Agency in India · ThunSpark' },
+  description:
+    'Strategy-led digital growth: social media, paid ads, SEO, content & web. We solve business problems, not just post content.',
+  ogTitle: 'Digital Marketing Agency in India · ThunSpark',
+  ogDescription:
+    'Strategy That Sparks Growth. Connected digital growth across strategy, creative, search, and conversion.',
+  path: '/',
+});
 
 export default function HomePage() {
   return (
@@ -40,16 +52,16 @@ export default function HomePage() {
       <Section08ClientLove />
 
       {/* §9 Why ThunSpark (Problem-first, Full-funnel, Senior-led, Transparency) */}
-      <Section08WhyThunSpark />
+      <Section09WhyThunSpark />
 
       {/* §10 Insights (Auto-hidden when 0 published posts) */}
-      <Section09Insights posts={[]} />
+      <Section10Insights posts={[]} />
 
       {/* §11 FAQ (Single-Open Accordion with FAQPage JSON-LD) */}
-      <Section10FAQ />
+      <Section11FAQ />
 
       {/* §12 Final CTA with Approved Radial Glow & Deliverables */}
-      <Section11FinalCTA />
+      <Section12FinalCTA />
     </>
   );
 }
