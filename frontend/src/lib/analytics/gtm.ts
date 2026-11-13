@@ -101,6 +101,20 @@ export function trackCTAClick(
 }
 
 /**
+ * Tracks Book Strategy Call clicks with CTA location (no personal data).
+ */
+export function trackBookCallClick(location: string, metadata?: DataLayerPayload) {
+  if (!getStoredConsent()?.analytics) return;
+
+  pushDataLayer({
+    event: 'book_call_click',
+    cta_location: location,
+    ...metadata,
+    timestamp: new Date().toISOString(),
+  });
+}
+
+/**
  * Tracks Form lifecycle transitions.
  */
 export function trackFormEvent(

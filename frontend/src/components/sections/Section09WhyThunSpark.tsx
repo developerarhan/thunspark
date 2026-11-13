@@ -1,7 +1,7 @@
 import React from 'react';
 import { Container, Section } from '@/components/ui/Container';
 import { SectionHeading } from '@/components/ui/SectionHeading';
-import { Button } from '@/components/ui/Button';
+import { BookingButton } from '@/components/ui/BookingButton';
 import { WHY_THUNSPARK } from '@/lib/constants';
 
 export function Section09WhyThunSpark() {
@@ -24,14 +24,14 @@ export function Section09WhyThunSpark() {
               className="mb-8"
             />
 
-            <Button
-              href={WHY_THUNSPARK.cta.href}
+            <BookingButton
+              location="why_thunspark_cta"
               variant="primary"
               size="md"
               data-analytics-cta="why_growth_partner"
             >
               {WHY_THUNSPARK.cta.label}
-            </Button>
+            </BookingButton>
           </div>
 
           {/* Right Column: 2x2 Grid of Principle Cards */}

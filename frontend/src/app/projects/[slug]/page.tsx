@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { Container } from '@/components/ui/Container';
 import { Tag } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
+import { BookingButton } from '@/components/ui/BookingButton';
 import { Reveal } from '@/components/motion/Reveal';
 import { CASE_STUDIES } from '@/lib/constants';
 import { ArrowLeft, ArrowRight, CheckCircle2, ShieldAlert } from 'lucide-react';
@@ -214,10 +214,10 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
                 Book a 30-minute strategy call. We will review your current channels, identify what is holding your growth back, and propose an actionable scope.
               </p>
               <div className="flex flex-wrap items-center justify-center gap-4">
-                <Button href="/contact" variant="primary" size="lg">
+                <BookingButton location="project_detail_cta" variant="primary" size="lg">
                   <span>Book a strategy call</span>
                   <ArrowRight size={16} />
-                </Button>
+                </BookingButton>
               </div>
             </div>
           </Container>

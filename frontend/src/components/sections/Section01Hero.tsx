@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Container, Section } from '@/components/ui/Container';
 import { Button } from '@/components/ui/Button';
+import { BookingButton } from '@/components/ui/BookingButton';
 import { HERO_COPY } from '@/lib/constants';
 import { ArrowRight } from 'lucide-react';
 
@@ -62,15 +63,15 @@ export function Section01Hero() {
 
             {/* CTAs */}
             <div className="flex flex-wrap items-center gap-4 pt-2">
-              <Button
-                href={HERO_COPY.primaryCta.href}
+              <BookingButton
+                location="hero_primary"
                 variant="primary"
                 size="lg"
                 data-analytics-cta="hero_strategy_call"
               >
                 <span>{HERO_COPY.primaryCta.label}</span>
                 <ArrowRight size={18} className="ml-2 inline" />
-              </Button>
+              </BookingButton>
               <Button
                 href={HERO_COPY.secondaryCta.href}
                 variant="secondary"

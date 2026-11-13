@@ -8,6 +8,8 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
   variant?: 'primary' | 'secondary' | 'ghost';
   size?: 'sm' | 'md' | 'lg';
   href?: string;
+  target?: string;
+  rel?: string;
   className?: string;
   children: React.ReactNode;
   'data-analytics-cta'?: string;
@@ -19,6 +21,8 @@ export function Button({
   variant = 'primary',
   size = 'md',
   href,
+  target,
+  rel,
   className = '',
   children,
   ...props
@@ -50,7 +54,13 @@ export function Button({
         whileTap={{ scale: 0.98 }}
         className="inline-block"
       >
-        <Link href={href} className={combinedClasses} {...(props as any)}>
+        <Link
+          href={href}
+          target={target}
+          rel={rel}
+          className={combinedClasses}
+          {...(props as any)}
+        >
           {children}
         </Link>
       </motion.div>

@@ -4,6 +4,7 @@ import { Container } from '@/components/ui/Container';
 import { Tag } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
+import { BookingButton } from '@/components/ui/BookingButton';
 import { Accordion } from '@/components/ui/Accordion';
 import { Reveal } from '@/components/motion/Reveal';
 import { ServiceDetail } from '@/lib/services-data';
@@ -50,10 +51,10 @@ export function ServiceTemplate({ service }: ServiceTemplateProps) {
               </p>
 
               <div className="flex flex-wrap items-center gap-4">
-                <Button href="/contact" variant="primary" size="lg">
+                <BookingButton location="service_detail_hero" variant="primary" size="lg">
                   <span>Book a strategy call</span>
                   <ArrowRight size={16} />
-                </Button>
+                </BookingButton>
                 <Button href="#deliverables" variant="secondary" size="lg">
                   <span>See deliverables</span>
                 </Button>
@@ -150,10 +151,10 @@ export function ServiceTemplate({ service }: ServiceTemplateProps) {
                   <p className="text-soft text-sm md:text-base leading-relaxed mb-6">
                     No vanity decks or hand-waving consultations. We deliver structured, documented assets that plug directly into your growth stack.
                   </p>
-                  <Button href="/contact" variant="primary" size="md">
+                  <BookingButton location="service_detail_scope" variant="primary" size="md">
                     <span>Inquire about this scope</span>
                     <ArrowRight size={14} />
-                  </Button>
+                  </BookingButton>
                 </div>
               </Reveal>
             </div>
@@ -247,10 +248,10 @@ export function ServiceTemplate({ service }: ServiceTemplateProps) {
               Book a 30-minute strategy call. We will review your current {service.shortName} and tell you what we would fix first. {service.ctaClosing}
             </p>
             <div className="flex flex-wrap items-center justify-center gap-4">
-              <Button href="/contact" variant="primary" size="lg">
+              <BookingButton location="service_detail_final_cta" variant="primary" size="lg">
                 <span>Book a strategy call</span>
                 <ArrowRight size={16} />
-              </Button>
+              </BookingButton>
             </div>
           </div>
         </Container>

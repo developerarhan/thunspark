@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Menu, X, ChevronDown } from 'lucide-react';
 import { Container } from '@/components/ui/Container';
-import { Button } from '@/components/ui/Button';
+import { BookingButton } from '@/components/ui/BookingButton';
 import { MegaMenu } from './MegaMenu';
 import { siteConfig } from '@/site.config';
 
@@ -176,27 +176,27 @@ export function Header() {
             {/* Right Action */}
             <div className="flex items-center gap-2 sm:gap-3 shrink-0">
               <div className="inline-flex lg:hidden shrink-0">
-                <Button
-                  href="/contact"
+                <BookingButton
+                  location="header_mobile"
                   variant="primary"
                   size="sm"
                   className="px-2.5! py-1.5! sm:px-3.5! sm:py-2! text-[11px]! sm:text-xs! whitespace-nowrap"
                   data-analytics-cta="header_growth_audit_mobile"
                 >
                   Get Audit
-                </Button>
+                </BookingButton>
               </div>
 
               <div className="hidden lg:inline-flex shrink-0">
-                <Button
-                  href="/contact"
+                <BookingButton
+                  location="header_desktop"
                   variant="primary"
                   size="sm"
                   className="hidden lg:inline-flex whitespace-nowrap"
                   data-analytics-cta="header_growth_audit"
                 >
                   Get a growth audit
-                </Button>
+                </BookingButton>
               </div>
 
               {/* Mobile Hamburger Toggle */}
@@ -287,8 +287,8 @@ export function Header() {
 
           <div className="mt-auto pt-6 pb-4 border-t border-line space-y-4">
             <div className="w-full [&>div]:block [&>div]:w-full">
-              <Button
-                href="/contact"
+              <BookingButton
+                location="header_drawer"
                 variant="primary"
                 size="md"
                 className="w-full text-center"
@@ -296,7 +296,7 @@ export function Header() {
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Get a growth audit
-              </Button>
+              </BookingButton>
             </div>
             <div className="text-xs text-meta text-center">
               {siteConfig.contact.email}

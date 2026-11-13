@@ -2,7 +2,7 @@ import React from 'react';
 import { Container, Section } from '@/components/ui/Container';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { Accordion } from '@/components/ui/Accordion';
-import { Button } from '@/components/ui/Button';
+import { BookingButton } from '@/components/ui/BookingButton';
 import { FAQ_ITEMS, FINAL_CTA } from '@/lib/constants';
 import { siteConfig } from '@/site.config';
 import { ArrowRight, Mail } from 'lucide-react';
@@ -47,15 +47,15 @@ export function Section11FAQ() {
           </h3>
 
           <div className="flex flex-wrap items-center justify-center gap-4">
-            <Button
-              href={FINAL_CTA.primaryCta.href}
+            <BookingButton
+              location="faq_still_have_question"
               variant="primary"
               size="md"
               data-analytics-cta="faq_strategy_call"
             >
               <span>{FINAL_CTA.primaryCta.label}</span>
               <ArrowRight size={16} className="ml-2" />
-            </Button>
+            </BookingButton>
 
             <a
               href={`mailto:${siteConfig.contact.email}`}

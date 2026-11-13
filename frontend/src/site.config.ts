@@ -27,11 +27,33 @@ function resolveSiteUrl(): string {
   return 'https://www.thunspark.agency';
 }
 
+function resolveBookingUrl(): string | null {
+  const rawUrl = process.env.NEXT_PUBLIC_BOOKING_URL?.trim();
+  if (!rawUrl) return null;
+
+  try {
+    const parsed = new URL(rawUrl);
+    if (parsed.protocol === 'https:') {
+      return parsed.toString();
+    }
+  } catch {}
+
+  if (process.env.NODE_ENV !== 'production') {
+    console.warn(
+      `[siteConfig] Warning: NEXT_PUBLIC_BOOKING_URL must be a valid https URL. Received: "${rawUrl}". Ignoring and falling back to /contact.`
+    );
+  }
+  return null;
+}
+
 export const siteConfig = {
   name: "ThunSpark",
   legalName: "Thunspark Agency", // TODO(LEGAL): confirm registration entity
   tagline: "Strategy That Sparks Growth.",
   url: resolveSiteUrl(),
+  booking: {
+    url: resolveBookingUrl(),
+  },
   description:
     "ThunSpark is a strategy-led, social-first digital growth agency. We diagnose growth bottlenecks and connect strategy, creative execution, and measurement into one system.",
   positioning: "Strategy-led, social-first digital growth agency",

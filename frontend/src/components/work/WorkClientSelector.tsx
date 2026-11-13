@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useId, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowRight, Pause, Play } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
+import { BookingButton } from '@/components/ui/BookingButton';
 import { useMotion } from '@/components/motion/MotionProvider';
 import type { HomeWorkClient } from '@/lib/content/types';
 import { ClientMediaTile } from './ClientMediaTile';
@@ -114,10 +115,10 @@ export function WorkClientSelector({ clients, totalCount }: WorkClientSelectorPr
           We&apos;re documenting recent client engagements across e-commerce, B2B, and consumer brands. Talk with our team to walk through work relevant to your goals.
         </p>
         <div className="pt-1">
-          <Button href="/contact" variant="primary" size="md">
+          <BookingButton location="work_empty_state" variant="primary" size="md">
             <span>Book a strategy call</span>
             <ArrowRight size={16} className="ml-2" />
-          </Button>
+          </BookingButton>
         </div>
       </div>
     );

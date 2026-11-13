@@ -5,7 +5,7 @@ import { PortableText } from '@portabletext/react';
 import { Container } from '@/components/ui/Container';
 import { Tag } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
+import { BookingButton } from '@/components/ui/BookingButton';
 import { ArrowLeft, Clock, ArrowRight } from 'lucide-react';
 import { getAllPosts, getPostBySlug } from '@/lib/sanity/fetchers';
 import { urlForImage } from '@/lib/sanity/image';
@@ -180,10 +180,10 @@ export default async function ArticleDetailPage({ params }: ArticleDetailPagePro
                 <p className="text-soft text-sm leading-relaxed mb-6">
                   Book a 30-minute strategy call with our senior growth strategists. We will review your acquisition funnel and tell you what we would fix first.
                 </p>
-                <Button href="/contact" variant="primary" size="md">
+                <BookingButton location="blog_post_cta" variant="primary" size="md">
                   <span>Book a strategy call</span>
                   <ArrowRight size={14} />
-                </Button>
+                </BookingButton>
               </Card>
             </div>
           </Container>

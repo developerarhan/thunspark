@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Container } from '@/components/ui/Container';
 import { Card } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
+import { BookingButton } from '@/components/ui/BookingButton';
 import { Reveal } from '@/components/motion/Reveal';
 import { CheckCircle2, Cpu, ArrowRight } from 'lucide-react';
 import { buildMetadata } from '@/lib/seo';
@@ -270,10 +270,10 @@ export default function AboutPage() {
               Book a 30-minute strategy call. We will review your current channels, isolate where revenue leaks, and tell you what we would fix first.
             </p>
             <div className="flex flex-wrap items-center justify-center gap-4">
-              <Button href="/contact" variant="primary" size="lg">
+              <BookingButton location="about_page_cta" variant="primary" size="lg">
                 <span>Book a strategy call</span>
                 <ArrowRight size={16} />
-              </Button>
+              </BookingButton>
             </div>
           </div>
         </Container>

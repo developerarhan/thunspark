@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { Container } from '@/components/ui/Container';
-import { Button } from '@/components/ui/Button';
+import { BookingButton } from '@/components/ui/BookingButton';
 import { Reveal } from '@/components/motion/Reveal';
 import { CASE_STUDIES } from '@/lib/constants';
 import { ProjectsListingClient } from '@/components/projects/ProjectsListingClient';
@@ -61,10 +61,10 @@ export default function ProjectsPage() {
               Book a 30-minute strategy call. We will review your current channels, isolate where revenue leaks, and propose a tailored scope.
             </p>
             <div className="flex flex-wrap items-center justify-center gap-4">
-              <Button href="/contact" variant="primary" size="lg">
+              <BookingButton location="projects_page_cta" variant="primary" size="lg">
                 <span>Book a strategy call</span>
                 <ArrowRight size={16} />
-              </Button>
+              </BookingButton>
             </div>
           </div>
         </Container>

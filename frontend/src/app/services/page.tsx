@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Container } from '@/components/ui/Container';
 import { Card } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
+import { BookingButton } from '@/components/ui/BookingButton';
 import { Reveal } from '@/components/motion/Reveal';
 import { SERVICES_DATA } from '@/lib/services-data';
 import { ArrowRight } from 'lucide-react';
@@ -239,10 +239,10 @@ export default function ServicesPage() {
               Most clients don&apos;t need all ten disciplines at once. Book a 30-minute diagnostic call and we will identify the single highest-leverage priority for your growth.
             </p>
             <div className="flex flex-wrap items-center justify-center gap-4">
-              <Button href="/contact" variant="primary" size="lg">
+              <BookingButton location="services_page_cta" variant="primary" size="lg">
                 <span>Book a strategy call</span>
                 <ArrowRight size={16} />
-              </Button>
+              </BookingButton>
             </div>
           </div>
         </Container>

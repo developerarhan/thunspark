@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { Container, Section } from '@/components/ui/Container';
 import { SectionHeading } from '@/components/ui/SectionHeading';
-import { Button } from '@/components/ui/Button';
+import { BookingButton } from '@/components/ui/BookingButton';
 import { FINAL_CTA } from '@/lib/constants';
 import { siteConfig } from '@/site.config';
 import { ArrowRight, Mail, MapPin, CheckCircle2 } from 'lucide-react';
@@ -76,15 +76,15 @@ export function Section12FinalCTA() {
             />
 
             <div className="flex flex-wrap items-center gap-4 pt-2">
-              <Button
-                href={FINAL_CTA.primaryCta.href}
+              <BookingButton
+                location="final_cta"
                 variant="primary"
                 size="lg"
                 data-analytics-cta="final_cta_book"
               >
                 <span>{FINAL_CTA.primaryCta.label}</span>
                 <ArrowRight size={18} className="ml-2 inline" />
-              </Button>
+              </BookingButton>
 
               <Link
                 href={`mailto:${FINAL_CTA.secondaryEmail}`}
