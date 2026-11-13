@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { Space_Grotesk, Inter, Space_Mono } from "next/font/google";
+import { Space_Grotesk, Inter, Space_Mono, Playfair_Display } from "next/font/google";
 import { GoogleTagManager } from "@next/third-parties/google";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -36,6 +36,15 @@ const spaceMono = Space_Mono({
   subsets: ["latin"],
   display: "swap",
   weight: ["400", "700"],
+  preload: true,
+});
+
+const playfair = Playfair_Display({
+  variable: "--font-playfair",
+  subsets: ["latin"],
+  display: "swap",
+  style: "italic",
+  weight: "600",
   preload: true,
 });
 
@@ -115,7 +124,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${spaceGrotesk.variable} ${inter.variable} ${spaceMono.variable} dark antialiased`}
+      className={`${spaceGrotesk.variable} ${inter.variable} ${spaceMono.variable} ${playfair.variable} dark antialiased`}
     >
       <head>
         {/* Fast Preloader Session Check: executes synchronously before paint to prevent flash for returning visitors */}

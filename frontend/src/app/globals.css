@@ -95,6 +95,7 @@
   --font-sans: var(--font-inter), sans-serif;
   --font-body: var(--font-inter), sans-serif;
   --font-mono: var(--font-space-mono), monospace;
+  --font-serif: var(--font-playfair), serif;
 }
 
 html {
@@ -153,7 +154,13 @@ body {
 
 /* Editorial One-Accent-Word Utility per Guide §B3 */
 .font-italic-accent {
+  font-family: var(--font-serif);
   font-style: italic;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  font-size: 1.04em;
+  line-height: inherit;
+  font-synthesis: none;
   color: var(--color-accent);
 }
 

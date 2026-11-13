@@ -34,7 +34,7 @@ export function Section01Hero() {
             {/* H1 with Rotating Word Slot */}
             <h1 className="font-display font-extrabold text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-[1.04] tracking-[-0.03em] text-ink">
               We turn growth bottlenecks into{' '}
-              <span className="relative inline-block h-[1.15em] overflow-hidden align-top text-accent pr-1.5">
+              <span className="relative inline-block h-[1.3em] overflow-hidden align-top text-accent pr-4">
                 {/* Static text for SEO crawlers */}
                 <span className="sr-only">breakthroughs</span>
 
