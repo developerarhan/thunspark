@@ -1,6 +1,8 @@
 export interface ServiceDetail {
   slug: string;
   name: string;
+  shortName: string;
+  ctaClosing: string;
   groupId: 'attract' | 'engage' | 'convert' | 'optimize';
   groupName: string;
   groupNumber: string;
@@ -18,6 +20,8 @@ export const SERVICES_DATA: Record<string, ServiceDetail> = {
   'social-media-marketing': {
     slug: 'social-media-marketing',
     name: 'Social Media Marketing',
+    shortName: 'social channels',
+    ctaClosing: 'No generic posting schedules—just practical steps to build genuine audience engagement and pipeline.',
     groupId: 'attract',
     groupName: 'Attract',
     groupNumber: '01',
@@ -55,6 +59,8 @@ export const SERVICES_DATA: Record<string, ServiceDetail> = {
   'seo': {
     slug: 'seo',
     name: 'SEO Services in India',
+    shortName: 'SEO setup',
+    ctaClosing: 'No ranking guarantees—just clear technical remediation and high-intent keyword opportunities.',
     groupId: 'attract',
     groupName: 'Attract',
     groupNumber: '01',
@@ -92,6 +98,8 @@ export const SERVICES_DATA: Record<string, ServiceDetail> = {
   'performance-marketing': {
     slug: 'performance-marketing',
     name: 'Performance Marketing & Paid Ads',
+    shortName: 'paid media accounts',
+    ctaClosing: 'No vanity metric spin—just an honest audit of where ad spend is leaking across your funnel.',
     groupId: 'attract',
     groupName: 'Attract',
     groupNumber: '01',
@@ -129,6 +137,8 @@ export const SERVICES_DATA: Record<string, ServiceDetail> = {
   'content-marketing': {
     slug: 'content-marketing',
     name: 'Content Strategy & Marketing',
+    shortName: 'content engine',
+    ctaClosing: 'No AI filler drafts—just high-leverage topics and narrative angles that earn buyer trust.',
     groupId: 'engage',
     groupName: 'Engage',
     groupNumber: '02',
@@ -166,6 +176,8 @@ export const SERVICES_DATA: Record<string, ServiceDetail> = {
   'branding-creative': {
     slug: 'branding-creative',
     name: 'Branding & Creative Strategy',
+    shortName: 'brand and creative',
+    ctaClosing: 'No subjective design critiques—just actionable positioning adjustments to elevate market credibility.',
     groupId: 'engage',
     groupName: 'Engage',
     groupNumber: '02',
@@ -203,6 +215,8 @@ export const SERVICES_DATA: Record<string, ServiceDetail> = {
   'web-design-development': {
     slug: 'web-design-development',
     name: 'Web Design & Development',
+    shortName: 'website',
+    ctaClosing: 'No template lock-in—just clear UX, speed, and conversion fixes to lift your bottom line.',
     groupId: 'convert',
     groupName: 'Convert',
     groupNumber: '03',
@@ -240,6 +254,8 @@ export const SERVICES_DATA: Record<string, ServiceDetail> = {
   'email-marketing': {
     slug: 'email-marketing',
     name: 'Email Marketing & Automation',
+    shortName: 'email program',
+    ctaClosing: 'No spam tactics—just structured lifecycle flows and deliverability fixes to retain more customers.',
     groupId: 'convert',
     groupName: 'Convert',
     groupNumber: '03',
@@ -277,6 +293,8 @@ export const SERVICES_DATA: Record<string, ServiceDetail> = {
   'reputation-management': {
     slug: 'reputation-management',
     name: 'Online Reputation Management',
+    shortName: 'reputation presence',
+    ctaClosing: 'No fake review schemes—just ethical feedback systems that surface authentic customer proof.',
     groupId: 'convert',
     groupName: 'Convert',
     groupNumber: '03',
@@ -314,6 +332,8 @@ export const SERVICES_DATA: Record<string, ServiceDetail> = {
   'analytics-audit': {
     slug: 'analytics-audit',
     name: 'Digital Growth Audit & Analytics',
+    shortName: 'analytics setup',
+    ctaClosing: 'No vanity dashboards—just verified tracking fixes and clean attribution clarity across every channel.',
     groupId: 'optimize',
     groupName: 'Optimize',
     groupNumber: '04',
@@ -351,6 +371,8 @@ export const SERVICES_DATA: Record<string, ServiceDetail> = {
   'growth-consulting': {
     slug: 'growth-consulting',
     name: 'Digital Growth Strategy & Consultancy',
+    shortName: 'growth strategy',
+    ctaClosing: 'No recycled agency playbooks—just an objective diagnosis of your single biggest growth constraint.',
     groupId: 'optimize',
     groupName: 'Optimize',
     groupNumber: '04',

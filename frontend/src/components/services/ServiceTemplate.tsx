@@ -244,7 +244,7 @@ export function ServiceTemplate({ service }: ServiceTemplateProps) {
               Ready to find your bottleneck?
             </h2>
             <p className="text-soft text-base leading-relaxed max-w-xl mx-auto mb-8">
-              Book a 30-minute strategy call. We will review your current {service.name.toLowerCase()} assets and tell you what we would fix first.
+              Book a 30-minute strategy call. We will review your current {service.shortName} and tell you what we would fix first. {service.ctaClosing}
             </p>
             <div className="flex flex-wrap items-center justify-center gap-4">
               <Button href="/contact" variant="primary" size="lg">

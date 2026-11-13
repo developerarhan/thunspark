@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
 
 export interface AccordionItem {
@@ -38,8 +38,10 @@ export function Accordion({
           <div key={idx} className="py-5">
             <button
               type="button"
+              id={`accordion-header-${idx}`}
               onClick={() => toggleIndex(idx)}
               aria-expanded={isOpen}
+              aria-controls={`accordion-panel-${idx}`}
               className="w-full flex items-center justify-between text-left group focus:outline-none focus-visible:outline-2 focus-visible:outline-accent rounded-lg py-1"
             >
               <span className="font-display font-medium text-lg md:text-xl text-ink group-hover:text-accent transition-colors pr-6">
@@ -54,21 +56,23 @@ export function Accordion({
               </motion.div>
             </button>
 
-            <AnimatePresence initial={false}>
-              {isOpen && (
-                <motion.div
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: 'auto', opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-                  className="overflow-hidden"
-                >
-                  <p className="pt-4 text-soft text-base leading-relaxed max-w-3xl">
-                    {item.a}
-                  </p>
-                </motion.div>
-              )}
-            </AnimatePresence>
+            <motion.div
+              id={`accordion-panel-${idx}`}
+              role="region"
+              aria-labelledby={`accordion-header-${idx}`}
+              aria-hidden={!isOpen}
+              initial={false}
+              animate={{
+                height: isOpen ? 'auto' : 0,
+                opacity: isOpen ? 1 : 0,
+              }}
+              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+              className="overflow-hidden"
+            >
+              <p className="pt-4 text-soft text-base leading-relaxed max-w-3xl">
+                {item.a}
+              </p>
+            </motion.div>
           </div>
         );
       })}

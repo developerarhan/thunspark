@@ -1,8 +1,37 @@
+function resolveSiteUrl(): string {
+  if (process.env.NEXT_PUBLIC_SITE_URL) {
+    return process.env.NEXT_PUBLIC_SITE_URL.replace(/\/+$/, '');
+  }
+
+  // In production builds, log a clear warning if NEXT_PUBLIC_SITE_URL is missing
+  if (process.env.NODE_ENV === 'production') {
+    console.warn(
+      '[siteConfig] Warning: NEXT_PUBLIC_SITE_URL is not set in production. Falling back to Vercel production URL or default domain.'
+    );
+  }
+
+  // Vercel system environment variables (without protocol)
+  if (process.env.VERCEL_PROJECT_PRODUCTION_URL) {
+    return `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`.replace(/\/+$/, '');
+  }
+
+  if (process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL}`.replace(/\/+$/, '');
+  }
+
+  // Localhost in development
+  if (process.env.NODE_ENV !== 'production') {
+    return 'http://localhost:3000';
+  }
+
+  return 'https://www.thunspark.agency';
+}
+
 export const siteConfig = {
   name: "ThunSpark",
   legalName: "Thunspark Agency", // TODO(LEGAL): confirm registration entity
   tagline: "Strategy That Sparks Growth.",
-  url: process.env.NEXT_PUBLIC_SITE_URL || "https://www.thunspark.agency",
+  url: resolveSiteUrl(),
   description:
     "ThunSpark is a strategy-led, social-first digital growth agency. We diagnose growth bottlenecks and connect strategy, creative execution, and measurement into one system.",
   positioning: "Strategy-led, social-first digital growth agency",

@@ -16,7 +16,7 @@ export function Section09WhyThunSpark() {
               eyebrow={WHY_THUNSPARK.eyebrow}
               title={
                 <>
-                  An agency built like a{' '}
+                  An agency built like a{'\u00A0'}
                   <span className="font-italic-accent">growth partner.</span>
                 </>
               }

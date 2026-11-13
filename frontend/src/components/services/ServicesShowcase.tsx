@@ -99,7 +99,7 @@ const SHOWCASE_SERVICES: ShowcaseServiceItem[] = siteConfig.serviceGroups.flatMa
         {
           slug: detail.slug,
           name: detail.name,
-          shortName: SHORT_SERVICE_NAMES[detail.slug] ?? detail.name,
+          shortName: detail.shortName ?? SHORT_SERVICE_NAMES[detail.slug] ?? detail.name,
           groupId: detail.groupId,
           groupName: detail.groupName,
           groupNumber: detail.groupNumber,

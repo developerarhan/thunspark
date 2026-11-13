@@ -67,7 +67,7 @@ export function Section12FinalCTA() {
               eyebrow="GET STARTED"
               title={
                 <>
-                  Ready to find your{' '}
+                  Ready to find your{'\u00A0'}
                   <span className="font-italic-accent">bottleneck?</span>
                 </>
               }
