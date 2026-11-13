@@ -1,4 +1,3 @@
-import { createHash } from 'node:crypto';
 import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { z } from 'zod';
@@ -6,17 +5,14 @@ import {
   enquiryPayloadSchema,
   type EnquiryApiResponse,
 } from '@/lib/enquiry-schema';
+import {
+  checkInMemoryRateLimit,
+  checkInMemoryDedupe,
+  recordInMemoryDedupe,
+  checkDurableEnquiryGuard,
+  getClientIp,
+} from '@/lib/enquiry-guard';
 import { siteConfig } from '@/site.config';
-
-const DEDUPE_TTL_MS = 5 * 60 * 1000; // 5 minutes
-const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000; // 15 minutes
-const RATE_LIMIT_MAX_REQUESTS = 10;
-const MAX_CACHE_ENTRIES = 1000;
-
-interface RateLimitEntry {
-  count: number;
-  resetAt: number;
-}
 
 interface TurnstileVerifyResponse {
   success: boolean;
@@ -31,67 +27,8 @@ type TurnstileCheckResult =
   | { ok: true; simulated: boolean }
   | { ok: false; status: 400 | 403 | 503; code: string; message: string };
 
-/**
- * Best-effort in-memory stores for serverless environments.
- * Limitation: On Vercel/serverless platforms, each warm container maintains its own memory
- * and state resets on cold starts or deployments. For strict multi-instance enforcement,
- * replace these Maps with a persistent store such as Upstash Redis (@upstash/ratelimit).
- */
-const dedupeCache = new Map<string, number>();
-const ipRateLimitCache = new Map<string, RateLimitEntry>();
-
 function isProductionEnvironment(): boolean {
   return process.env.NODE_ENV === 'production' || process.env.VERCEL_ENV === 'production';
-}
-
-function getClientIp(request: Request): string {
-  const forwardedFor = request.headers.get('x-forwarded-for');
-  if (forwardedFor) {
-    const firstIp = forwardedFor.split(',')[0]?.trim();
-    if (firstIp) return firstIp;
-  }
-  const realIp = request.headers.get('x-real-ip')?.trim();
-  return realIp || 'unknown';
-}
-
-function pruneExpiredCaches(now: number): void {
-  if (dedupeCache.size > MAX_CACHE_ENTRIES) {
-    for (const [key, expiresAt] of dedupeCache.entries()) {
-      if (expiresAt <= now) {
-        dedupeCache.delete(key);
-      }
-    }
-  }
-  if (ipRateLimitCache.size > MAX_CACHE_ENTRIES) {
-    for (const [ip, entry] of ipRateLimitCache.entries()) {
-      if (entry.resetAt <= now) {
-        ipRateLimitCache.delete(ip);
-      }
-    }
-  }
-}
-
-function checkAndIncrementIpRateLimit(ip: string, now: number): boolean {
-  const existing = ipRateLimitCache.get(ip);
-  if (!existing || existing.resetAt <= now) {
-    ipRateLimitCache.set(ip, {
-      count: 1,
-      resetAt: now + RATE_LIMIT_WINDOW_MS,
-    });
-    return true;
-  }
-
-  if (existing.count >= RATE_LIMIT_MAX_REQUESTS) {
-    return false;
-  }
-
-  existing.count += 1;
-  return true;
-}
-
-function createDedupeKey(email: string, businessChallenge: string): string {
-  const normalized = `${email.trim().toLowerCase()}::${businessChallenge.trim().toLowerCase()}`;
-  return createHash('sha256').update(normalized).digest('hex');
 }
 
 function escapeHtml(value: string): string {
@@ -236,8 +173,6 @@ async function verifyTurnstileToken(
 
 export async function POST(request: Request) {
   const isProduction = isProductionEnvironment();
-  const now = Date.now();
-  pruneExpiredCaches(now);
 
   try {
     let rawBody: unknown;
@@ -269,20 +204,7 @@ export async function POST(request: Request) {
       });
     }
 
-    // 2. Per-IP rate limit (best-effort in-memory)
-    const clientIp = getClientIp(request);
-    if (!checkAndIncrementIpRateLimit(clientIp, now)) {
-      return NextResponse.json<EnquiryApiResponse>(
-        {
-          success: false,
-          code: 'RATE_LIMITED',
-          message: 'Too many requests from your network. Please wait a few minutes or email us directly.',
-        },
-        { status: 429 }
-      );
-    }
-
-    // 3. Validate input schema
+    // 2. Validate input schema
     const parsed = enquiryPayloadSchema.safeParse(rawBody);
     if (!parsed.success) {
       const flattened = z.flattenError(parsed.error);
@@ -299,6 +221,33 @@ export async function POST(request: Request) {
 
     const data = parsed.data;
 
+    // 3. In-memory tier (existing logic, local, zero cost)
+    const clientIp = getClientIp(request);
+    if (!checkInMemoryRateLimit(clientIp)) {
+      return NextResponse.json<EnquiryApiResponse>(
+        {
+          success: false,
+          code: 'RATE_LIMITED',
+          message: 'Too many requests from your network. Please wait a few minutes or email us directly.',
+        },
+        {
+          status: 429,
+          headers: {
+            'Retry-After': '60',
+          },
+        }
+      );
+    }
+
+    if (checkInMemoryDedupe(data.workEmail, data.businessChallenge)) {
+      return NextResponse.json<EnquiryApiResponse>({
+        success: true,
+        code: 'ALREADY_RECEIVED',
+        message:
+          'We have already received your enquiry within the last few minutes. Our team is reviewing it and will reply shortly.',
+      });
+    }
+
     // 4. Turnstile verification (fail closed in production)
     const turnstileResult = await verifyTurnstileToken(data.turnstileToken, clientIp, isProduction);
     if (!turnstileResult.ok) {
@@ -312,16 +261,38 @@ export async function POST(request: Request) {
       );
     }
 
-    // 5. 5-minute idempotency deduplication (hash of normalized email + businessChallenge)
-    const dedupeKey = createDedupeKey(data.workEmail, data.businessChallenge);
-    const existingExpiry = dedupeCache.get(dedupeKey);
-    if (existingExpiry && existingExpiry > now) {
-      return NextResponse.json<EnquiryApiResponse>({
-        success: true,
-        code: 'ALREADY_RECEIVED',
-        message:
-          'We have already received your enquiry within the last few minutes. Our team is reviewing it and will reply shortly.',
-      });
+    // 5. Durable Upstash Redis tier (distributed rate limits + atomic 5m dedupe)
+    // Only reached if all previous checks (honeypot, schema, memory, turnstile) passed
+    const guardResult = await checkDurableEnquiryGuard({
+      clientIp,
+      email: data.workEmail,
+      businessChallenge: data.businessChallenge,
+    });
+
+    if (!guardResult.allowed) {
+      if (guardResult.reason === 'rate_limited') {
+        return NextResponse.json<EnquiryApiResponse>(
+          {
+            success: false,
+            code: 'RATE_LIMITED',
+            message: guardResult.message,
+          },
+          {
+            status: 429,
+            headers: {
+              'Retry-After': String(guardResult.retryAfter || 60),
+            },
+          }
+        );
+      }
+
+      if (guardResult.reason === 'already_received') {
+        return NextResponse.json<EnquiryApiResponse>({
+          success: true,
+          code: 'ALREADY_RECEIVED',
+          message: guardResult.message,
+        });
+      }
     }
 
     // 6. Email dispatch via Resend
@@ -343,7 +314,7 @@ export async function POST(request: Request) {
       }
 
       // Development simulation only
-      dedupeCache.set(dedupeKey, now + DEDUPE_TTL_MS);
+      recordInMemoryDedupe(data.workEmail, data.businessChallenge);
       console.log('⚡ [DEV SIMULATION] Enquiry validated (RESEND_API_KEY not set):', {
         name: data.name,
         company: data.company,
@@ -422,8 +393,8 @@ export async function POST(request: Request) {
       );
     }
 
-    // Record dedupe window only after confirmed email dispatch
-    dedupeCache.set(dedupeKey, now + DEDUPE_TTL_MS);
+    // Record in-memory dedupe window only after confirmed email dispatch
+    recordInMemoryDedupe(data.workEmail, data.businessChallenge);
 
     return NextResponse.json<EnquiryApiResponse>({
       success: true,

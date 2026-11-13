@@ -13,6 +13,9 @@ Set the following environment variables in the Vercel Dashboard under **Project 
 | `NEXT_PUBLIC_SITE_URL` | Unset or `https://thunspark.vercel.app` | `https://www.thunspark.agency` | Feeds canonical URLs, OpenGraph, JSON-LD schemas, sitemap, and robots. |
 | `NEXT_PUBLIC_ALLOW_INDEXING` | `"false"` (or unset) | `"true"` | Switches robots.txt from `Disallow: /` to `Allow: /` and enables `index, follow` across all pages. |
 | `NEXT_PUBLIC_BOOKING_URL` | Optional / Test URL | `https://cal.com/thunspark/strategy` (or live Cal/scheduler URL) | Configures the single booking URL for all strategy call CTAs. |
+| `UPSTASH_REDIS_REST_URL` | Optional (falls back to memory) | `https://your-db.upstash.io` | Durable distributed rate limiting & 5m dedupe storage (or KV_REST_API_URL). |
+| `UPSTASH_REDIS_REST_TOKEN` | Optional | `your_upstash_rest_token` | Authentication token for Upstash Redis REST API (or KV_REST_API_TOKEN). |
+| `ENQUIRY_HASH_SALT` | Optional (falls back to app salt) | `random_cryptographic_salt` | Salt for SHA-256 pseudonymous hashing of IPs and emails stored in Redis. |
 
 > **Note**: After updating environment variables in Vercel, trigger a **Redeploy** of the production branch so the Next.js static metadata rebuilds with the new environment values.
 

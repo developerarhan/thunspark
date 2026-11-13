@@ -74,7 +74,7 @@ export default function PrivacyPolicyPage() {
                 4. Data Sharing & Third Parties
               </h2>
               <p>
-                <strong className="text-ink">We never sell, rent, or trade your personal or business data.</strong> We share data only with verified, enterprise-grade cloud providers necessary to deliver our website infrastructure (such as Vercel for hosting, Resend for transactional email dispatch, and Cloudflare for anti-bot validation).
+                <strong className="text-ink">We never sell, rent, or trade your personal or business data.</strong> We share data only with verified, enterprise-grade cloud providers necessary to deliver our website infrastructure (such as Vercel for hosting, Resend for transactional email dispatch, Cloudflare for anti-bot validation, and Upstash for rate limiting and duplicate-submission checks, hashed identifiers, short retention &mdash; {/* TODO(LEGAL): confirm Upstash processor disclosure wording */}).
               </p>
             </div>
 
