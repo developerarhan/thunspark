@@ -10,13 +10,27 @@ export const allProjectsQuery = groq`
     shortDescription,
     headline,
     overview,
-    scope,
-    servicesRendered,
+    summary,
+    challenge,
+    strategy,
+    "services": coalesce(services, servicesRendered, []),
+    "deliverables": coalesce(deliverables, scope, []),
     year,
     honestyNote,
     featured,
     logo,
-    "cover": coalesce(cover, coverImage)
+    "cover": coalesce(cover, coverImage),
+    outcomes[] {
+      label,
+      value,
+      verified,
+      permission
+    },
+    gallery[] {
+      "image": image,
+      alt,
+      caption
+    }
   }
 `;
 
@@ -30,13 +44,27 @@ export const projectBySlugQuery = groq`
     shortDescription,
     headline,
     overview,
-    scope,
-    servicesRendered,
+    summary,
+    challenge,
+    strategy,
+    "services": coalesce(services, servicesRendered, []),
+    "deliverables": coalesce(deliverables, scope, []),
     year,
     honestyNote,
     featured,
     logo,
-    "cover": coalesce(cover, coverImage)
+    "cover": coalesce(cover, coverImage),
+    outcomes[] {
+      label,
+      value,
+      verified,
+      permission
+    },
+    gallery[] {
+      "image": image,
+      alt,
+      caption
+    }
   }
 `;
 

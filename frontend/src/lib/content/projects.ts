@@ -1,5 +1,5 @@
 import { CASE_STUDIES } from '@/lib/constants';
-import type { HomeWorkClient } from './types';
+import type { HomeWorkClient, NextProjectLink, ProjectDetail } from './types';
 
 export const MAX_HOME_CLIENTS = 8;
 
@@ -57,5 +57,62 @@ export function getFallbackHomeWorkClients(): HomeWorkClient[] {
     cover: null,
     year: study.year,
     featured: false,
+  }));
+}
+
+export function computeNextProject(
+  allProjects: { slug: string; client: string; industry: string }[],
+  currentSlug: string
+): NextProjectLink | null {
+  if (allProjects.length <= 1) return null;
+  const currentIndex = allProjects.findIndex((p) => p.slug === currentSlug);
+  if (currentIndex === -1) return null;
+  const next = allProjects[(currentIndex + 1) % allProjects.length];
+  return {
+    slug: next.slug,
+    client: next.client,
+    industry: next.industry,
+  };
+}
+
+export function getFallbackProjectDetails(): ProjectDetail[] {
+  const studies: readonly {
+    slug: string;
+    client: string;
+    industry: string;
+    headline: string;
+    shortDescription?: string;
+    overview: string;
+    scope: readonly string[];
+    servicesRendered: readonly string[];
+    year: number;
+    honestyNote?: string;
+  }[] = CASE_STUDIES;
+
+  const rawList = studies.map((study) => {
+    const summary = study.shortDescription || deriveShortDescription(study.overview);
+    return {
+      slug: study.slug,
+      client: study.client,
+      industry: study.industry,
+      year: study.year,
+      logo: null,
+      cover: null,
+      summary,
+      overview: study.overview,
+      challenge: null,
+      strategy: null,
+      services: [...study.servicesRendered],
+      deliverables: [...study.scope],
+      outcomes: [],
+      gallery: [],
+      headline: study.headline,
+      honestyNote: study.honestyNote,
+    };
+  });
+
+  return rawList.map((item) => ({
+    ...item,
+    nextProject: computeNextProject(rawList, item.slug),
   }));
 }
