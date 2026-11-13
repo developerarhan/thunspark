@@ -3,6 +3,10 @@ import { siteConfig } from '@/site.config';
 
 export const SITE_URL = siteConfig.url.replace(/\/+$/, '');
 
+export function isIndexingAllowed(): boolean {
+  return process.env.NEXT_PUBLIC_ALLOW_INDEXING === 'true';
+}
+
 export interface BuildMetadataOptions {
   title: Metadata['title'];
   description: string;
@@ -49,12 +53,17 @@ export function buildMetadata({
   const canonicalUrl = buildAbsoluteUrl(canonicalPath);
   const resolvedTitle = ogTitle || resolvePlainTitle(title);
   const resolvedDescription = ogDescription || description;
+  const allowIndexing = isIndexingAllowed();
+
+  const resolvedRobots: Metadata['robots'] = allowIndexing
+    ? (robots ?? { index: true, follow: true })
+    : { index: false, follow: false };
 
   return {
     title,
     description,
     ...(keywords ? { keywords } : {}),
-    ...(robots ? { robots } : {}),
+    robots: resolvedRobots,
     alternates: {
       canonical: canonicalPath,
     },

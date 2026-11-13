@@ -14,7 +14,7 @@ import { ScrollDepthTracker } from "@/components/analytics/ScrollDepthTracker";
 import { RouteTracker } from "@/components/analytics/RouteTracker";
 import { GlobalClickTracker } from "@/components/analytics/GlobalClickTracker";
 import { siteConfig } from "@/site.config";
-import { SITE_URL, serializeJsonLd } from "@/lib/seo";
+import { SITE_URL, isIndexingAllowed, serializeJsonLd } from "@/lib/seo";
 
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-space-grotesk",
@@ -82,10 +82,15 @@ export const metadata: Metadata = {
     description:
       "Strategy That Sparks Growth. We solve business problems, not just post content.",
   },
-  robots: {
-    index: true,
-    follow: true,
-  },
+  robots: isIndexingAllowed()
+    ? {
+        index: true,
+        follow: true,
+      }
+    : {
+        index: false,
+        follow: false,
+      },
 };
 
 const jsonLd = {

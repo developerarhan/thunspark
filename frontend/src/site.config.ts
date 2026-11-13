@@ -51,6 +51,7 @@ export const siteConfig = {
   legalName: "Thunspark Agency", // TODO(LEGAL): confirm registration entity
   tagline: "Strategy That Sparks Growth.",
   url: resolveSiteUrl(),
+  allowIndexing: process.env.NEXT_PUBLIC_ALLOW_INDEXING === 'true',
   booking: {
     url: resolveBookingUrl(),
   },
