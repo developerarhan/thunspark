@@ -6,6 +6,7 @@ import { Container } from '@/components/ui/Container';
 import { Tag } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/Card';
 import { BookingButton } from '@/components/ui/BookingButton';
+import { BlogReadTracker } from '@/components/blog/BlogReadTracker';
 import { ArrowLeft, Clock, ArrowRight } from 'lucide-react';
 import { getAllPosts, getPostBySlug } from '@/lib/sanity/fetchers';
 import { urlForImage } from '@/lib/sanity/image';
@@ -107,6 +108,7 @@ export default async function ArticleDetailPage({ params }: ArticleDetailPagePro
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: serializeJsonLd(breadcrumbSchema) }}
       />
+      <BlogReadTracker slug={slug} />
       <div className="flex flex-col">
         <section className="pt-28 pb-16 md:pt-36 md:pb-24 border-b border-line">
           <Container>

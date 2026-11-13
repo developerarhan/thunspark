@@ -4,6 +4,7 @@ import React from 'react';
 import { Button, ButtonProps } from '@/components/ui/Button';
 import { getBookingHref, isExternalBooking } from '@/lib/booking';
 import { trackBookCallClick } from '@/lib/analytics/gtm';
+import { track } from '@/lib/analytics';
 
 export interface BookingButtonProps extends Omit<ButtonProps, 'href' | 'target' | 'rel'> {
   location?: string;
@@ -27,6 +28,9 @@ export function BookingButton({
   const finalRel = rel !== undefined ? rel : (isExternal ? 'noopener noreferrer' : undefined);
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    track('book_call_click', { location });
+    const label = typeof children === 'string' ? children : 'Book a strategy call';
+    track('cta_click', { location, label });
     trackBookCallClick(location);
     if (onClick) {
       onClick(e);

@@ -3,8 +3,10 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
+import { track } from '@/lib/analytics';
 
 export interface AccordionItem {
+  id?: string;
   q: string;
   a: string;
 }
@@ -21,6 +23,20 @@ export function Accordion({
   const [openIndices, setOpenIndices] = useState<number[]>([]);
 
   const toggleIndex = (index: number) => {
+    const isOpening = !openIndices.includes(index);
+    if (isOpening && items[index]) {
+      const item = items[index];
+      const questionId =
+        item.id ||
+        item.q
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '_')
+          .replace(/^_+|_+$/g, '')
+          .slice(0, 50) ||
+        `faq_${index + 1}`;
+      track('faq_open', { question_id: questionId });
+    }
+
     if (singleOpen) {
       setOpenIndices((prev) => (prev.includes(index) ? [] : [index]));
     } else {

@@ -12,6 +12,7 @@ import { AttributionTracker } from "@/components/analytics/AttributionTracker";
 import { CookieConsentBanner } from "@/components/analytics/CookieConsentBanner";
 import { ScrollDepthTracker } from "@/components/analytics/ScrollDepthTracker";
 import { RouteTracker } from "@/components/analytics/RouteTracker";
+import { GlobalClickTracker } from "@/components/analytics/GlobalClickTracker";
 import { siteConfig } from "@/site.config";
 import { SITE_URL, serializeJsonLd } from "@/lib/seo";
 
@@ -167,6 +168,7 @@ export default function RootLayout({
           <RouteTracker />
         </Suspense>
         <ScrollDepthTracker />
+        <GlobalClickTracker />
         <CookieConsentBanner />
         <AttributionTracker />
         <MotionProvider>

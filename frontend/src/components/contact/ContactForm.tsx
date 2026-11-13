@@ -14,6 +14,7 @@ import {
   ShieldAlert,
 } from 'lucide-react';
 import { getAttributionPayload } from '@/components/analytics/AttributionTracker';
+import { track } from '@/lib/analytics';
 import {
   BUDGET_OPTIONS,
   CHALLENGE_PRESETS,
@@ -285,6 +286,15 @@ export function ContactForm() {
         simulated: data.simulated,
       });
       setStatus('success');
+
+      // Track generate_lead after a confirmed API success only (never on failed or simulated send)
+      if (!data.simulated) {
+        track('generate_lead', {
+          form_id: 'contact_enquiry_form',
+          services_count: formData.servicesNeeded.length,
+          ...(formData.budgetRange ? { budget_range: formData.budgetRange } : {}),
+        });
+      }
     } catch (error: unknown) {
       const message =
         error instanceof Error

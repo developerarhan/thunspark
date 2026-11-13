@@ -6,6 +6,7 @@ import { Card } from '@/components/ui/Card';
 import { Tag } from '@/components/ui/Badge';
 import { Reveal } from '@/components/motion/Reveal';
 import { ArrowRight } from 'lucide-react';
+import { track } from '@/lib/analytics';
 
 export interface CaseStudyItem {
   slug: string;
@@ -79,6 +80,7 @@ export function ProjectsListingClient({ initialStudies }: ProjectsListingClientP
             <Reveal key={study.slug} delay={idx * 0.08}>
               <Link
                 href={`/projects/${study.slug}`}
+                onClick={() => track('project_open', { slug: study.slug })}
                 className="group block h-full focus:outline-none focus-visible:ring-1 focus-visible:ring-accent rounded-xl"
               >
                 <Card className="p-6 md:p-8 h-full flex flex-col justify-between bg-card border-line group-hover:border-accent/50 group-hover:bg-elevated transition-all duration-300">

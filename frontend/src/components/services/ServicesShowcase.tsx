@@ -10,6 +10,7 @@ import { SectionHeading } from '@/components/ui/SectionHeading';
 import { useMotion } from '@/components/motion/MotionProvider';
 import { SERVICES_DATA } from '@/lib/services-data';
 import { siteConfig } from '@/site.config';
+import { track } from '@/lib/analytics';
 import {
   ServiceIconKey,
   ServiceShowcaseCard,
@@ -465,6 +466,8 @@ export function ServicesShowcase({
   // Filter change: fade/swap cleanly on desktop with ScrollTrigger rebuild; instant scroll reset on mobile/reduced
   const handleFilterChange = (nextGroup: FilterGroupId) => {
     if (nextGroup === activeGroup || isFilteringRef.current) return;
+
+    track('service_filter_change', { group: String(nextGroup) });
 
     const swapGroup = () => {
       activeIndexRef.current = 0;

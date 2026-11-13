@@ -3,6 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { motion, HTMLMotionProps } from 'framer-motion';
+import { track } from '@/lib/analytics';
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'ghost';
@@ -47,6 +48,25 @@ export function Button({
 
   const combinedClasses = `${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`;
 
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>) => {
+    const ctaName = props['data-analytics-cta'];
+    const location = props['data-analytics-location'] || (href ? 'button_link' : 'button');
+    const label =
+      ctaName ||
+      (typeof children === 'string'
+        ? children
+        : (e.currentTarget.textContent?.trim() || 'CTA'));
+
+    track('cta_click', {
+      location,
+      label,
+    });
+
+    if (props.onClick) {
+      props.onClick(e as any);
+    }
+  };
+
   if (href) {
     return (
       <motion.div
@@ -59,6 +79,7 @@ export function Button({
           target={target}
           rel={rel}
           className={combinedClasses}
+          onClick={handleClick}
           {...(props as any)}
         >
           {children}
@@ -72,6 +93,7 @@ export function Button({
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
       className={combinedClasses}
+      onClick={handleClick}
       {...(props as HTMLMotionProps<'button'>)}
     >
       {children}

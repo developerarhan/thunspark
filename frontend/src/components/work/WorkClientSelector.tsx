@@ -8,6 +8,7 @@ import { BookingButton } from '@/components/ui/BookingButton';
 import { useMotion } from '@/components/motion/MotionProvider';
 import type { HomeWorkClient } from '@/lib/content/types';
 import { ClientMediaTile } from './ClientMediaTile';
+import { track } from '@/lib/analytics';
 
 const AUTOPLAY_INTERVAL_MS = 6000;
 const AUTOPLAY_MAX_CLIENTS = 6;
@@ -127,6 +128,9 @@ export function WorkClientSelector({ clients, totalCount }: WorkClientSelectorPr
   const handleManualSelect = (index: number) => {
     setActiveIndex(index);
     setStoppedPermanently(true);
+    if (clients[index]) {
+      track('project_open', { slug: clients[index].slug });
+    }
   };
 
   const handleTabFocus = (index: number) => {
@@ -242,6 +246,7 @@ export function WorkClientSelector({ clients, totalCount }: WorkClientSelectorPr
               variant="primary"
               size="md"
               data-cursor="VIEW"
+              onClick={() => track('project_open', { slug: client.slug })}
             >
               <span>Explore the project</span>
               <ArrowRight size={16} className="ml-2" />
@@ -417,7 +422,12 @@ export function WorkClientSelector({ clients, totalCount }: WorkClientSelectorPr
             </div>
 
             <div className="pt-1">
-              <Button href={`/projects/${activeClient.slug}`} variant="primary" size="md">
+              <Button
+                href={`/projects/${activeClient.slug}`}
+                variant="primary"
+                size="md"
+                onClick={() => track('project_open', { slug: activeClient.slug })}
+              >
                 <span>Explore the project</span>
                 <ArrowRight size={16} className="ml-2" />
               </Button>
@@ -453,7 +463,12 @@ export function WorkClientSelector({ clients, totalCount }: WorkClientSelectorPr
                 </div>
 
                 <div className="pt-1">
-                  <Button href={`/projects/${client.slug}`} variant="primary" size="md">
+                  <Button
+                    href={`/projects/${client.slug}`}
+                    variant="primary"
+                    size="md"
+                    onClick={() => track('project_open', { slug: client.slug })}
+                  >
                     <span>Explore the project</span>
                     <ArrowRight size={16} className="ml-2" />
                   </Button>
