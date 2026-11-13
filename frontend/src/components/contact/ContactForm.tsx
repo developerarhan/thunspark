@@ -29,6 +29,7 @@ import { siteConfig } from '@/site.config';
 
 interface TurnstileRenderOptions {
   sitekey: string;
+  action?: string;
   theme?: 'light' | 'dark' | 'auto';
   callback?: (token: string) => void;
   'expired-callback'?: () => void;
@@ -95,6 +96,7 @@ export function ContactForm() {
 
       turnstileWidgetIdRef.current = window.turnstile.render(turnstileContainerRef.current, {
         sitekey: turnstileSiteKey,
+        action: 'enquiry',
         theme: 'dark',
         callback: (token: string) => {
           if (!isMounted) return;

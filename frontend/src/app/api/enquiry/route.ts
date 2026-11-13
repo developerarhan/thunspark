@@ -21,6 +21,10 @@ interface RateLimitEntry {
 interface TurnstileVerifyResponse {
   success: boolean;
   'error-codes'?: string[];
+  challenge_ts?: string;
+  hostname?: string;
+  action?: string;
+  cdata?: string;
 }
 
 type TurnstileCheckResult =
@@ -163,6 +167,46 @@ async function verifyTurnstileToken(
 
     const outcome = (await res.json()) as TurnstileVerifyResponse;
     if (outcome.success !== true) {
+      const errorCodes = outcome['error-codes'] || [];
+      console.error('[Turnstile Error] Verification rejected by Cloudflare:', errorCodes);
+
+      const isSecretOrConfigError = errorCodes.some((code) =>
+        ['missing-input-secret', 'invalid-input-secret', 'bad-request', 'internal-error'].includes(code)
+      );
+
+      const isExpiredOrUsed = errorCodes.some((code) =>
+        ['timeout-or-duplicate', 'invalid-input-response'].includes(code)
+      );
+
+      if (isSecretOrConfigError) {
+        return {
+          ok: false,
+          status: 503,
+          code: 'TURNSTILE_UNAVAILABLE',
+          message: 'Security verification is temporarily unavailable. Please email us directly.',
+        };
+      }
+
+      if (isExpiredOrUsed) {
+        return {
+          ok: false,
+          status: 403,
+          code: 'TURNSTILE_INVALID',
+          message: 'Security verification expired or was already used. Please refresh the check and try again.',
+        };
+      }
+
+      return {
+        ok: false,
+        status: 403,
+        code: 'TURNSTILE_INVALID',
+        message: 'Bot verification failed or expired. Please refresh the check and try again.',
+      };
+    }
+
+    // Compare returned action to "enquiry" when Cloudflare returns one; mismatch returns TURNSTILE_INVALID 403
+    if (outcome.action && outcome.action !== 'enquiry') {
+      console.error('[Turnstile Error] Action mismatch detected:', outcome.action);
       return {
         ok: false,
         status: 403,
