@@ -107,7 +107,7 @@ export default function ServicesPage() {
               <span className="font-mono text-xs uppercase tracking-widest text-accent block mb-3">
                 SERVICES & DISCIPLINES
               </span>
-              <h1 className="font-display font-medium text-4xl sm:text-5xl lg:text-6xl text-ink tracking-tight mb-6">
+              <h1 className="font-display font-medium text-4xl sm:text-5xl lg:text-6xl text-ink tracking-tight mb-6 break-words">
                 Ten disciplines. One connected system.
               </h1>
               <p className="text-soft text-base sm:text-lg leading-relaxed mb-8">

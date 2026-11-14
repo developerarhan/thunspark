@@ -92,7 +92,7 @@ export default function AboutPage() {
               <span className="font-mono text-xs uppercase tracking-widest text-accent block mb-3">
                 ABOUT THUNSPARK
               </span>
-              <h1 className="font-display font-medium text-4xl sm:text-5xl lg:text-6xl text-ink tracking-tight mb-6">
+              <h1 className="font-display font-medium text-4xl sm:text-5xl lg:text-6xl text-ink tracking-tight mb-6 break-words">
                 We solve business problems. <br className="hidden sm:inline" />
                 <span className="text-meta">Marketing is how.</span>
               </h1>

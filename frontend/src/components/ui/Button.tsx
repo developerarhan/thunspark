@@ -28,16 +28,19 @@ export function Button({
   children,
   ...props
 }: ButtonProps) {
+  const isDisabled = Boolean(props.disabled);
+
   const baseStyles =
-    'inline-flex items-center justify-center font-medium transition-all duration-200 cursor-pointer select-none rounded-full focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-accent disabled:opacity-50 disabled:pointer-events-none';
+    'inline-flex items-center justify-center font-medium select-none rounded-full cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-accent disabled:opacity-40 disabled:cursor-not-allowed disabled:shadow-none transition-all duration-200 ease-out';
 
   const variants = {
+    // Solid accent yellow by default with dark canvas text; smooth micro-lift, brightness shift & accent glow on hover
     primary:
-      'bg-accent text-canvas font-semibold hover:bg-accent-hi active:bg-accent-deep',
+      'bg-accent text-canvas font-semibold shadow-xs hover:enabled:bg-accent-hi hover:enabled:shadow-[0_0_24px_rgba(255,210,31,0.28)] hover:enabled:-translate-y-0.5 active:enabled:translate-y-0 active:enabled:bg-accent-deep active:enabled:shadow-xs disabled:hover:translate-y-0 disabled:hover:bg-accent disabled:hover:shadow-none',
     secondary:
-      'bg-card text-ink border border-line hover:border-line-strong hover:bg-elevated',
+      'bg-card text-ink border border-line hover:enabled:border-line-strong hover:enabled:bg-elevated hover:enabled:-translate-y-0.5 hover:enabled:shadow-[0_4px_16px_rgba(0,0,0,0.4)] active:enabled:translate-y-0 disabled:hover:translate-y-0 disabled:hover:shadow-none',
     ghost:
-      'text-soft hover:text-ink hover:bg-elevated',
+      'text-soft hover:enabled:text-ink hover:enabled:bg-elevated hover:enabled:-translate-y-0.5 active:enabled:translate-y-0 disabled:hover:translate-y-0',
   };
 
   const sizes = {
@@ -49,6 +52,11 @@ export function Button({
   const combinedClasses = `${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`;
 
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>) => {
+    if (isDisabled) {
+      e.preventDefault();
+      return;
+    }
+
     const ctaName = props['data-analytics-cta'];
     const location = props['data-analytics-location'] || (href ? 'button_link' : 'button');
     const label =
@@ -70,8 +78,8 @@ export function Button({
   if (href) {
     return (
       <motion.div
-        whileHover={{ scale: 1.02 }}
-        whileTap={{ scale: 0.98 }}
+        whileHover={isDisabled ? undefined : { scale: 1.01 }}
+        whileTap={isDisabled ? undefined : { scale: 0.98 }}
         className="inline-block"
       >
         <Link
@@ -90,8 +98,8 @@ export function Button({
 
   return (
     <motion.button
-      whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
+      whileHover={isDisabled ? undefined : { scale: 1.01 }}
+      whileTap={isDisabled ? undefined : { scale: 0.98 }}
       className={combinedClasses}
       onClick={handleClick}
       {...(props as HTMLMotionProps<'button'>)}

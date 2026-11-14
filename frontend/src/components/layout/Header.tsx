@@ -84,7 +84,7 @@ export function Header() {
             {/* Logo */}
             <Link
               href="/"
-              className="flex items-center gap-2 sm:gap-2.5 min-w-0 shrink group focus:outline-none"
+              className="flex items-center gap-2 sm:gap-2.5 shrink-0 group focus:outline-none"
             >
               {/* Lightning Mark */}
               <svg

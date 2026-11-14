@@ -143,7 +143,7 @@ export default async function ArticleDetailPage({ params }: ArticleDetailPagePro
                 )}
               </div>
 
-              <h1 className="font-display font-medium text-3xl sm:text-4xl lg:text-5xl text-ink tracking-tight mb-6">
+              <h1 className="font-display font-medium text-3xl sm:text-4xl lg:text-5xl text-ink tracking-tight mb-6 break-words">
                 {article.title}
               </h1>
 

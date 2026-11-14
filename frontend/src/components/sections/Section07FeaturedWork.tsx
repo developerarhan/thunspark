@@ -23,7 +23,7 @@ export function Section07FeaturedWork({
   const resolvedTotal = totalCount ?? sourceClients.length;
 
   return (
-    <Section id="work" tone="base">
+    <Section id="work" tone="base" className="overflow-x-clip">
       <Container>
         <SectionHeading
           eyebrow="SELECTED WORK"

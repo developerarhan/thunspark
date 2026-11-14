@@ -55,7 +55,7 @@ export default async function BlogPage() {
               <span className="font-mono text-xs uppercase tracking-widest text-accent block mb-3">
                 STRATEGY &amp; PLAYBOOKS
               </span>
-              <h1 className="font-display font-medium text-4xl sm:text-5xl lg:text-6xl text-ink tracking-tight mb-6">
+              <h1 className="font-display font-medium text-4xl sm:text-5xl lg:text-6xl text-ink tracking-tight mb-6 break-words">
                 Growth insights. <br />
                 <span className="text-meta">Zero fluff.</span>
               </h1>

@@ -28,7 +28,7 @@ export default function ProjectsPage() {
               <span className="font-mono text-xs uppercase tracking-widest text-accent block mb-3">
                 SELECTED WORK & CASE STUDIES
               </span>
-              <h1 className="font-display font-medium text-4xl sm:text-5xl lg:text-6xl text-ink tracking-tight mb-6">
+              <h1 className="font-display font-medium text-4xl sm:text-5xl lg:text-6xl text-ink tracking-tight mb-6 break-words">
                 Proven systems. <br />
                 <span className="text-meta">Measured outcomes.</span>
               </h1>

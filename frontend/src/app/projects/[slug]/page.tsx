@@ -126,12 +126,12 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
                   </span>
                 </div>
 
-                <h1 className="font-display font-medium text-3xl sm:text-5xl lg:text-6xl text-ink tracking-tight mb-6">
+                <h1 className="font-display font-medium text-3xl sm:text-5xl lg:text-6xl text-ink tracking-tight mb-6 break-words text-balance">
                   {study.headline || `${study.client} Growth System.`}
                 </h1>
 
                 {study.summary && (
-                  <p className="text-soft text-base sm:text-lg lg:text-xl leading-relaxed max-w-2xl mx-auto">
+                  <p className="text-soft text-base sm:text-lg lg:text-xl leading-relaxed max-w-2xl mx-auto break-words">
                     {study.summary}
                   </p>
                 )}

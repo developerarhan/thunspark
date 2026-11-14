@@ -84,6 +84,8 @@ export function ContactForm() {
   const [turnstileWidgetError, setTurnstileWidgetError] = useState('');
   const turnstileContainerRef = useRef<HTMLDivElement | null>(null);
   const turnstileWidgetIdRef = useRef<string | null>(null);
+  const consentInputRef = useRef<HTMLInputElement | null>(null);
+  const [highlightConsent, setHighlightConsent] = useState(false);
 
   useEffect(() => {
     if (!turnstileSiteKey) return;
@@ -223,9 +225,25 @@ export function ContactForm() {
     const parsed = enquiryFormSchema.safeParse(formData);
     if (!parsed.success) {
       const flattened = z.flattenError(parsed.error);
-      setFieldErrors(flattened.fieldErrors as EnquiryFieldErrors);
+      const errors = flattened.fieldErrors as EnquiryFieldErrors;
+      setFieldErrors(errors);
       setStatus('error');
       setErrorMessage('Please fix the highlighted fields before submitting.');
+
+      // If consent is missing, scroll directly to consent and highlight it
+      if (errors.consent) {
+        setHighlightConsent(true);
+        consentInputRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        consentInputRef.current?.focus();
+        setTimeout(() => setHighlightConsent(false), 2000);
+      } else {
+        const firstFieldKey = Object.keys(errors)[0];
+        if (firstFieldKey) {
+          const el = document.getElementById(`${formId}-${firstFieldKey}`);
+          el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          el?.focus();
+        }
+      }
       return;
     }
 
@@ -724,16 +742,32 @@ export function ContactForm() {
 
         {/* Consent Checkbox */}
         <div>
-          <div className="flex items-start gap-3 pt-1">
+          <div
+            className={`flex items-start gap-3 p-2.5 -m-2.5 rounded-xl transition-all duration-300 ${
+              highlightConsent
+                ? 'bg-accent/10 ring-2 ring-accent/60 shadow-[0_0_16px_rgba(255,210,31,0.2)]'
+                : fieldErrors.consent
+                  ? 'bg-[#FF6464]/10 ring-1 ring-[#FF6464]/50'
+                  : ''
+            }`}
+          >
             <input
+              ref={consentInputRef}
               type="checkbox"
               id={`${formId}-consent`}
               required
               checked={formData.consent}
-              onChange={(e) => updateField('consent', e.target.checked)}
+              onChange={(e) => {
+                updateField('consent', e.target.checked);
+                if (e.target.checked) {
+                  setHighlightConsent(false);
+                }
+              }}
               aria-invalid={Boolean(fieldErrors.consent)}
               aria-describedby={fieldErrors.consent ? `${formId}-consent-error` : undefined}
-              className="mt-1 w-4 h-4 rounded bg-elevated border border-line accent-accent focus:ring-0 focus:ring-offset-0 cursor-pointer"
+              className={`mt-1 w-4 h-4 rounded bg-elevated border accent-accent focus:ring-0 focus:ring-offset-0 cursor-pointer ${
+                fieldErrors.consent ? 'border-[#FF6464]' : 'border-line'
+              }`}
             />
             <label
               htmlFor={`${formId}-consent`}
@@ -751,7 +785,7 @@ export function ContactForm() {
             <p
               id={`${formId}-consent-error`}
               role="alert"
-              className="mt-1.5 text-xs text-[#FF6464] pl-7"
+              className="mt-1.5 text-xs text-[#FF6464] pl-7 font-medium"
             >
               {fieldErrors.consent[0]}
             </p>
@@ -785,10 +819,12 @@ export function ContactForm() {
 
         {/* Submit Button */}
         <div>
-          <button
+          <Button
             type="submit"
+            variant="primary"
+            size="lg"
             disabled={status === 'submitting'}
-            className="w-full h-14 px-6 rounded-lg bg-accent hover:bg-accent-hi active:bg-accent-deep text-canvas font-display font-medium text-base transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+            className="w-full h-14 font-display text-base"
           >
             {status === 'submitting' ? (
               <>
@@ -801,7 +837,7 @@ export function ContactForm() {
                 <ArrowRight size={16} />
               </>
             )}
-          </button>
+          </Button>
         </div>
       </form>
     </Card>

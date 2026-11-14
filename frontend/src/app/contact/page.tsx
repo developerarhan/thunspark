@@ -43,7 +43,7 @@ export default function ContactPage() {
               <span className="font-mono text-xs uppercase tracking-widest text-accent block mb-3">
                 LET&apos;S TALK GROWTH
               </span>
-              <h1 className="font-display font-medium text-4xl sm:text-5xl lg:text-6xl text-ink tracking-tight mb-6">
+              <h1 className="font-display font-medium text-4xl sm:text-5xl lg:text-6xl text-ink tracking-tight mb-6 break-words">
                 Find your bottleneck. <br />
                 <span className="text-meta">Fix the engine.</span>
               </h1>
