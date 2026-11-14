@@ -1,13 +1,15 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Container, Section } from '@/components/ui/Container';
 import { Button } from '@/components/ui/Button';
 import { BookingButton } from '@/components/ui/BookingButton';
 import { HERO_COPY } from '@/lib/constants';
 import { HeroGrowthDiagram } from '@/components/hero/HeroGrowthDiagram';
-import { ArrowRight } from 'lucide-react';
+import { TRUSTED_BRANDS, FOUNDER_AVATARS } from '@/lib/brands';
+import { ArrowRight, Star } from 'lucide-react';
 
 export function Section01Hero() {
   const [count, setCount] = useState(0);
@@ -21,8 +23,11 @@ export function Section01Hero() {
 
   const currentWord = HERO_COPY.rotatingSlots[count % HERO_COPY.rotatingSlots.length];
 
+  // Double-buffered for seamless infinite marquee loop
+  const marqueeBrands = [...TRUSTED_BRANDS, ...TRUSTED_BRANDS];
+
   return (
-    <Section tone="base" spacing="hero" className="overflow-hidden bg-grain">
+    <Section tone="base" spacing="hero" className="overflow-hidden bg-grain pb-12 md:pb-16">
       <Container>
         <div className="grid grid-cols-1 md:grid-cols-12 gap-10 lg:gap-12 items-center">
           {/* Left Column: Headlines & Positioning (7 cols on md/lg) */}
@@ -82,11 +87,85 @@ export function Section01Hero() {
                 {HERO_COPY.secondaryCta.label}
               </Button>
             </div>
+
+            {/* Inline Social Proof Badge (Option C Part 1) */}
+            <div className="pt-2 flex flex-wrap items-center gap-4">
+              {/* Overlapping Founder Avatars */}
+              <div className="flex -space-x-2.5 overflow-hidden py-0.5">
+                {FOUNDER_AVATARS.map((avatar, i) => (
+                  <div
+                    key={i}
+                    title={`${avatar.name} (${avatar.role})`}
+                    className={`inline-block h-8 w-8 rounded-full ring-2 ring-base bg-gradient-to-br ${avatar.color} border border-line flex items-center justify-center font-mono font-bold text-[10px] shadow-sm select-none`}
+                  >
+                    {avatar.initials}
+                  </div>
+                ))}
+              </div>
+
+              {/* Stars & Social Proof Text */}
+              <div className="flex flex-col">
+                <div className="flex items-center gap-1">
+                  {[...Array(5)].map((_, i) => (
+                    <Star
+                      key={i}
+                      size={13}
+                      className="fill-amber-400 text-amber-400 shrink-0"
+                    />
+                  ))}
+                  <span className="text-xs font-bold text-ink ml-1 font-mono">
+                    4.9 / 5
+                  </span>
+                </div>
+                <p className="text-xs text-soft font-medium mt-0.5">
+                  Trusted by 10+ founders & scale-ups
+                </p>
+              </div>
+            </div>
           </div>
 
           {/* Right Column: Bottleneck, System, Breakthrough Architecture Diagram */}
           <div className="hidden md:flex md:col-span-5 lg:col-span-5 items-center justify-center w-full">
             <HeroGrowthDiagram />
+          </div>
+        </div>
+
+        {/* Full-Width Trusted Brands Marquee (Option C Part 2) */}
+        <div className="mt-14 sm:mt-16 pt-10 border-t border-line/60">
+          <div className="text-center mb-6">
+            <span className="font-mono text-[11px] uppercase tracking-widest text-meta font-semibold">
+              TRUSTED BY HIGH-GROWTH BRANDS & SCALE-UPS
+            </span>
+          </div>
+
+          <div className="relative w-full overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
+            <div className="animate-marquee items-center gap-4 sm:gap-6 py-2">
+              {marqueeBrands.map((brand, i) => {
+                const CardWrapper = brand.caseStudyHref ? Link : 'div';
+                return (
+                  <CardWrapper
+                    key={`${brand.id}-${i}`}
+                    href={brand.caseStudyHref || ''}
+                    className="flex items-center gap-3 px-5 py-2.5 rounded-xl bg-card/60 hover:bg-card border border-line hover:border-line-strong transition-all duration-300 group shrink-0"
+                  >
+                    {/* Brand Initial Monogram */}
+                    <span className="w-6 h-6 rounded-md bg-elevated text-accent group-hover:text-accent-hi border border-line text-[10px] font-mono font-bold flex items-center justify-center transition-colors">
+                      {brand.name.slice(0, 1)}
+                    </span>
+
+                    {/* Brand Name & Category */}
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-display font-semibold text-soft group-hover:text-ink transition-colors tracking-tight whitespace-nowrap">
+                        {brand.name}
+                      </span>
+                      <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-elevated/80 text-meta border border-line/50 whitespace-nowrap">
+                        {brand.category}
+                      </span>
+                    </div>
+                  </CardWrapper>
+                );
+              })}
+            </div>
           </div>
         </div>
       </Container>
