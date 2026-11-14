@@ -284,10 +284,191 @@ export const FAQ_ITEMS = [
   },
   {
     q: "What is the minimum budget to work with ThunSpark?",
-    a: "Engagements typically start at $1,000 / month (or equivalent in INR) depending on channel scope, ensuring sufficient media and creative velocity to generate reliable signal.",
-    hasSchema: false, // TODO(CONTENT): confirm minimum budget
+    a: "Engagements are scoped individually based on channel count, media volume, and technical velocity required to generate reliable signal.",
+    hasSchema: false, // TODO(CONTENT): confirm minimum scope
   },
 ] as const;
+
+export interface EngagementModel {
+  id: 'project' | 'retainer' | 'audit';
+  name: string;
+  tagline: string;
+  audience: string;
+  deliverables: string[];
+  billingMethod: string;
+  recommendedFor?: boolean;
+  ctaText: string;
+  ctaHref: string;
+}
+
+export const SCOPING_STEPS = [
+  {
+    step: '01',
+    title: 'Diagnostic Consultation',
+    description: 'We audit your channel data, funnel metrics, and current acquisition bottlenecks to pinpoint where growth is stalling.',
+  },
+  {
+    step: '02',
+    title: 'Custom Scope Definition',
+    description: 'We define the deliverables, technical integrations, and clear resource requirements suited to your velocity needs.',
+  },
+  {
+    step: '03',
+    title: 'Milestone-Based Execution',
+    description: 'Work begins with clear weekly sprint cadences, transparent project boards, and measurable business milestones.',
+  },
+] as const;
+
+export const ENGAGEMENT_MODELS: EngagementModel[] = [
+  {
+    id: 'audit',
+    name: 'Growth Audit & Diagnostics',
+    tagline: 'Deep-dive inspection before significant capital commitment.', // TODO(CONTENT)
+    audience: 'Founders and marketing leads who need clarity on why acquisition has stalled or where ad spend is leaking.', // TODO(CONTENT)
+    deliverables: [
+      'Comprehensive funnel, analytics & tracking audit',
+      'Ad account structure and unit economic evaluation',
+      'Conversion barrier and customer journey diagnosis',
+      'Prioritized 90-day execution roadmap and recommendations',
+    ],
+    billingMethod: 'Fixed one-time assessment fee based on technical complexity and audit scope.', // TODO(CONTENT): billed in words, no prices
+    ctaText: 'Request an Audit',
+    ctaHref: '/contact?intent=audit',
+  },
+  {
+    id: 'retainer',
+    name: 'Strategic Growth Retainer',
+    tagline: 'End-to-end growth leadership and multi-channel execution.', // TODO(CONTENT)
+    audience: 'Growing brands needing a dedicated growth partner across paid media, creative production, and analytics.', // TODO(CONTENT)
+    recommendedFor: true,
+    deliverables: [
+      'Dedicated strategy, creative direction & media operations',
+      'Continuous experimentation roadmap and sprint cadence',
+      'Real-time reporting dashboards with bi-weekly strategic syncs',
+      'Full pipeline tracking from ad click to verified revenue',
+    ],
+    billingMethod: 'Monthly predictable flat advisory and management fee tailored to sprint velocity.', // TODO(CONTENT): billed in words, no prices
+    ctaText: 'Explore Retainer Scope',
+    ctaHref: '/contact?intent=retainer',
+  },
+  {
+    id: 'project',
+    name: 'Targeted Sprint / Project',
+    tagline: 'Focused execution for specific infrastructure builds and overhauls.', // TODO(CONTENT)
+    audience: 'Teams requiring a discrete deliverable such as a website redesign, analytics overhaul, or landing page sprint.', // TODO(CONTENT)
+    deliverables: [
+      'Dedicated deliverable milestones with agreed completion criteria',
+      'Architecture, design, implementation, and rigorous QA',
+      'Handover documentation, team training, and post-launch monitoring',
+      'Clear scope boundaries with change-order transparency',
+    ],
+    billingMethod: 'Milestone-based project billing structured across agreed deliverable phases.', // TODO(CONTENT): billed in words, no prices
+    ctaText: 'Discuss Your Project',
+    ctaHref: '/contact?intent=project',
+  },
+];
+
+export interface FAQGroup {
+  id: string;
+  title: string;
+  description: string;
+  items: { q: string; a: string }[];
+}
+
+export const FAQ_GROUPS: FAQGroup[] = [
+  {
+    id: 'general',
+    title: 'General',
+    description: 'Agency background, positioning, and who we work best with.',
+    items: [
+      {
+        q: 'What does ThunSpark actually do?',
+        a: 'Five connected disciplines: growth strategy, organic growth (SEO, content, Pinterest), content & creative, web & conversion, and paid growth. Most clients start with a diagnostic and add execution where it matters.',
+      },
+      {
+        q: 'Who do you work with?',
+        a: 'Startups, scale-ups, and established brands — founders and marketing leads who want growth they can measure, not marketing they have to guess about.',
+      },
+      {
+        q: 'How long until we see measurable results?',
+        a: 'Paid media and funnel fixes often yield signal within weeks. SEO and compounding brand equity take 3 to 6 months. We set transparent benchmark expectations before work begins.',
+      },
+      {
+        q: 'What happens on an initial strategy call?',
+        a: 'A focused 30-minute working session. We look at your current funnel, identify the most evident bottleneck, and share actionable first steps — regardless of whether you engage us.',
+      },
+    ],
+  },
+  {
+    id: 'process',
+    title: 'Process',
+    description: 'How we diagnose bottlenecks, scope work, and execute sprints.',
+    items: [
+      {
+        q: 'How do client engagements work?',
+        a: 'We diagnose first through an audit sprint, establish a prioritized roadmap, and transition into recurring execution sprints or milestone project deliveries.',
+      },
+      {
+        q: 'What is included in the initial Growth Audit?',
+        a: 'We inspect tracking and analytics configurations, review ad structures, analyze conversion pathways, and deliver a written findings document with prioritized recommendations.',
+      },
+      {
+        q: 'How quickly can campaigns or audits launch?',
+        a: 'Audits begin within 3 business days of asset access. Full campaign launches follow technical tracking verification and creative production sprints.',
+      },
+      {
+        q: 'How are deliverables tracked and communicated?',
+        a: 'Clients receive dedicated project board access, weekly asynchronous sprint updates, and bi-weekly strategic review calls.',
+      },
+    ],
+  },
+  {
+    id: 'reporting-contracts',
+    title: 'Reporting and Contracts',
+    description: 'Contract structures, billing models, and performance measurement.',
+    items: [
+      {
+        q: 'How do you measure and report ROI?',
+        a: 'We agree on primary business KPIs (pipeline, verified customer acquisition cost, conversion rate) before launch and track them via dedicated automated reporting dashboards.',
+      },
+      {
+        q: 'Do you require long-term lock-in contracts?',
+        a: 'We structure agreements around milestone deliverables or 90-day sprint commitments with 30-day notice windows, preferring to earn retention through proven results.',
+      },
+      {
+        q: 'How is billing structured?',
+        a: 'Engagements are billed as either flat monthly retainers for continuous execution or fixed milestone payments for discrete builds, agreed in advance with no hidden surcharges.',
+      },
+      {
+        q: 'How frequently do we review performance reports?',
+        a: 'Dashboards update in real time. We provide weekly performance recaps and deep-dive strategic reviews every two weeks.',
+      },
+    ],
+  },
+  {
+    id: 'data-nda',
+    title: 'Data and NDA',
+    description: 'Confidentiality, intellectual property, and account ownership.',
+    items: [
+      {
+        q: 'Do you sign non-disclosure agreements (NDAs)?',
+        a: 'Yes. We execute mutual NDAs prior to accessing proprietary systems, customer analytics, or financial data.',
+      },
+      {
+        q: 'Who owns the ad accounts, creative assets, and code?',
+        a: 'You do. All campaigns, ad accounts, pixel data, custom code, and creative assets remain 100% your property during and after our engagement.',
+      },
+      {
+        q: 'How is data privacy handled across analytics tools?',
+        a: 'We implement Google Consent Mode v2 and comply with global privacy standards, ensuring user tracking respects consent choices.',
+      },
+      {
+        q: 'What access permissions do you require during discovery?',
+        a: 'Standard read-only or analyst access to Google Analytics, Search Console, and ad platforms, without requiring administrative control.',
+      },
+    ],
+  },
+];
 
 export const FINAL_CTA = {
   h2: "Ready to find your bottleneck?",

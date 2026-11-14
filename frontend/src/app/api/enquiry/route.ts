@@ -12,6 +12,7 @@ import {
   checkDurableEnquiryGuard,
   getClientIp,
 } from '@/lib/enquiry-guard';
+import { persistInboundLead } from '@/lib/crm/leads';
 import { siteConfig } from '@/site.config';
 
 interface TurnstileVerifyResponse {
@@ -315,6 +316,7 @@ export async function POST(request: Request) {
 
       // Development simulation only
       recordInMemoryDedupe(data.workEmail, data.businessChallenge);
+      void persistInboundLead(data);
       console.log('⚡ [DEV SIMULATION] Enquiry validated (RESEND_API_KEY not set):', {
         name: data.name,
         company: data.company,
@@ -395,6 +397,9 @@ export async function POST(request: Request) {
 
     // Record in-memory dedupe window only after confirmed email dispatch
     recordInMemoryDedupe(data.workEmail, data.businessChallenge);
+
+    // Persist inbound lead to Neon DB (non-blocking, smart upsert)
+    void persistInboundLead(data);
 
     return NextResponse.json<EnquiryApiResponse>({
       success: true,

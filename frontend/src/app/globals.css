@@ -104,7 +104,10 @@ html {
   color-scheme: dark;
   scroll-behavior: smooth;
   scroll-padding-top: 96px;
-  overflow-x: hidden;
+  /* NOTE: overflow-x must NOT be set on html — only body carries it.
+     Setting it here creates a scroll container on html itself, which clips
+     any transformed/animated element that briefly extends past x:0, causing
+     the left-edge text masking seen on project/service hero sections. */
   max-width: 100%;
 }
 
@@ -232,4 +235,23 @@ html.hide-site-loader #site-loader {
 .work-list-scroll::-webkit-scrollbar-thumb {
   background-color: var(--color-line-strong);
   border-radius: 999px;
+}
+
+/* ─── Display Heading Clip Fix ────────────────────────────────────────────────
+   Large display headings (h1/h2 with font-display) must never be clipped by
+   overflow-x on a parent. The body carries overflow-x:hidden for horizontal
+   scroll prevention, but section-level containers must NOT clip their content.
+   These rules ensure page-hero headings are always fully visible.
+   ──────────────────────────────────────────────────────────────────────────── */
+.font-display {
+  /* Prevent text from being clipped by parent overflow contexts */
+  overflow-clip-margin: content-box;
+}
+
+/* Page-level hero sections: ensure the section wrapper is not a clip boundary */
+section[class*="pt-28"],
+section[class*="pt-36"],
+section[class*="pt-32"],
+section[class*="pt-24"] {
+  overflow-x: visible;
 }

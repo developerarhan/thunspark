@@ -76,8 +76,8 @@ export const siteConfig = {
   },
   contact: {
     email: "hello@thunspark.agency", // TODO(CONTENT): confirm primary inbox
-    phone: "+91 00000 00000", // TODO(CONTENT): confirm primary WhatsApp/phone
-    whatsapp: "+91 00000 00000",
+    phone: null as string | null, // TODO(CONTENT): confirm primary WhatsApp/phone
+    whatsapp: null as string | null,
     location: "India", // TODO(CONTENT): confirm registered office location
     socials: { // TODO(CONTENT): verify official social profile URLs before enabling in Organization.sameAs JSON-LD
       linkedin: "https://linkedin.com/company/thunspark",

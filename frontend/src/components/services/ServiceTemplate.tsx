@@ -6,6 +6,7 @@ import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { BookingButton } from '@/components/ui/BookingButton';
 import { Accordion } from '@/components/ui/Accordion';
+import { Breadcrumbs } from '@/components/ui/Breadcrumbs';
 import { Reveal } from '@/components/motion/Reveal';
 import { ServiceDetail } from '@/lib/services-data';
 import { ArrowLeft, ArrowRight, CheckCircle2, AlertCircle, Sparkles } from 'lucide-react';
@@ -22,6 +23,17 @@ export function ServiceTemplate({ service }: ServiceTemplateProps) {
         <Container>
           <Reveal>
             <div className="max-w-4xl">
+              <div className="mb-6">
+                <Breadcrumbs
+                  items={[
+                    { name: 'Home', path: '/' },
+                    { name: 'Services', path: '/services' },
+                    { name: service.name, path: `/services/${service.slug}` },
+                  ]}
+                  renderSchema={false}
+                />
+              </div>
+
               <Link
                 href="/services"
                 className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-meta hover:text-accent transition-colors mb-6"

@@ -2,13 +2,50 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { Container } from '@/components/ui/Container';
 import { Button } from '@/components/ui/Button';
 import { siteConfig } from '@/site.config';
 import { LEGAL_DISCLAIMER } from '@/lib/constants';
 import { BackToTop } from './BackToTop';
 
-export function Footer() {
+export interface FooterProps {
+  hasTeamMembers?: boolean;
+  contact?: {
+    email: string;
+    phone: string | null;
+    whatsapp: string | null;
+    address: string | null;
+    socials: {
+      linkedin?: string;
+      twitter?: string;
+      instagram?: string;
+      youtube?: string;
+      github?: string;
+    };
+  };
+}
+
+export function Footer({ hasTeamMembers = false, contact }: FooterProps) {
+  const pathname = usePathname();
+
+  // Disable public website footer on admin & studio routes
+  if (pathname?.startsWith('/admin') || pathname?.startsWith('/studio')) {
+    return null;
+  }
+
+  const email = contact?.email || siteConfig.contact.email;
+  const socials: {
+    linkedin?: string;
+    twitter?: string;
+    instagram?: string;
+    youtube?: string;
+    github?: string;
+  } = {
+    ...siteConfig.contact.socials,
+    ...(contact?.socials || {}),
+  };
+
   return (
     <footer className="bg-alt border-t border-line text-soft pt-16 pb-12 text-sm relative">
       <Container>
@@ -38,31 +75,57 @@ export function Footer() {
             <p className="text-xs text-meta leading-relaxed max-w-xs">
               Strategy, execution, and measurement — for businesses that want growth they can prove.
             </p>
-            <div className="flex items-center gap-4 pt-2 text-xs">
-              <a
-                href={siteConfig.contact.socials.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-accent transition-colors"
-              >
-                LinkedIn
-              </a>
-              <a
-                href={siteConfig.contact.socials.instagram}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-accent transition-colors"
-              >
-                Instagram
-              </a>
-              <a
-                href={siteConfig.contact.socials.twitter}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-accent transition-colors"
-              >
-                Twitter
-              </a>
+            <div className="flex flex-wrap items-center gap-4 pt-2 text-xs">
+              {socials.linkedin && (
+                <a
+                  href={socials.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-accent transition-colors"
+                >
+                  LinkedIn
+                </a>
+              )}
+              {socials.instagram && (
+                <a
+                  href={socials.instagram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-accent transition-colors"
+                >
+                  Instagram
+                </a>
+              )}
+              {socials.twitter && (
+                <a
+                  href={socials.twitter}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-accent transition-colors"
+                >
+                  Twitter
+                </a>
+              )}
+              {socials.youtube && (
+                <a
+                  href={socials.youtube}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-accent transition-colors"
+                >
+                  YouTube
+                </a>
+              )}
+              {socials.github && (
+                <a
+                  href={socials.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-accent transition-colors"
+                >
+                  GitHub
+                </a>
+              )}
             </div>
           </div>
 
@@ -106,6 +169,11 @@ export function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/engagement-models" className="hover:text-accent transition-colors">
+                  Engagement Models
+                </Link>
+              </li>
+              <li>
                 <Link href="/projects" className="hover:text-accent transition-colors">
                   Selected Work
                 </Link>
@@ -116,13 +184,26 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className="hover:text-accent transition-colors">
-                  Contact & Diagnostics
+                <Link href="/faq" className="hover:text-accent transition-colors">
+                  FAQ
                 </Link>
               </li>
               <li>
-                <Link href="/privacy-policy" className="hover:text-accent transition-colors">
-                  Privacy Policy
+                <Link href="/careers" className="hover:text-accent transition-colors">
+                  Careers
+                </Link>
+              </li>
+              {/* Team link appears ONLY when at least 1 member is published */}
+              {hasTeamMembers && (
+                <li>
+                  <Link href="/team" className="hover:text-accent transition-colors">
+                    The Team
+                  </Link>
+                </li>
+              )}
+              <li>
+                <Link href="/contact" className="hover:text-accent transition-colors">
+                  Contact & Diagnostics
                 </Link>
               </li>
             </ul>
@@ -145,8 +226,26 @@ export function Footer() {
             >
               Book a strategy call
             </Button>
-            <div className="text-xs text-meta">
-              Direct: <a href={`mailto:${siteConfig.contact.email}`} className="text-ink hover:text-accent">{siteConfig.contact.email}</a>
+            <div className="space-y-1.5 text-xs text-meta pt-1">
+              <div>
+                Direct: <a href={`mailto:${email}`} className="text-ink hover:text-accent">{email}</a>
+              </div>
+              {/* Strictly render phone/whatsapp/address ONLY if real non-placeholder values */}
+              {contact?.phone && (
+                <div>
+                  Tel: <a href={`tel:${contact.phone}`} className="text-ink hover:text-accent">{contact.phone}</a>
+                </div>
+              )}
+              {contact?.whatsapp && (
+                <div>
+                  WhatsApp: <a href={`https://wa.me/${contact.whatsapp.replace(/[^0-9]/g, '')}`} target="_blank" rel="noopener noreferrer" className="text-ink hover:text-accent">{contact.whatsapp}</a>
+                </div>
+              )}
+              {contact?.address && (
+                <div>
+                  Office: <span className="text-soft">{contact.address}</span>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -156,12 +255,15 @@ export function Footer() {
           <p>{LEGAL_DISCLAIMER}</p>
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-meta pt-2">
             <span>&copy; {new Date().getFullYear()} {siteConfig.name}. All rights reserved.</span>
-            <div className="flex items-center gap-6">
+            <div className="flex flex-wrap items-center gap-6">
               <Link href="/privacy-policy" className="hover:text-accent transition-colors">
                 Privacy Policy
               </Link>
               <Link href="/terms" className="hover:text-accent transition-colors">
                 Terms of Service
+              </Link>
+              <Link href="/cookie-policy" className="hover:text-accent transition-colors">
+                Cookie Policy
               </Link>
             </div>
           </div>

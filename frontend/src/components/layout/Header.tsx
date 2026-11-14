@@ -5,17 +5,32 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Menu, X, ChevronDown } from 'lucide-react';
 import { Container } from '@/components/ui/Container';
-import { BookingButton } from '@/components/ui/BookingButton';
+import { GsapOutlineButton } from '@/components/ui/GsapOutlineButton';
+import { getBookingHref, isExternalBooking } from '@/lib/booking';
+import { trackBookCallClick } from '@/lib/analytics/gtm';
+import { track } from '@/lib/analytics';
 import { MegaMenu } from './MegaMenu';
 import { siteConfig } from '@/site.config';
 
-export function Header() {
+export function Header({ hasTeamMembers = false }: { hasTeamMembers?: boolean }) {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
   const servicesBtnRef = useRef<HTMLButtonElement>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Resolve booking href once on the client
+  const bookingHref = getBookingHref();
+  const isExternal = isExternalBooking(bookingHref);
+  const bookingTarget = isExternal ? '_blank' : undefined;
+  const bookingRel = isExternal ? 'noopener noreferrer' : undefined;
+
+  const handleBookingClick = () => {
+    track('book_call_click', { location: 'header' });
+    track('cta_click', { location: 'header', label: 'Get a growth audit' });
+    trackBookCallClick('header');
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -69,6 +84,11 @@ export function Header() {
     }
     setServicesOpen(false);
   };
+
+  // Disable public website header on admin & studio routes
+  if (pathname?.startsWith('/admin') || pathname?.startsWith('/studio')) {
+    return null;
+  }
 
   return (
     <>
@@ -163,6 +183,16 @@ export function Header() {
               >
                 Blog
               </Link>
+              {hasTeamMembers && (
+                <Link
+                  href="/team"
+                  className={`text-sm font-medium transition-colors hover:text-ink ${
+                    pathname === '/team' ? 'text-accent' : 'text-soft'
+                  }`}
+                >
+                  Team
+                </Link>
+              )}
               <Link
                 href="/contact"
                 className={`text-sm font-medium transition-colors hover:text-ink ${
@@ -175,28 +205,34 @@ export function Header() {
 
             {/* Right Action */}
             <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+              {/* Mobile CTA — hollow outline GSAP fill button */}
               <div className="inline-flex lg:hidden shrink-0">
-                <BookingButton
-                  location="header_mobile"
-                  variant="primary"
+                <GsapOutlineButton
+                  href={bookingHref}
+                  target={bookingTarget}
+                  rel={bookingRel}
                   size="sm"
+                  onClick={handleBookingClick}
                   className="px-2.5! py-1.5! sm:px-3.5! sm:py-2! text-[11px]! sm:text-xs! whitespace-nowrap"
                   data-analytics-cta="header_growth_audit_mobile"
                 >
                   Get Audit
-                </BookingButton>
+                </GsapOutlineButton>
               </div>
 
+              {/* Desktop CTA — hollow outline GSAP fill button */}
               <div className="hidden lg:inline-flex shrink-0">
-                <BookingButton
-                  location="header_desktop"
-                  variant="primary"
+                <GsapOutlineButton
+                  href={bookingHref}
+                  target={bookingTarget}
+                  rel={bookingRel}
                   size="sm"
-                  className="hidden lg:inline-flex whitespace-nowrap"
+                  onClick={handleBookingClick}
+                  className="whitespace-nowrap"
                   data-analytics-cta="header_growth_audit"
                 >
                   Get a growth audit
-                </BookingButton>
+                </GsapOutlineButton>
               </div>
 
               {/* Mobile Hamburger Toggle */}
@@ -276,6 +312,15 @@ export function Header() {
             >
               Blog
             </Link>
+            {hasTeamMembers && (
+              <Link
+                href="/team"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block text-ink hover:text-accent"
+              >
+                Team
+              </Link>
+            )}
             <Link
               href="/contact"
               onClick={() => setMobileMenuOpen(false)}
@@ -286,17 +331,18 @@ export function Header() {
           </nav>
 
           <div className="mt-auto pt-6 pb-4 border-t border-line space-y-4">
-            <div className="w-full [&>div]:block [&>div]:w-full">
-              <BookingButton
-                location="header_drawer"
-                variant="primary"
+            <div className="w-full">
+              <GsapOutlineButton
+                href={bookingHref}
+                target={bookingTarget}
+                rel={bookingRel}
                 size="md"
-                className="w-full text-center"
+                className="w-full justify-center"
                 data-analytics-cta="mobile_drawer_growth_audit"
-                onClick={() => setMobileMenuOpen(false)}
+                onClick={() => { handleBookingClick(); setMobileMenuOpen(false); }}
               >
                 Get a growth audit
-              </BookingButton>
+              </GsapOutlineButton>
             </div>
             <div className="text-xs text-meta text-center">
               {siteConfig.contact.email}

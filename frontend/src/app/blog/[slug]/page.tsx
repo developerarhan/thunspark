@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { PortableText } from '@portabletext/react';
 import { Container } from '@/components/ui/Container';
+import { Breadcrumbs } from '@/components/ui/Breadcrumbs';
 import { Tag } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/Card';
 import { BookingButton } from '@/components/ui/BookingButton';
@@ -113,6 +114,17 @@ export default async function ArticleDetailPage({ params }: ArticleDetailPagePro
         <section className="pt-28 pb-16 md:pt-36 md:pb-24 border-b border-line">
           <Container>
             <div className="max-w-3xl mx-auto">
+              <div className="mb-6">
+                <Breadcrumbs
+                  items={[
+                    { name: 'Home', path: '/' },
+                    { name: 'Blog', path: '/blog' },
+                    { name: article.title, path: `/blog/${slug}` },
+                  ]}
+                  renderSchema={false}
+                />
+              </div>
+
               <Link
                 href="/blog"
                 className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-meta hover:text-accent transition-colors mb-6"

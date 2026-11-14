@@ -25,14 +25,34 @@ export const siteSettingsType = defineType({
     }),
     defineField({
       name: 'phone',
-      title: 'Contact Phone / WhatsApp',
+      title: 'Contact Phone',
       type: 'string',
+      description: 'Leave blank if unverified. Never use placeholders.',
+    }),
+    defineField({
+      name: 'whatsapp',
+      title: 'WhatsApp Contact',
+      type: 'string',
+      description: 'Leave blank if unverified. Never use placeholders.',
     }),
     defineField({
       name: 'address',
       title: 'Office Address',
       type: 'text',
       rows: 2,
+      description: 'Physical registered agency address. Leave blank if remote-only.',
+    }),
+    defineField({
+      name: 'socials',
+      title: 'Social Links',
+      type: 'object',
+      fields: [
+        defineField({ name: 'linkedin', title: 'LinkedIn URL', type: 'url' }),
+        defineField({ name: 'twitter', title: 'X / Twitter URL', type: 'url' }),
+        defineField({ name: 'instagram', title: 'Instagram URL', type: 'url' }),
+        defineField({ name: 'youtube', title: 'YouTube URL', type: 'url' }),
+        defineField({ name: 'github', title: 'GitHub URL', type: 'url' }),
+      ],
     }),
   ],
 });

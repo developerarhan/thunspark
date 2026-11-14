@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/Button';
 import { CONSENT_COOKIE_KEY, updateGoogleConsent } from '@/lib/analytics/gtm';
 import { ShieldCheck, Settings } from 'lucide-react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 
 
@@ -63,6 +64,9 @@ export function CookieConsentBanner() {
   const handleSaveCustom = () => {
     saveConsent(consentAnalytics, consentMarketing);
   };
+
+  const pathname = usePathname();
+  if (pathname?.startsWith('/admin') || pathname?.startsWith('/studio')) return null;
 
   if (!mounted || !showBanner) return null;
 

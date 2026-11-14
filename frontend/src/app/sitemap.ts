@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next';
 import { SERVICES_DATA } from '@/lib/services-data';
 import { CASE_STUDIES } from '@/lib/constants';
 import { SITE_URL } from '@/lib/seo';
-import { getAllPosts } from '@/lib/sanity/fetchers';
+import { getAllPosts, getTeamMembers } from '@/lib/sanity/fetchers';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Core static routes
@@ -18,6 +18,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 0.9,
+    },
+    {
+      url: `${SITE_URL}/engagement-models`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.8,
     },
     {
       url: `${SITE_URL}/about`,
@@ -38,6 +44,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.8,
     },
     {
+      url: `${SITE_URL}/faq`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
+    {
+      url: `${SITE_URL}/careers`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.6,
+    },
+    {
       url: `${SITE_URL}/contact`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
@@ -55,7 +73,27 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'yearly',
       priority: 0.3,
     },
+    {
+      url: `${SITE_URL}/cookie-policy`,
+      lastModified: new Date(),
+      changeFrequency: 'yearly',
+      priority: 0.3,
+    },
   ];
+
+  // Team route is included ONLY when at least 1 member is published
+  const teamMembers = await getTeamMembers();
+  const teamRoutes: MetadataRoute.Sitemap =
+    teamMembers.length > 0
+      ? [
+          {
+            url: `${SITE_URL}/team`,
+            lastModified: new Date(),
+            changeFrequency: 'monthly',
+            priority: 0.7,
+          },
+        ]
+      : [];
 
   // 10 Service discipline routes
   const serviceRoutes: MetadataRoute.Sitemap = Object.keys(SERVICES_DATA).map((slug) => ({
@@ -82,5 +120,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
-  return [...staticRoutes, ...serviceRoutes, ...projectRoutes, ...postRoutes];
+  return [
+    ...staticRoutes,
+    ...teamRoutes,
+    ...serviceRoutes,
+    ...projectRoutes,
+    ...postRoutes,
+  ];
 }

@@ -51,7 +51,7 @@ export function MotionProvider({ children }: { children: React.ReactNode }) {
 
   // Create or destroy Lenis cleanly when reduced-motion preference changes
   useEffect(() => {
-    if (reduced) return;
+    if (reduced || pathname?.startsWith('/admin') || pathname?.startsWith('/studio')) return;
 
     const lenisInstance = new Lenis({
       duration: 1.2,
@@ -106,6 +106,16 @@ export function MotionProvider({ children }: { children: React.ReactNode }) {
       window.cancelAnimationFrame(frameId);
     };
   }, [pathname, lenis, reduced]);
+
+  const isAdminOrStudio = pathname?.startsWith('/admin') || pathname?.startsWith('/studio');
+
+  if (isAdminOrStudio) {
+    return (
+      <MotionContext.Provider value={{ reduced: true, lenis: null }}>
+        {children}
+      </MotionContext.Provider>
+    );
+  }
 
   return (
     <MotionContext.Provider value={{ reduced, lenis }}>

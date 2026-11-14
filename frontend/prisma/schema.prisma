@@ -1,0 +1,503 @@
+// prisma/schema.prisma
+// ThunSpark CRM Data Model (Neon DB + Prisma)
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ── AUTH (NextAuth.js v5 / Auth.js) ─────────────────────────
+
+enum UserRole {
+  SUPER_ADMIN
+  AGENCY_OWNER
+  ACCOUNT_MANAGER
+  GROWTH_STRATEGIST
+  MEDIA_BUYER
+  CONTENT_SEO
+  FINANCE_ADMIN
+  CLIENT_PORTAL
+  READ_ONLY_AUDITOR
+}
+
+model User {
+  id             String    @id @default(cuid())
+  name           String?
+  email          String    @unique
+  emailVerified  DateTime?
+  image          String?
+  hashedPassword String?
+  role           UserRole  @default(GROWTH_STRATEGIST)
+  mfaEnabled     Boolean   @default(false)
+  mfaSecret      String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  accounts       Account[]
+  sessions       Session[]
+  leads          Lead[]     @relation("LeadOwner")
+  activities     Activity[] @relation("ActivityAuthor")
+  auditLogs      AuditLog[] @relation("UserAuditLogs")
+  tasks          Task[]     @relation("TaskAssignee")
+  timeLogs       TimeLog[]
+
+  @@index([role])
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ── LEADS & INBOUND PIPELINE ────────────────────────────────
+
+enum LeadSource {
+  ORGANIC
+  PAID
+  REFERRAL
+  OUTBOUND
+  DIRECT
+  OTHER
+}
+
+enum LeadStage {
+  NEW
+  PRE_AUDIT
+  DISCOVERY
+  PROPOSAL
+  NEGOTIATION
+  WON
+  LOST
+}
+
+model Lead {
+  id              String      @id @default(cuid())
+  name            String
+  email           String
+  phone           String?
+  company         String?
+  website         String?
+  source          LeadSource  @default(ORGANIC)
+  serviceInterest String[]    @default([])
+  budgetRange     String?
+  bottleneckNotes String?     @db.Text
+  stage           LeadStage   @default(NEW)
+  score           Int         @default(0)
+  ownerId         String?
+  owner           User?       @relation("LeadOwner", fields: [ownerId], references: [id])
+  convertedClient Client?
+
+  // Attribution & Origin Tracking
+  utmSource       String?
+  utmMedium       String?
+  utmCampaign     String?
+  utmTerm         String?
+  utmContent      String?
+  referrer        String?
+  landingPage     String?
+
+  activities      Activity[]
+  createdAt       DateTime    @default(now())
+  lastActivity    DateTime    @default(now())
+
+  @@index([email])
+  @@index([stage, ownerId])
+  @@index([createdAt])
+}
+
+enum ActivityType {
+  NOTE
+  FORM_SUBMISSION
+  CALL
+  EMAIL
+  MEETING
+  STAGE_CHANGE
+  SYSTEM
+}
+
+model Activity {
+  id        String       @id @default(cuid())
+  leadId    String
+  lead      Lead         @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  type      ActivityType @default(NOTE)
+  title     String
+  content   String?      @db.Text
+  authorId  String?
+  author    User?        @relation("ActivityAuthor", fields: [authorId], references: [id])
+  createdAt DateTime     @default(now())
+
+  @@index([leadId, createdAt])
+}
+
+// ── CLIENTS & ACCOUNTS ──────────────────────────────────────
+
+model Client {
+  id               String    @id @default(cuid())
+  legalName        String
+  brandName        String?
+  industry         String?
+  website          String?
+  billingAddress   String?   @db.Text
+  gstin            String?
+  currency         String    @default("INR")
+  timezone         String    @default("Asia/Kolkata")
+  healthScore      Int       @default(100)
+  contractStart    DateTime?
+  contractEnd      DateTime?
+  accountManagerId String?
+
+  leadId           String?   @unique
+  lead             Lead?     @relation(fields: [leadId], references: [id])
+
+  contacts         Contact[]
+  projects         Project[]
+  campaigns        Campaign[]
+  invoices         Invoice[]
+  expenses         Expense[]
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  @@index([legalName])
+}
+
+model Contact {
+  id        String   @id @default(cuid())
+  clientId  String
+  client    Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  name      String
+  role      String?
+  email     String
+  phone     String?
+  isPrimary Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([clientId])
+}
+
+// ── PROJECTS, RETAINERS & TASKS (Phase 2) ───────────────────
+
+enum ProjectType {
+  RETAINER
+  PROJECT
+  AUDIT
+}
+
+enum ProjectStatus {
+  ACTIVE
+  PAUSED
+  COMPLETED
+  CANCELLED
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  REVIEW
+  BLOCKED
+  DONE
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+model Project {
+  id           String        @id @default(cuid())
+  name         String
+  clientId     String
+  client       Client        @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  type         ProjectType   @default(PROJECT)
+  status       ProjectStatus @default(ACTIVE)
+  startDate    DateTime?
+  endDate      DateTime?
+  budgetAmount Decimal?      @db.Decimal(12, 2)
+  budgetHours  Int?          // Retainer hours limit / total project hours
+  
+  tasks        Task[]
+  milestones   Milestone[]
+  timeLogs     TimeLog[]
+  campaigns    Campaign[]
+  invoices     Invoice[]
+  expenses     Expense[]
+
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  @@index([clientId, status])
+}
+
+model Task {
+  id          String     @id @default(cuid())
+  projectId   String
+  project     Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  title       String
+  description String?    @db.Text
+  status      TaskStatus @default(TODO)
+  priority    Priority   @default(MEDIUM)
+  dueDate     DateTime?
+  estHours    Decimal?   @db.Decimal(5, 2)
+  actHours    Decimal?   @db.Decimal(5, 2)
+  
+  assigneeId  String?
+  assignee    User?      @relation("TaskAssignee", fields: [assigneeId], references: [id])
+  
+  timeLogs    TimeLog[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@index([projectId, status])
+  @@index([assigneeId])
+}
+
+model Milestone {
+  id         String    @id @default(cuid())
+  projectId  String
+  project    Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  title      String
+  dueDate    DateTime?
+  approved   Boolean   @default(false)
+  approvedAt DateTime?
+  createdAt  DateTime  @default(now())
+
+  @@index([projectId])
+}
+
+model TimeLog {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  taskId    String?
+  task      Task?    @relation(fields: [taskId], references: [id])
+  date      DateTime @db.Date
+  hours     Decimal  @db.Decimal(5, 2)
+  billable  Boolean  @default(true)
+  notes     String?  @db.Text
+  createdAt DateTime @default(now())
+
+  @@index([projectId, date])
+  @@index([userId])
+}
+
+// ── CAMPAIGN & CHANNEL PERFORMANCE (Phase 2) ────────────────
+
+enum Channel {
+  GOOGLE_ADS
+  META_ADS
+  LINKEDIN_ADS
+  SEO
+  EMAIL
+  SOCIAL_ORGANIC
+  CONTENT
+  WEB
+  OTHER
+}
+
+enum CreativeStatus {
+  DRAFT
+  REVIEW
+  APPROVED
+  LIVE
+}
+
+model Campaign {
+  id         String   @id @default(cuid())
+  clientId   String
+  client     Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  projectId  String?
+  project    Project? @relation(fields: [projectId], references: [id])
+  
+  name       String
+  channel    Channel  @default(GOOGLE_ADS)
+  objective  String?
+  status     String   @default("ACTIVE") // ACTIVE, PAUSED, COMPLETED
+  
+  budget     Decimal? @db.Decimal(12, 2)
+  spend      Decimal? @default(0) @db.Decimal(12, 2)
+  targetCpa  Decimal? @db.Decimal(10, 2)
+  actualCpa  Decimal? @db.Decimal(10, 2)
+  targetRoas Decimal? @db.Decimal(8, 2)
+  actualRoas Decimal? @db.Decimal(8, 2)
+
+  startDate  DateTime?
+  endDate    DateTime?
+
+  creatives  CreativeAsset[]
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([clientId, channel])
+  @@index([status])
+}
+
+model CreativeAsset {
+  id         String         @id @default(cuid())
+  campaignId String
+  campaign   Campaign       @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  title      String
+  type       String         @default("IMAGE") // IMAGE, VIDEO, COPY
+  assetUrl   String?
+  status     CreativeStatus @default(DRAFT)
+  notes      String?        @db.Text
+  createdAt  DateTime       @default(now())
+
+  @@index([campaignId])
+}
+
+// ── FINANCE, INVOICES & EXPENSES (Phase 3) ──────────────────
+
+enum InvoiceStatus {
+  DRAFT
+  SENT
+  PAID
+  OVERDUE
+  CANCELLED
+}
+
+enum ExpenseCategory {
+  AD_SPEND
+  SOFTWARE
+  CONTRACTOR
+  OPERATIONS
+  OTHER
+}
+
+model Invoice {
+  id               String        @id @default(cuid())
+  clientId         String
+  client           Client        @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  projectId        String?
+  project          Project?      @relation(fields: [projectId], references: [id])
+  
+  number           String        @unique // e.g. "TS-2026-001"
+  status           InvoiceStatus @default(DRAFT)
+  issueDate        DateTime      @default(now())
+  dueDate          DateTime
+  currency         String        @default("INR")
+  
+  // Dynamic line items: [{ id, description, sacCode, quantity, rate, amount }]
+  lineItems        Json
+  
+  subtotal         Decimal       @db.Decimal(12, 2)
+  taxRate          Decimal       @default(18.00) @db.Decimal(5, 2) // 18% standard Indian GST
+  taxAmount        Decimal       @db.Decimal(12, 2)
+  total            Decimal       @db.Decimal(12, 2)
+  isIgst           Boolean       @default(false) // false: CGST 9% + SGST 9%, true: IGST 18%
+  
+  paidAt           DateTime?
+  paymentMethod    String?       // "NEFT_RTGS", "UPI", "STRIPE", "BANK_TRANSFER"
+  paymentReference String?       // UTR or transaction confirmation reference
+  notes            String?       @db.Text
+  
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  @@index([clientId, status])
+  @@index([dueDate])
+  @@index([number])
+}
+
+model Expense {
+  id          String          @id @default(cuid())
+  clientId    String?
+  client      Client?         @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  projectId   String?
+  project     Project?        @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  
+  category    ExpenseCategory @default(OPERATIONS)
+  title       String
+  amount      Decimal         @db.Decimal(12, 2)
+  currency    String          @default("INR")
+  date        DateTime        @db.Date
+  isBillable  Boolean         @default(false)
+  receiptUrl  String?
+  notes       String?         @db.Text
+  
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  @@index([category, date])
+  @@index([clientId])
+}
+
+// ── AUDIT & COMPLIANCE LOGS ─────────────────────────────────
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  user      User?    @relation("UserAuditLogs", fields: [userId], references: [id])
+  action    String
+  entity    String
+  entityId  String
+  before    Json?
+  after     Json?
+  createdAt DateTime @default(now())
+
+  @@index([entity, entityId])
+  @@index([createdAt])
+}
+
+// ── AGENCY SETTINGS & TAX PROFILE (Phase 4) ─────────────────
+
+model AgencySetting {
+  id             String   @id @default("default")
+  legalName      String   @default("ThunSpark Media & Tech Solutions Pvt. Ltd.")
+  tradeName      String   @default("ThunSpark Digital Agency")
+  gstin          String   @default("06AAACT9876Q1Z2")
+  pan            String   @default("AAACT9876Q")
+  stateCode      String   @default("06")
+  stateName      String   @default("Haryana")
+  registeredAddr String   @default("DLF Cyber City, Tower 10, Sector 24, Gurugram, Haryana - 122002") @db.Text
+  billingEmail   String   @default("billing@thunspark.agency")
+  contactPhone   String   @default("+91 98765 43210")
+  websiteUrl     String   @default("https://thunspark.agency")
+  bankName       String   @default("HDFC Bank Limited")
+  accountHolder  String   @default("THUNSPARK MEDIA SOLUTIONS PVT LTD")
+  accountNumber  String   @default("50200088991122")
+  ifscCode       String   @default("HDFC0001234")
+  upiId          String   @default("thunspark.agency@hdfcbank")
+  defaultTaxRate Decimal  @default(18.00) @db.Decimal(5, 2)
+  sacCode        String   @default("998311")
+  updatedAt      DateTime @updatedAt
+}

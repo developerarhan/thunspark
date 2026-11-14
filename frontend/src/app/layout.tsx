@@ -15,6 +15,7 @@ import { RouteTracker } from "@/components/analytics/RouteTracker";
 import { GlobalClickTracker } from "@/components/analytics/GlobalClickTracker";
 import { siteConfig } from "@/site.config";
 import { SITE_URL, isIndexingAllowed, serializeJsonLd } from "@/lib/seo";
+import { getTeamMembers, getVerifiedContact } from "@/lib/sanity/fetchers";
 
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-space-grotesk",
@@ -93,38 +94,51 @@ export const metadata: Metadata = {
       },
 };
 
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "Organization",
-      "@id": `${SITE_URL}/#organization`,
-      name: siteConfig.name,
-      url: SITE_URL,
-      logo: `${SITE_URL}/logo.svg`,
-      description: siteConfig.description,
-    },
-    {
-      "@type": "WebSite",
-      "@id": `${SITE_URL}/#website`,
-      url: SITE_URL,
-      name: siteConfig.name,
-      publisher: {
-        "@id": `${SITE_URL}/#organization`,
-      },
-    },
-  ],
-};
-
 const rawGtmId = process.env.NEXT_PUBLIC_GTM_ID?.trim();
 const gtmId =
   rawGtmId && /^GTM-[A-Z0-9]+$/.test(rawGtmId) ? rawGtmId : null;
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const members = await getTeamMembers();
+  const hasTeamMembers = members.length > 0;
+  const verifiedContact = await getVerifiedContact();
+
+  const organizationJsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": `${SITE_URL}/#organization`,
+        name: siteConfig.name,
+        url: SITE_URL,
+        logo: `${SITE_URL}/logo.svg`,
+        description: siteConfig.description,
+        ...(verifiedContact.phone ? { telephone: verifiedContact.phone } : {}),
+        ...(verifiedContact.address
+          ? {
+              address: {
+                "@type": "PostalAddress",
+                streetAddress: verifiedContact.address,
+              },
+            }
+          : {}),
+        sameAs: Object.values(verifiedContact.socials).filter(Boolean),
+      },
+      {
+        "@type": "WebSite",
+        "@id": `${SITE_URL}/#website`,
+        url: SITE_URL,
+        name: siteConfig.name,
+        publisher: {
+          "@id": `${SITE_URL}/#organization`,
+        },
+      },
+    ],
+  };
 
   return (
     <html
@@ -164,10 +178,16 @@ export default function RootLayout({
         {/* Organization & WebSite JSON-LD */}
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
+          dangerouslySetInnerHTML={{ __html: serializeJsonLd(organizationJsonLd) }}
         />
       </head>
       <body className="min-h-screen flex flex-col bg-base text-ink font-sans selection:bg-accent selection:text-canvas">
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-accent focus:text-canvas focus:font-mono focus:text-xs focus:font-bold focus:rounded-md focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-accent-hi"
+        >
+          Skip to content
+        </a>
         {gtmId && <GoogleTagManager gtmId={gtmId} />}
         <Suspense fallback={null}>
           <RouteTracker />
@@ -177,9 +197,11 @@ export default function RootLayout({
         <CookieConsentBanner />
         <AttributionTracker />
         <MotionProvider>
-          <Header />
-          <main className="flex-1">{children}</main>
-          <Footer />
+          <Header hasTeamMembers={hasTeamMembers} />
+          <main id="main-content" tabIndex={-1} className="flex-1 outline-none">
+            {children}
+          </main>
+          <Footer hasTeamMembers={hasTeamMembers} contact={verifiedContact} />
         </MotionProvider>
         <Analytics />
         <SpeedInsights />

@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Container } from '@/components/ui/Container';
+import { Breadcrumbs } from '@/components/ui/Breadcrumbs';
 import { Tag } from '@/components/ui/Badge';
 import { Card } from '@/components/ui/Card';
 import { BookingButton } from '@/components/ui/BookingButton';
@@ -111,6 +112,17 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
           <Container>
             <Reveal>
               <div className="max-w-4xl mx-auto text-center mb-10">
+                <div className="flex justify-center mb-6">
+                  <Breadcrumbs
+                    items={[
+                      { name: 'Home', path: '/' },
+                      { name: 'Projects', path: '/projects' },
+                      { name: study.client, path: `/projects/${slug}` },
+                    ]}
+                    renderSchema={false}
+                  />
+                </div>
+
                 <Link
                   href="/projects"
                   className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-meta hover:text-accent transition-colors mb-6"

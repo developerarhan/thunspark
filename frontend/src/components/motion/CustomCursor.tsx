@@ -39,9 +39,9 @@ function resolveInteractiveTarget(
     }
   }
 
-  // 2. Standard interactive targets (links, buttons, inputs, dropdowns)
+  // 2. Standard interactive targets (links, buttons, inputs, dropdowns, clickable elements)
   const interactiveEl = element.closest(
-    'a, button, input, select, textarea, [role="button"], [tabindex]:not([tabindex="-1"])'
+    'a, button, input, select, textarea, [role="button"], [tabindex]:not([tabindex="-1"]), .cursor-pointer, [onclick]'
   );
   if (interactiveEl) {
     return { isInteractive: true };

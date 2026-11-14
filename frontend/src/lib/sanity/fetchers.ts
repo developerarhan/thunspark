@@ -2,7 +2,14 @@ import { cache } from 'react';
 import type { PortableTextBlock } from '@portabletext/react';
 import { sanityClient } from './client';
 import { urlForImage } from './image';
-import { allPostsQuery, allProjectsQuery, postBySlugQuery } from './queries';
+import {
+  allPostsQuery,
+  allProjectsQuery,
+  postBySlugQuery,
+  allTeamMembersQuery,
+  allJobOpeningsQuery,
+  siteSettingsQuery,
+} from './queries';
 import type { HomeWorkClient, ProjectDetail } from '@/lib/content/types';
 import {
   deriveShortDescription,
@@ -257,3 +264,164 @@ export const getProjectDetailBySlug = cache(async (slug: string): Promise<Projec
   const fallbacks = getFallbackProjectDetails();
   return fallbacks.find((p) => p.slug === slug) ?? null;
 });
+
+export interface TeamMember {
+  _id: string;
+  name: string;
+  role: string;
+  photo?: string | null;
+  shortBio?: string | null;
+  linkedinUrl?: string | null;
+  order?: number;
+}
+
+export interface SanityTeamMemberDocument {
+  _id: string;
+  name: string;
+  role: string;
+  photo?: SanityImageObject | null;
+  shortBio?: string | null;
+  linkedinUrl?: string | null;
+  order?: number | null;
+}
+
+export const getTeamMembers = cache(async (): Promise<TeamMember[]> => {
+  if (!sanityClient) {
+    return [];
+  }
+  try {
+    const docs = await sanityClient.fetch<SanityTeamMemberDocument[]>(allTeamMembersQuery);
+    if (!Array.isArray(docs)) return [];
+    return docs.map((doc) => ({
+      _id: doc._id,
+      name: doc.name,
+      role: doc.role,
+      photo: doc.photo ? urlForImage(doc.photo)?.width(600).height(750).fit('crop').url() || null : null,
+      shortBio: doc.shortBio || null,
+      linkedinUrl: doc.linkedinUrl || null,
+      order: typeof doc.order === 'number' ? doc.order : 0,
+    }));
+  } catch {
+    return [];
+  }
+});
+
+export interface JobOpening {
+  _id: string;
+  title: string;
+  team: string;
+  location: string;
+  type: string;
+  description?: PortableTextBlock[] | null;
+  applyEmail?: string | null;
+  active: boolean;
+}
+
+export interface SanityJobOpeningDocument {
+  _id: string;
+  title: string;
+  team: string;
+  location: string;
+  type: string;
+  description?: PortableTextBlock[] | null;
+  applyEmail?: string | null;
+  active?: boolean | null;
+}
+
+export const getJobOpenings = cache(async (): Promise<JobOpening[]> => {
+  if (!sanityClient) {
+    return [];
+  }
+  try {
+    const docs = await sanityClient.fetch<SanityJobOpeningDocument[]>(allJobOpeningsQuery);
+    if (!Array.isArray(docs)) return [];
+    return docs.map((doc) => ({
+      _id: doc._id,
+      title: doc.title,
+      team: doc.team,
+      location: doc.location,
+      type: doc.type,
+      description: doc.description || null,
+      applyEmail: doc.applyEmail || null,
+      active: doc.active !== false,
+    }));
+  } catch {
+    return [];
+  }
+});
+
+export interface SiteSettingsData {
+  agencyName?: string | null;
+  tagline?: string | null;
+  contactEmail?: string | null;
+  phone?: string | null;
+  whatsapp?: string | null;
+  address?: string | null;
+  socials?: {
+    linkedin?: string | null;
+    twitter?: string | null;
+    instagram?: string | null;
+    youtube?: string | null;
+    github?: string | null;
+  } | null;
+}
+
+export interface VerifiedContact {
+  email: string;
+  phone: string | null;
+  whatsapp: string | null;
+  address: string | null;
+  socials: {
+    linkedin?: string;
+    twitter?: string;
+    instagram?: string;
+    youtube?: string;
+    github?: string;
+  };
+}
+
+export function isValidContactValue(val: string | null | undefined): boolean {
+  if (!val || typeof val !== 'string') return false;
+  const clean = val.trim();
+  if (clean.length < 5) return false;
+  if (/0{4,}/.test(clean)) return false; // eliminates 00000 placeholders
+  if (clean.toLowerCase().includes('placeholder')) return false;
+  return true;
+}
+
+export const getSiteSettings = cache(async (): Promise<SiteSettingsData | null> => {
+  if (!sanityClient) {
+    return null;
+  }
+  try {
+    const settings = await sanityClient.fetch<SiteSettingsData>(siteSettingsQuery);
+    return settings || null;
+  } catch {
+    return null;
+  }
+});
+
+export async function getVerifiedContact(): Promise<VerifiedContact> {
+  const settings = await getSiteSettings();
+
+  const phone = isValidContactValue(settings?.phone) ? settings!.phone!.trim() : null;
+  const whatsapp = isValidContactValue(settings?.whatsapp) ? settings!.whatsapp!.trim() : null;
+  const address = isValidContactValue(settings?.address) ? settings!.address!.trim() : null;
+
+  const validUrl = (url?: string | null) => (url && url.startsWith('http') && !url.includes('00000') ? url.trim() : undefined);
+
+  return {
+    email: settings?.contactEmail?.trim() || 'hello@thunspark.agency',
+    phone,
+    whatsapp,
+    address,
+    socials: {
+      linkedin: validUrl(settings?.socials?.linkedin) || 'https://linkedin.com/company/thunspark',
+      twitter: validUrl(settings?.socials?.twitter) || 'https://twitter.com/thunspark',
+      instagram: validUrl(settings?.socials?.instagram) || 'https://instagram.com/thunspark',
+      youtube: validUrl(settings?.socials?.youtube),
+      github: validUrl(settings?.socials?.github),
+    },
+  };
+}
+

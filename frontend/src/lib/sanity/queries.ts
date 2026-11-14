@@ -117,6 +117,33 @@ export const siteSettingsQuery = groq`
     tagline,
     contactEmail,
     phone,
-    address
+    whatsapp,
+    address,
+    socials
+  }
+`;
+
+export const allTeamMembersQuery = groq`
+  *[_type == "teamMember"] | order(order asc, _createdAt asc) {
+    _id,
+    name,
+    role,
+    photo,
+    shortBio,
+    linkedinUrl,
+    order
+  }
+`;
+
+export const allJobOpeningsQuery = groq`
+  *[_type == "jobOpening" && active == true] | order(_createdAt desc) {
+    _id,
+    title,
+    team,
+    location,
+    type,
+    description,
+    applyEmail,
+    active
   }
 `;
