@@ -133,9 +133,10 @@ export function Section01Hero() {
         {/* Full-Width Trusted Brands Marquee (Option C Part 2) */}
         <div className="mt-14 sm:mt-16 pt-10 border-t border-line/60">
           <div className="text-center mb-6">
-            <span className="font-mono text-[11px] uppercase tracking-widest text-meta font-semibold">
-              TRUSTED BY HIGH-GROWTH BRANDS & SCALE-UPS
-            </span>
+            <div className="inline-flex items-center justify-center gap-3 font-mono text-[13px] md:text-sm font-semibold uppercase tracking-widest text-soft">
+              <span className="w-6 h-[2px] bg-accent inline-block shrink-0" />
+              <span>TRUSTED BY HIGH-GROWTH BRANDS &amp; SCALE-UPS</span>
+            </div>
           </div>
 
           <div className="relative w-full overflow-hidden flex [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">

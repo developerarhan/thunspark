@@ -1,8 +1,10 @@
 'use client';
 
 import React from 'react';
+import { Container } from '@/components/ui/Container';
+import { SectionHeading } from '@/components/ui/SectionHeading';
 import { CREATIVE_SHOWCASE, type CreativeCard } from '@/lib/creatives-data';
-import { Sparkles, ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
 
 // Split the 25 showcase items across 5 vertical tracks (5 items each)
 const COLUMNS: CreativeCard[][] = [
@@ -97,22 +99,18 @@ export function SectionCreativeDriftWall() {
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-accent/5 rounded-full blur-[140px] pointer-events-none" />
 
       {/* Section Header */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-20 pointer-events-none mb-10 md:mb-12">
-        <div className="inline-flex items-center gap-2 mb-2.5">
-          <Sparkles className="w-3.5 h-3.5 text-accent" />
-          <span className="text-accent font-mono font-bold tracking-widest uppercase text-xs">
-            OUR WORK
-          </span>
-        </div>
-
-        <h2 className="font-display font-extrabold text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-ink tracking-tight drop-shadow-lg">
-          Real Results for Real Brands
-        </h2>
-
-        <p className="text-soft text-xs sm:text-sm md:text-base max-w-2xl mx-auto mt-3 font-sans leading-relaxed">
-          A visual lookbook of high-converting ad creatives, motion reels, brand identity systems, and digital assets engineered for scale.
-        </p>
-      </div>
+      <Container className="relative z-20 pointer-events-none mb-10 md:mb-14">
+        <SectionHeading
+          eyebrow="OUR WORK"
+          title={
+            <>
+              Real Results for <span className="font-italic-accent">Real</span> Brands.
+            </>
+          }
+          copy="A visual lookbook of high-converting ad creatives, motion reels, brand identity systems, and digital assets engineered for scale."
+          align="center"
+        />
+      </Container>
 
       {/* 3D Drifting Stage Wrapper */}
       <div
