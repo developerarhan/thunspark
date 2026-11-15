@@ -149,7 +149,13 @@ export function SectionCreativeDriftWall() {
                   } as React.CSSProperties
                 }
               >
-                <div className={`${config.direction} gap-3.5 sm:gap-5 py-2`}>
+                <div
+                  className={`flex flex-col shrink-0 ${config.direction} gap-3.5 sm:gap-5 py-2`}
+                  style={{
+                    animation: `${config.direction === 'drift-track-up' ? 'driftVerticalUp' : 'driftVerticalDown'} ${config.speed} linear infinite`,
+                    willChange: 'transform',
+                  }}
+                >
                   {loopItems.map((card, itemIdx) => (
                     <CreativeTile
                       key={`${card.id}-${colIdx}-${itemIdx}`}

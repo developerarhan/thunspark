@@ -138,8 +138,14 @@ export function Section01Hero() {
             </span>
           </div>
 
-          <div className="relative w-full overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
-            <div className="animate-marquee items-center gap-4 sm:gap-6 py-2">
+          <div className="relative w-full overflow-hidden flex [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
+            <div
+              className="flex flex-row flex-nowrap w-max shrink-0 items-center gap-4 sm:gap-6 py-2 animate-marquee"
+              style={{
+                animation: 'marquee 35s linear infinite',
+                willChange: 'transform',
+              }}
+            >
               {marqueeBrands.map((brand, i) => {
                 const CardWrapper = brand.caseStudyHref ? Link : 'div';
                 return (
