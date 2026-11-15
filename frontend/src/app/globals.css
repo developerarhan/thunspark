@@ -284,3 +284,48 @@ section[class*="pt-24"] {
     justify-content: center;
   }
 }
+
+/* ─── 3D Drifting Creative Wall (SharperIQ Style) ─────────────────────── */
+@keyframes driftVerticalUp {
+  0% {
+    transform: translateY(0%);
+  }
+  100% {
+    transform: translateY(-50%);
+  }
+}
+
+@keyframes driftVerticalDown {
+  0% {
+    transform: translateY(-50%);
+  }
+  100% {
+    transform: translateY(0%);
+  }
+}
+
+.drift-track-up {
+  display: flex;
+  flex-direction: column;
+  animation: driftVerticalUp var(--drift-speed, 34s) linear infinite;
+  will-change: transform;
+}
+
+.drift-track-down {
+  display: flex;
+  flex-direction: column;
+  animation: driftVerticalDown var(--drift-speed, 38s) linear infinite;
+  will-change: transform;
+}
+
+.drift-stage:hover .drift-track-up,
+.drift-stage:hover .drift-track-down {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .drift-track-up,
+  .drift-track-down {
+    animation: none !important;
+  }
+}

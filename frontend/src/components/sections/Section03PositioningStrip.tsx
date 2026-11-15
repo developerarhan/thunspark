@@ -20,7 +20,7 @@ const STATS: MetricItem[] = [
     suffix: '+',
     decimals: 0,
     label: 'Brands Grown',
-    color: 'text-[#2563EB] dark:text-[#3B82F6]', // Electric Blue matching reference
+    color: 'text-[#2563EB] dark:text-[#3B82F6]', // Electric Blue
   },
   {
     value: 2,
@@ -28,7 +28,7 @@ const STATS: MetricItem[] = [
     suffix: 'M+',
     decimals: 0,
     label: 'Reach Generated',
-    color: 'text-[#EA580C] dark:text-[#FF6B00]', // Flame Orange matching reference
+    color: 'text-[#EA580C] dark:text-[#FF6B00]', // Flame Orange
   },
   {
     value: 1,
@@ -114,20 +114,26 @@ function AnimatedStatCounter({
 
 export function Section03PositioningStrip() {
   return (
-    <Section tone="alt" spacing="none" className="border-y border-line/60 bg-card/30 backdrop-blur-sm relative">
+    <Section tone="alt" spacing="none" className="border-y border-line/60 bg-card/40 backdrop-blur-sm relative">
       <Container>
-        <div className="grid grid-cols-2 lg:grid-cols-4 py-3 sm:py-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 py-6 sm:py-8 lg:py-10">
           {STATS.map((stat, idx) => (
             <div
               key={stat.label}
-              className={`px-4 sm:px-6 md:px-8 py-5 sm:py-6 flex flex-col items-center justify-center text-center transition-colors duration-300 ${
-                idx !== 0 ? 'lg:border-l border-line/60' : ''
-              } ${idx % 2 === 1 ? 'border-l border-line/60 lg:border-l' : ''} ${
-                idx >= 2 ? 'border-t border-line/60 lg:border-t-0' : ''
-              }`}
+              className={`px-4 sm:px-6 md:px-8 py-4 sm:py-5 flex flex-col items-center justify-center text-center relative transition-colors duration-300 ${
+                idx % 2 === 1 ? 'border-l border-line/60 lg:border-l-0' : ''
+              } ${idx >= 2 ? 'border-t border-line/60 lg:border-t-0' : ''}`}
             >
+              {/* Sleek inset vertical divider line matching Sharper IQ screenshot */}
+              {idx !== 0 && (
+                <div
+                  aria-hidden="true"
+                  className="hidden lg:block absolute left-0 top-1/2 -translate-y-1/2 w-px h-14 bg-line/60"
+                />
+              )}
+
               <div
-                className={`font-display font-extrabold text-3xl sm:text-4xl md:text-5xl tracking-tight ${stat.color}`}
+                className={`font-display font-bold text-4xl sm:text-5xl md:text-6xl tracking-tight ${stat.color}`}
               >
                 <AnimatedStatCounter
                   value={stat.value}
@@ -136,9 +142,9 @@ export function Section03PositioningStrip() {
                   decimals={stat.decimals}
                 />
               </div>
-              <div className="font-sans text-xs sm:text-sm font-medium text-soft tracking-wide mt-2">
+              <p className="font-sans text-sm sm:text-base md:text-lg font-medium text-soft tracking-normal mt-2.5">
                 {stat.label}
-              </div>
+              </p>
             </div>
           ))}
         </div>

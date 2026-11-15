@@ -7,6 +7,7 @@ import { Section03PositioningStrip } from '@/components/sections/Section03Positi
 import { Section02Problems } from '@/components/sections/Section02Problems';
 import { Section04SolutionsSelector } from '@/components/sections/Section04SolutionsSelector';
 import { Section07FeaturedWork } from '@/components/sections/Section07FeaturedWork';
+import { SectionCreativeDriftWall } from '@/components/sections/SectionCreativeDriftWall';
 import { Section08ClientLove } from '@/components/sections/Section08ClientLove';
 import { Section05ProcessPathway } from '@/components/sections/Section05ProcessPathway';
 import { Section06Industries } from '@/components/sections/Section06Industries';
@@ -36,6 +37,7 @@ export default async function HomePage() {
         clients={visibleProjects}
         totalCount={projects.length}
       />
+      <SectionCreativeDriftWall />
       <Section08ClientLove testimonials={[]} />
       <Section05ProcessPathway />
       <Section06Industries />
