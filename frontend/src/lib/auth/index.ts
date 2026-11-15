@@ -1,6 +1,5 @@
 import NextAuth, { type DefaultSession } from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
-import Google from 'next-auth/providers/google';
 import { db } from '@/lib/db/client';
 import { verifyPassword } from '@/lib/auth/password';
 import type { UserRole } from '@prisma/client';
@@ -28,14 +27,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     signIn: '/admin/login',
   },
   providers: [
-    ...(process.env.AUTH_GOOGLE_ID && process.env.AUTH_GOOGLE_SECRET
-      ? [
-          Google({
-            clientId: process.env.AUTH_GOOGLE_ID,
-            clientSecret: process.env.AUTH_GOOGLE_SECRET,
-          }),
-        ]
-      : []),
     Credentials({
       name: 'Credentials',
       credentials: {
