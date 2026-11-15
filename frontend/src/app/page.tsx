@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { buildMetadata } from '@/lib/seo';
 import { MAX_HOME_CLIENTS } from '@/lib/content/projects';
-import { getProjects } from '@/lib/sanity/fetchers';
+import { getProjects, getAllPosts } from '@/lib/sanity/fetchers';
 import { Section01Hero } from '@/components/sections/Section01Hero';
 import { Section03PositioningStrip } from '@/components/sections/Section03PositioningStrip';
 import { Section02Problems } from '@/components/sections/Section02Problems';
@@ -16,6 +16,8 @@ import { Section10Insights } from '@/components/sections/Section10Insights';
 import { Section11FAQ } from '@/components/sections/Section11FAQ';
 import { Section12FinalCTA } from '@/components/sections/Section12FinalCTA';
 
+export const revalidate = 60;
+
 export const metadata: Metadata = buildMetadata({
   title: 'ThunSpark | Digital Growth Agency — Strategy, Execution & Measurement',
   description:
@@ -24,8 +26,29 @@ export const metadata: Metadata = buildMetadata({
 });
 
 export default async function HomePage() {
-  const projects = await getProjects();
+  const [projects, sanityPosts] = await Promise.all([
+    getProjects(),
+    getAllPosts(),
+  ]);
   const visibleProjects = projects.slice(0, MAX_HOME_CLIENTS);
+
+  const homeInsights = sanityPosts
+    .filter((p) => Boolean(p.title && p.slug))
+    .slice(0, 3)
+    .map((p) => ({
+      slug: p.slug,
+      title: p.title,
+      category: p.category?.title || 'Growth Strategy',
+      summary: p.excerpt || '',
+      date: p.publishedAt
+        ? new Date(p.publishedAt).toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric',
+          })
+        : 'Recent',
+      readTime: `${p.readingTime || 4} min read`,
+    }));
 
   return (
     <>
@@ -42,7 +65,7 @@ export default async function HomePage() {
       <Section05ProcessPathway />
       <Section06Industries />
       <Section09WhyThunSpark />
-      <Section10Insights posts={[]} />
+      <Section10Insights posts={homeInsights} />
       <Section11FAQ />
       <Section12FinalCTA />
     </>

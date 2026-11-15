@@ -136,11 +136,15 @@ export const getProjects = cache(async (): Promise<HomeWorkClient[]> => {
 });
 
 export const getAllPosts = cache(async (): Promise<SanityPostSummary[]> => {
-  if (!sanityClient) return [];
+  if (!sanityClient) {
+    console.warn('[Sanity] sanityClient is not configured. Check NEXT_PUBLIC_SANITY_PROJECT_ID.');
+    return [];
+  }
   try {
     const posts = await sanityClient.fetch<SanityPostSummary[]>(allPostsQuery);
     return Array.isArray(posts) ? posts : [];
-  } catch {
+  } catch (err) {
+    console.error('[Sanity] Error fetching posts:', err);
     return [];
   }
 });

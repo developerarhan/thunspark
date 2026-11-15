@@ -16,23 +16,27 @@ export const metadata: Metadata = buildMetadata({
   path: '/blog',
 });
 
+export const revalidate = 60;
+
 export default async function BlogPage() {
   const posts = await getAllPosts();
 
-  const articles: ArticleItem[] = posts.map((post) => ({
-    id: post._id,
-    title: post.title,
-    slug: post.slug,
-    excerpt: post.excerpt,
-    coverImageUrl: post.coverImage
-      ? urlForImage(post.coverImage)?.width(800).height(500).url() ?? undefined
-      : undefined,
-    coverImageAlt: post.coverImage?.alt || post.title,
-    category: post.category ? { title: post.category.title, slug: post.category.slug } : null,
-    author: post.author ? { name: post.author.name, role: post.author.role } : null,
-    readingTime: post.readingTime ?? undefined,
-    publishedAt: post.publishedAt ?? undefined,
-  }));
+  const articles: ArticleItem[] = posts
+    .filter((post) => Boolean(post && post.title && post.slug))
+    .map((post) => ({
+      id: post._id,
+      title: post.title,
+      slug: post.slug,
+      excerpt: post.excerpt || '',
+      coverImageUrl: post.coverImage
+        ? urlForImage(post.coverImage)?.width(800).height(500).url() ?? undefined
+        : undefined,
+      coverImageAlt: post.coverImage?.alt || post.title,
+      category: post.category ? { title: post.category.title, slug: post.category.slug } : null,
+      author: post.author ? { name: post.author.name, role: post.author.role } : null,
+      readingTime: post.readingTime ?? undefined,
+      publishedAt: post.publishedAt ?? undefined,
+    }));
 
   const categoryMap = new Map<string, { name: string; slug: string }>();
   for (const post of posts) {

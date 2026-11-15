@@ -19,6 +19,9 @@ import {
   serializeJsonLd,
 } from '@/lib/seo';
 
+export const revalidate = 60;
+export const dynamicParams = true;
+
 interface ArticleDetailPageProps {
   params: Promise<{ slug: string }>;
 }

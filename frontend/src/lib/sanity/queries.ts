@@ -69,7 +69,7 @@ export const projectBySlugQuery = groq`
 `;
 
 export const allPostsQuery = groq`
-  *[_type == "post"] | order(publishedAt desc) {
+  *[_type == "post"] | order(coalesce(publishedAt, _createdAt) desc) {
     _id,
     title,
     "slug": slug.current,
