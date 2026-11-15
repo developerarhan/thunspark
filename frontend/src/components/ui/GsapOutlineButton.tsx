@@ -16,8 +16,11 @@ export interface GsapOutlineButtonProps {
   disabled?: boolean;
   'data-analytics-cta'?: string;
   'data-analytics-location'?: string;
+  'data-cal-link'?: string;
+  'data-cal-config'?: string;
   'aria-label'?: string;
   type?: 'button' | 'submit' | 'reset';
+  [key: string]: unknown;
 }
 
 const SIZE_CLASSES = {
@@ -135,6 +138,7 @@ export function GsapOutlineButton({
         onMouseLeave={handleMouseLeave}
         onClick={handleClick as React.MouseEventHandler<HTMLAnchorElement>}
         aria-label={props['aria-label']}
+        {...props}
       >
         {inner}
       </Link>
@@ -150,6 +154,7 @@ export function GsapOutlineButton({
       onMouseLeave={handleMouseLeave}
       onClick={handleClick as React.MouseEventHandler<HTMLButtonElement>}
       aria-label={props['aria-label']}
+      {...props}
     >
       {inner}
     </button>

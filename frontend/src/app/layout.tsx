@@ -13,6 +13,7 @@ import { CookieConsentBanner } from "@/components/analytics/CookieConsentBanner"
 import { ScrollDepthTracker } from "@/components/analytics/ScrollDepthTracker";
 import { RouteTracker } from "@/components/analytics/RouteTracker";
 import { GlobalClickTracker } from "@/components/analytics/GlobalClickTracker";
+import { CalEmbedProvider } from "@/components/booking/CalEmbedProvider";
 import { siteConfig } from "@/site.config";
 import { SITE_URL, isIndexingAllowed, serializeJsonLd } from "@/lib/seo";
 import { getTeamMembers, getVerifiedContact } from "@/lib/sanity/fetchers";
@@ -196,6 +197,7 @@ export default async function RootLayout({
         <GlobalClickTracker />
         <CookieConsentBanner />
         <AttributionTracker />
+        <CalEmbedProvider />
         <MotionProvider>
           <Header hasTeamMembers={hasTeamMembers} />
           <main id="main-content" tabIndex={-1} className="flex-1 outline-none">

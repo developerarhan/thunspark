@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Button, ButtonProps } from '@/components/ui/Button';
-import { getBookingHref, isExternalBooking } from '@/lib/booking';
+import { getBookingHref, isExternalBooking, getCalLink } from '@/lib/booking';
 import { trackBookCallClick } from '@/lib/analytics/gtm';
 import { track } from '@/lib/analytics';
 
@@ -23,9 +23,10 @@ export function BookingButton({
   ...props
 }: BookingButtonProps) {
   const resolvedHref = href || getBookingHref();
+  const calLink = getCalLink(resolvedHref);
   const isExternal = isExternalBooking(resolvedHref);
-  const finalTarget = target !== undefined ? target : (isExternal ? '_blank' : undefined);
-  const finalRel = rel !== undefined ? rel : (isExternal ? 'noopener noreferrer' : undefined);
+  const finalTarget = target !== undefined ? target : (isExternal && !calLink ? '_blank' : undefined);
+  const finalRel = rel !== undefined ? rel : (isExternal && !calLink ? 'noopener noreferrer' : undefined);
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     track('book_call_click', { location });
@@ -44,6 +45,8 @@ export function BookingButton({
       rel={finalRel}
       onClick={handleClick}
       data-analytics-location={location}
+      data-cal-link={calLink || undefined}
+      data-cal-config='{"layout":"month_view","theme":"dark"}'
       {...props}
     >
       {children}

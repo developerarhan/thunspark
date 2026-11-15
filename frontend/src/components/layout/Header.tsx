@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import { Menu, X, ChevronDown } from 'lucide-react';
 import { Container } from '@/components/ui/Container';
 import { GsapOutlineButton } from '@/components/ui/GsapOutlineButton';
-import { getBookingHref, isExternalBooking } from '@/lib/booking';
+import { getBookingHref, isExternalBooking, getCalLink } from '@/lib/booking';
 import { trackBookCallClick } from '@/lib/analytics/gtm';
 import { track } from '@/lib/analytics';
 import { MegaMenu } from './MegaMenu';
@@ -20,11 +20,12 @@ export function Header({ hasTeamMembers = false }: { hasTeamMembers?: boolean })
   const servicesBtnRef = useRef<HTMLButtonElement>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Resolve booking href once on the client
+  // Resolve booking href & Cal modal link once on the client
   const bookingHref = getBookingHref();
+  const calLink = getCalLink(bookingHref);
   const isExternal = isExternalBooking(bookingHref);
-  const bookingTarget = isExternal ? '_blank' : undefined;
-  const bookingRel = isExternal ? 'noopener noreferrer' : undefined;
+  const bookingTarget = isExternal && !calLink ? '_blank' : undefined;
+  const bookingRel = isExternal && !calLink ? 'noopener noreferrer' : undefined;
 
   const handleBookingClick = () => {
     track('book_call_click', { location: 'header' });
@@ -215,6 +216,8 @@ export function Header({ hasTeamMembers = false }: { hasTeamMembers?: boolean })
                   onClick={handleBookingClick}
                   className="px-2.5! py-1.5! sm:px-3.5! sm:py-2! text-[11px]! sm:text-xs! whitespace-nowrap"
                   data-analytics-cta="header_growth_audit_mobile"
+                  data-cal-link={calLink || undefined}
+                  data-cal-config='{"layout":"month_view","theme":"dark"}'
                 >
                   Get Audit
                 </GsapOutlineButton>
@@ -230,6 +233,8 @@ export function Header({ hasTeamMembers = false }: { hasTeamMembers?: boolean })
                   onClick={handleBookingClick}
                   className="whitespace-nowrap"
                   data-analytics-cta="header_growth_audit"
+                  data-cal-link={calLink || undefined}
+                  data-cal-config='{"layout":"month_view","theme":"dark"}'
                 >
                   Get a growth audit
                 </GsapOutlineButton>
@@ -339,6 +344,8 @@ export function Header({ hasTeamMembers = false }: { hasTeamMembers?: boolean })
                 size="md"
                 className="w-full justify-center"
                 data-analytics-cta="mobile_drawer_growth_audit"
+                data-cal-link={calLink || undefined}
+                data-cal-config='{"layout":"month_view","theme":"dark"}'
                 onClick={() => { handleBookingClick(); setMobileMenuOpen(false); }}
               >
                 Get a growth audit
