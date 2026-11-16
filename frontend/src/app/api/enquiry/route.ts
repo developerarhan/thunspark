@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { Resend } from 'resend';
 import { z } from 'zod';
 import {
@@ -241,6 +242,13 @@ export async function POST(request: Request) {
     }
 
     if (checkInMemoryDedupe(data.workEmail, data.businessChallenge)) {
+      try {
+        await persistInboundLead(data);
+        revalidatePath('/admin');
+        revalidatePath('/admin/leads');
+      } catch (e) {
+        console.error('[CRM Lead Capture Dedupe error]:', e);
+      }
       return NextResponse.json<EnquiryApiResponse>({
         success: true,
         code: 'ALREADY_RECEIVED',
@@ -288,6 +296,13 @@ export async function POST(request: Request) {
       }
 
       if (guardResult.reason === 'already_received') {
+        try {
+          await persistInboundLead(data);
+          revalidatePath('/admin');
+          revalidatePath('/admin/leads');
+        } catch (e) {
+          console.error('[CRM Lead Capture Guard Dedupe error]:', e);
+        }
         return NextResponse.json<EnquiryApiResponse>({
           success: true,
           code: 'ALREADY_RECEIVED',
@@ -316,7 +331,13 @@ export async function POST(request: Request) {
 
       // Development simulation only
       recordInMemoryDedupe(data.workEmail, data.businessChallenge);
-      void persistInboundLead(data);
+      try {
+        await persistInboundLead(data);
+        revalidatePath('/admin');
+        revalidatePath('/admin/leads');
+      } catch (dbErr) {
+        console.error('⚡ [DEV] Lead persistence error:', dbErr);
+      }
       console.log('⚡ [DEV SIMULATION] Enquiry validated (RESEND_API_KEY not set):', {
         name: data.name,
         company: data.company,
@@ -398,8 +419,15 @@ export async function POST(request: Request) {
     // Record in-memory dedupe window only after confirmed email dispatch
     recordInMemoryDedupe(data.workEmail, data.businessChallenge);
 
-    // Persist inbound lead to Neon DB (non-blocking, smart upsert)
-    void persistInboundLead(data);
+    // Persist inbound lead to Neon DB (awaited so serverless runtime does not abort execution)
+    try {
+      const persisted = await persistInboundLead(data);
+      console.log('✅ [CRM Lead Capture] Inbound lead saved to Neon DB:', persisted?.leadId);
+      revalidatePath('/admin');
+      revalidatePath('/admin/leads');
+    } catch (persistErr) {
+      console.error('[CRM Lead Capture Error]:', persistErr);
+    }
 
     return NextResponse.json<EnquiryApiResponse>({
       success: true,
