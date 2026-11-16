@@ -97,8 +97,8 @@ export function GsapOutlineButton({
   );
 
   const baseClass = [
-    'relative inline-flex items-center justify-center select-none rounded-full overflow-hidden',
-    'border-2 border-accent',
+    'relative inline-flex items-center justify-center select-none rounded-full overflow-hidden isolate [transform:translateZ(0)]',
+    'border-0 shadow-[inset_0_0_0_2px_#FFD21F]',
     'focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-accent',
     disabled ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer',
     SIZE_CLASSES[size],
@@ -109,12 +109,12 @@ export function GsapOutlineButton({
 
   const inner = (
     <>
-      {/* Animated fill layer — starts at scaleX:0, slides in on hover */}
+      {/* Animated fill layer — starts at scaleX:0, slides in on hover, seamlessly covers edge-to-edge */}
       <span
         ref={fillRef}
         aria-hidden="true"
         style={{ transform: 'scaleX(0)', transformOrigin: 'left center' }}
-        className="absolute inset-0 bg-accent rounded-full pointer-events-none"
+        className="absolute -inset-[1px] bg-accent pointer-events-none"
       />
       {/* Text — always on top of fill, colour is GSAP-animated */}
       <span
