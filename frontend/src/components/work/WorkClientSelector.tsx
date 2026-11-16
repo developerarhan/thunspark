@@ -10,7 +10,7 @@ import type { HomeWorkClient } from '@/lib/content/types';
 import { ClientMediaTile } from './ClientMediaTile';
 import { track } from '@/lib/analytics';
 
-const AUTOPLAY_INTERVAL_MS = 6000;
+const AUTOPLAY_INTERVAL_MS = 2000;
 const AUTOPLAY_MAX_CLIENTS = 6;
 
 interface WorkClientSelectorProps {
@@ -28,10 +28,7 @@ export function WorkClientSelector({ clients, totalCount }: WorkClientSelectorPr
 
   const count = clients.length;
   const [activeIndex, setActiveIndex] = useState(0);
-  const [stoppedPermanently, setStoppedPermanently] = useState(false);
   const [userPaused, setUserPaused] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
-  const [hasFocusWithin, setHasFocusWithin] = useState(false);
   const [scrollEdges, setScrollEdges] = useState({ top: false, bottom: false });
 
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
@@ -41,9 +38,8 @@ export function WorkClientSelector({ clients, totalCount }: WorkClientSelectorPr
   const activeClient = count > 0 ? clients[safeActiveIndex] : null;
 
   const supportsAutoplay = count >= 2 && count <= AUTOPLAY_MAX_CLIENTS && !reduced;
-  const isPausedByInteraction = isHovered || hasFocusWithin || userPaused;
-  const isAutoplayActive = supportsAutoplay && !stoppedPermanently;
-  const isAutoplayTicking = isAutoplayActive && !isPausedByInteraction;
+  const isAutoplayActive = supportsAutoplay;
+  const isAutoplayTicking = isAutoplayActive && !userPaused;
   const isScrollableList = count >= 6;
 
   const updateScrollEdges = useCallback(() => {
@@ -94,7 +90,7 @@ export function WorkClientSelector({ clients, totalCount }: WorkClientSelectorPr
     }
   }, [isScrollableList, reduced, safeActiveIndex]);
 
-  // Desktop 6s autoplay interval
+  // Desktop 2s autoplay interval (resets countdown whenever active project changes)
   useEffect(() => {
     if (!isAutoplayTicking || count < 2) return;
 
@@ -103,7 +99,7 @@ export function WorkClientSelector({ clients, totalCount }: WorkClientSelectorPr
     }, AUTOPLAY_INTERVAL_MS);
 
     return () => window.clearInterval(timer);
-  }, [count, isAutoplayTicking]);
+  }, [count, isAutoplayTicking, safeActiveIndex]);
 
   // Empty state (0 clients)
   if (count === 0) {
@@ -127,7 +123,6 @@ export function WorkClientSelector({ clients, totalCount }: WorkClientSelectorPr
 
   const handleManualSelect = (index: number) => {
     setActiveIndex(index);
-    setStoppedPermanently(true);
     if (clients[index]) {
       track('project_open', { slug: clients[index].slug });
     }
@@ -136,7 +131,6 @@ export function WorkClientSelector({ clients, totalCount }: WorkClientSelectorPr
   const handleTabFocus = (index: number) => {
     if (index !== safeActiveIndex) {
       setActiveIndex(index);
-      setStoppedPermanently(true);
     }
   };
 
@@ -159,12 +153,6 @@ export function WorkClientSelector({ clients, totalCount }: WorkClientSelectorPr
     e.preventDefault();
     handleManualSelect(nextIndex);
     tabRefs.current[nextIndex]?.focus();
-  };
-
-  const handleWrapperBlur = (e: React.FocusEvent<HTMLDivElement>) => {
-    if (!e.currentTarget.contains(e.relatedTarget as Node | null)) {
-      setHasFocusWithin(false);
-    }
   };
 
   const activeTabId = `${baseId}-tab-${safeActiveIndex}`;
@@ -196,26 +184,19 @@ export function WorkClientSelector({ clients, totalCount }: WorkClientSelectorPr
         {showPauseControl && (
           <button
             type="button"
-            disabled={stoppedPermanently}
             onClick={() => setUserPaused((prev) => !prev)}
             aria-label={
-              stoppedPermanently
-                ? 'Autoplay stopped after manual selection'
-                : userPaused
-                  ? 'Play client showcase rotation'
-                  : 'Pause client showcase rotation'
+              userPaused
+                ? 'Play client showcase rotation'
+                : 'Pause client showcase rotation'
             }
-            aria-pressed={userPaused || stoppedPermanently}
-            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-elevated border border-line font-mono text-[11px] uppercase tracking-wider transition-colors shrink-0 ${
-              stoppedPermanently
-                ? 'text-meta opacity-60 cursor-default'
-                : 'hover:border-line-strong text-soft hover:text-ink cursor-pointer'
-            }`}
+            aria-pressed={userPaused}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-elevated border border-line hover:border-line-strong text-soft hover:text-ink font-mono text-[11px] uppercase tracking-wider transition-colors shrink-0 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
           >
-            {userPaused || stoppedPermanently ? (
+            {userPaused ? (
               <>
                 <Play size={12} className="text-accent" />
-                <span>{stoppedPermanently ? 'Manual' : 'Play'}</span>
+                <span>Play</span>
               </>
             ) : (
               <>
@@ -260,13 +241,7 @@ export function WorkClientSelector({ clients, totalCount }: WorkClientSelectorPr
   return (
     <div>
       {/* DESKTOP (lg+): Adaptive Tablist Selector or Centered Single Card */}
-      <div
-        className="hidden lg:block"
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-        onFocusCapture={() => setHasFocusWithin(true)}
-        onBlurCapture={handleWrapperBlur}
-      >
+      <div className="hidden lg:block">
         {isSingle && activeClient ? (
           <div className="max-w-4xl mx-auto p-8 lg:p-10 rounded-2xl bg-card border border-line">
             {renderPanelContent(activeClient, 0, false)}
@@ -368,7 +343,7 @@ export function WorkClientSelector({ clients, totalCount }: WorkClientSelectorPr
                             animationDuration: `${AUTOPLAY_INTERVAL_MS}ms`,
                             animationTimingFunction: 'linear',
                             animationFillMode: 'forwards',
-                            animationPlayState: isPausedByInteraction
+                            animationPlayState: userPaused
                               ? 'paused'
                               : 'running',
                           }}
