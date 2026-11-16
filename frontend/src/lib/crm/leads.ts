@@ -11,14 +11,40 @@ function asString(val: unknown): string | null {
   return typeof val === 'string' && val.trim().length > 0 ? val.trim() : null;
 }
 
+function extractAttributionField(attr: Record<string, unknown> | undefined, field: string): string | null {
+  if (!attr) return null;
+  // 1. Direct top-level property
+  if (typeof attr[field] === 'string' && (attr[field] as string).trim().length > 0) {
+    return (attr[field] as string).trim();
+  }
+  // 2. Inside last_touch object
+  const lastTouch = attr.last_touch as Record<string, unknown> | undefined;
+  if (lastTouch && typeof lastTouch[field] === 'string' && (lastTouch[field] as string).trim().length > 0) {
+    return (lastTouch[field] as string).trim();
+  }
+  // 3. Inside first_touch object
+  const firstTouch = attr.first_touch as Record<string, unknown> | undefined;
+  if (firstTouch && typeof firstTouch[field] === 'string' && (firstTouch[field] as string).trim().length > 0) {
+    return (firstTouch[field] as string).trim();
+  }
+  return null;
+}
+
 function resolveLeadSource(attribution?: EnquiryPayload['attribution']): LeadSource {
   if (!attribution) return 'ORGANIC';
 
-  const source = (asString(attribution.utm_source) || '').toLowerCase();
-  const medium = (asString(attribution.utm_medium) || '').toLowerCase();
-  const referrer = asString(attribution.referrer);
+  const source = (extractAttributionField(attribution, 'utm_source') || '').toLowerCase();
+  const medium = (extractAttributionField(attribution, 'utm_medium') || '').toLowerCase();
+  const referrer = extractAttributionField(attribution, 'referrer');
+  const gclid = asString(attribution.gclid);
+  const fbclid = asString(attribution.fbclid);
 
-  if (['cpc', 'paid', 'ppc', 'ad', 'meta_ads', 'google_ads'].includes(medium) || ['google_ads', 'meta_ads', 'linkedin_ads'].includes(source)) {
+  if (
+    gclid ||
+    fbclid ||
+    ['cpc', 'paid', 'ppc', 'ad', 'meta_ads', 'google_ads'].includes(medium) ||
+    ['google_ads', 'meta_ads', 'linkedin_ads'].includes(source)
+  ) {
     return 'PAID';
   }
 
@@ -117,13 +143,13 @@ export async function persistInboundLead(data: EnquiryPayload): Promise<LeadPers
         budgetRange: data.budgetRange || null,
         bottleneckNotes: `${challengeSummary}${notesSummary}`.trim(),
         stage: 'NEW',
-        utmSource: asString(attr.utm_source),
-        utmMedium: asString(attr.utm_medium),
-        utmCampaign: asString(attr.utm_campaign),
-        utmTerm: asString(attr.utm_term),
-        utmContent: asString(attr.utm_content),
-        referrer: asString(attr.referrer),
-        landingPage: asString(attr.landing_page),
+        utmSource: extractAttributionField(attr, 'utm_source'),
+        utmMedium: extractAttributionField(attr, 'utm_medium'),
+        utmCampaign: extractAttributionField(attr, 'utm_campaign'),
+        utmTerm: extractAttributionField(attr, 'utm_term'),
+        utmContent: extractAttributionField(attr, 'utm_content'),
+        referrer: extractAttributionField(attr, 'referrer'),
+        landingPage: extractAttributionField(attr, 'landing_page'),
         activities: {
           create: {
             type: 'FORM_SUBMISSION',
