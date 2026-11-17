@@ -259,13 +259,13 @@ export function LeadsKanbanClient({ initialLeads }: { initialLeads: LeadItem[] }
 
       {/* ── KANBAN BOARD VIEW ── */}
       {viewMode === 'kanban' && (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-7 gap-4 items-start overflow-x-auto pb-6">
+        <div className="flex items-start gap-4 overflow-x-auto pb-6 w-full">
           {STAGES.map((st) => {
             const stageLeads = filteredLeads.filter((l) => l.stage === st.id);
             return (
               <div
                 key={st.id}
-                className="bg-card/60 border border-line rounded-2xl p-3 space-y-3 min-w-[260px] flex flex-col max-h-[calc(100vh-180px)]"
+                className="bg-card/60 border border-line rounded-2xl p-3 space-y-3 w-[280px] shrink-0 flex flex-col max-h-[calc(100vh-180px)]"
               >
                 {/* Column Header */}
                 <div className="flex items-center justify-between pb-2 border-b border-line px-1">

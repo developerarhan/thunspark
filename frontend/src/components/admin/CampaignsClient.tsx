@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useTransition } from 'react';
+import Link from 'next/link';
 import { createCampaignAction } from '@/app/(admin)/admin/actions-phase2';
 import {
   TrendingUp,
@@ -48,6 +49,10 @@ export function CampaignsClient({
   const [isPending, startTransition] = useTransition();
   const [isSyncing, setIsSyncing] = useState(false);
 
+  // Filters
+  const [filterClient, setFilterClient] = useState<string>('ALL');
+  const [filterChannel, setFilterChannel] = useState<string>('ALL');
+
   // Form fields
   const [clientId, setClientId] = useState(clients[0]?.id || '');
   const [name, setName] = useState('');
@@ -56,14 +61,21 @@ export function CampaignsClient({
   const [targetCpa, setTargetCpa] = useState('');
   const [targetRoas, setTargetRoas] = useState('');
 
-  // Total Portfolio Stats
-  const totalBudget = campaigns.reduce((acc, c) => acc + (c.budget || 0), 0);
-  const totalSpend = campaigns.reduce((acc, c) => acc + (c.spend || 0), 0);
+  // Filtered Campaigns
+  const filteredCampaigns = campaigns.filter((c) => {
+    const matchClient = filterClient === 'ALL' || c.client.id === filterClient;
+    const matchChannel = filterChannel === 'ALL' || c.channel === filterChannel;
+    return matchClient && matchChannel;
+  });
+
+  // Dynamic Portfolio / Client Stats based on active filter
+  const totalBudget = filteredCampaigns.reduce((acc, c) => acc + (c.budget || 0), 0);
+  const totalSpend = filteredCampaigns.reduce((acc, c) => acc + (c.spend || 0), 0);
   const avgRoas =
-    campaigns.filter((c) => c.actualRoas).length > 0
+    filteredCampaigns.filter((c) => c.actualRoas).length > 0
       ? (
-          campaigns.reduce((acc, c) => acc + (c.actualRoas || 0), 0) /
-          campaigns.filter((c) => c.actualRoas).length
+          filteredCampaigns.reduce((acc, c) => acc + (c.actualRoas || 0), 0) /
+          filteredCampaigns.filter((c) => c.actualRoas).length
         ).toFixed(2)
       : '0.00';
 
@@ -137,6 +149,51 @@ export function CampaignsClient({
         </div>
       </div>
 
+      {/* Client & Platform Filter Bar */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-card/60 border border-line rounded-2xl p-3.5">
+        <div className="flex items-center gap-3 flex-wrap">
+          {/* Client Selector */}
+          <div className="flex items-center gap-2">
+            <span className="text-[11px] font-mono uppercase text-meta">Client:</span>
+            <select
+              value={filterClient}
+              onChange={(e) => setFilterClient(e.target.value)}
+              className="px-3 py-1.5 rounded-xl bg-elevated border border-line text-xs font-semibold text-ink focus:outline-none focus:border-accent"
+            >
+              <option value="ALL">All Clients ({clients.length})</option>
+              {clients.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.brandName || c.legalName}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Channel Selector */}
+          <div className="flex items-center gap-2">
+            <span className="text-[11px] font-mono uppercase text-meta">Platform:</span>
+            <select
+              value={filterChannel}
+              onChange={(e) => setFilterChannel(e.target.value)}
+              className="px-3 py-1.5 rounded-xl bg-elevated border border-line text-xs font-semibold text-ink focus:outline-none focus:border-accent"
+            >
+              <option value="ALL">All Channels</option>
+              <option value="GOOGLE_ADS">Google Ads</option>
+              <option value="META_ADS">Meta Ads</option>
+              <option value="LINKEDIN_ADS">LinkedIn Ads</option>
+              <option value="SEO">Organic SEO</option>
+              <option value="EMAIL">Email / Retention</option>
+              <option value="WEB">Web / Conversion Rate</option>
+            </select>
+          </div>
+        </div>
+
+        {/* Filter Summary Counter */}
+        <div className="text-xs font-mono text-meta">
+          Showing <span className="font-bold text-accent">{filteredCampaigns.length}</span> of {campaigns.length} campaigns
+        </div>
+      </div>
+
       {/* Aggregate KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
         <div className="bg-card border border-line rounded-2xl p-5 space-y-2">
@@ -173,23 +230,32 @@ export function CampaignsClient({
       </div>
 
       {/* Campaigns Table */}
-      {campaigns.length === 0 ? (
+      {filteredCampaigns.length === 0 ? (
         <div className="bg-card border border-line rounded-2xl p-12 text-center space-y-3">
           <TrendingUp size={36} className="text-meta mx-auto" />
           <h3 className="text-base font-display font-semibold text-ink">
-            No Ad Campaigns Tracked Yet
+            {campaigns.length === 0 ? 'No Ad Campaigns Tracked Yet' : 'No Campaigns Match Active Filter'}
           </h3>
           <p className="text-xs text-soft max-w-md mx-auto">
-            Set up Google Ads, Meta Ads, or SEO campaigns to monitor budget pacing, CPA targets, and ROAS.
+            {campaigns.length === 0
+              ? 'Set up Google Ads, Meta Ads, or SEO campaigns to monitor budget pacing, CPA targets, and ROAS.'
+              : 'Try clearing or changing your Client or Channel filter above to view campaigns.'}
           </p>
           <div className="pt-2">
             <button
               type="button"
-              onClick={() => setShowModal(true)}
+              onClick={() => {
+                if (campaigns.length === 0) {
+                  setShowModal(true);
+                } else {
+                  setFilterClient('ALL');
+                  setFilterChannel('ALL');
+                }
+              }}
               className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-accent text-canvas font-semibold text-xs hover:bg-accent-hi"
             >
               <Plus size={14} />
-              <span>Create Campaign</span>
+              <span>{campaigns.length === 0 ? 'Create Campaign' : 'Reset Filters'}</span>
             </button>
           </div>
         </div>
@@ -208,7 +274,7 @@ export function CampaignsClient({
                 </tr>
               </thead>
               <tbody className="divide-y divide-line">
-                {campaigns.map((camp) => {
+                {filteredCampaigns.map((camp) => {
                   const b = camp.budget || 0;
                   const s = camp.spend || 0;
                   const pacingPercent = b > 0 ? Math.min(100, Math.round((s / b) * 100)) : 0;
@@ -286,18 +352,31 @@ export function CampaignsClient({
             <form onSubmit={handleCreate} className="space-y-3 text-xs">
               <div>
                 <label className="block font-mono uppercase text-meta mb-1">Client Account *</label>
-                <select
-                  required
-                  value={clientId}
-                  onChange={(e) => setClientId(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-elevated border border-line text-ink"
-                >
-                  {clients.map((c) => (
-                    <option key={c.id} value={c.id}>
-                      {c.brandName || c.legalName}
-                    </option>
-                  ))}
-                </select>
+                {clients.length === 0 ? (
+                  <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 space-y-1">
+                    <p className="font-semibold text-xs">No client accounts found</p>
+                    <p className="text-[11px] text-zinc-300">
+                      Convert a won deal in the{' '}
+                      <Link href="/admin/leads" className="underline text-accent font-bold">
+                        Leads Pipeline
+                      </Link>{' '}
+                      first to create a client account.
+                    </p>
+                  </div>
+                ) : (
+                  <select
+                    required
+                    value={clientId}
+                    onChange={(e) => setClientId(e.target.value)}
+                    className="w-full px-3 py-2 rounded-xl bg-elevated border border-line text-ink"
+                  >
+                    {clients.map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.brandName || c.legalName}
+                      </option>
+                    ))}
+                  </select>
+                )}
               </div>
 
               <div>
