@@ -11,7 +11,19 @@ import { HeroGrowthDiagram } from '@/components/hero/HeroGrowthDiagram';
 import { TRUSTED_BRANDS, FOUNDER_AVATARS } from '@/lib/brands';
 import { ArrowRight, Star } from 'lucide-react';
 
-export function Section01Hero() {
+export interface HeroTrustedBrand {
+  id?: string;
+  name: string;
+  category: string;
+  logo?: string | null;
+  caseStudyHref?: string;
+}
+
+export interface Section01HeroProps {
+  trustedBrands?: HeroTrustedBrand[];
+}
+
+export function Section01Hero({ trustedBrands }: Section01HeroProps = {}) {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
@@ -24,7 +36,9 @@ export function Section01Hero() {
   const currentWord = HERO_COPY.rotatingSlots[count % HERO_COPY.rotatingSlots.length];
 
   // Double-buffered for seamless infinite marquee loop
-  const marqueeBrands = [...TRUSTED_BRANDS, ...TRUSTED_BRANDS];
+  const sourceBrands =
+    trustedBrands && trustedBrands.length > 0 ? trustedBrands : TRUSTED_BRANDS;
+  const marqueeBrands = [...sourceBrands, ...sourceBrands];
 
   return (
     <Section tone="base" spacing="hero" className="overflow-hidden bg-grain pb-12 md:pb-16">
@@ -151,14 +165,25 @@ export function Section01Hero() {
                 const CardWrapper = brand.caseStudyHref ? Link : 'div';
                 return (
                   <CardWrapper
-                    key={`${brand.id}-${i}`}
+                    key={`${brand.id || brand.name}-${i}`}
                     href={brand.caseStudyHref || ''}
                     className="flex items-center gap-3 px-5 py-2.5 rounded-xl bg-card/60 hover:bg-card border border-line hover:border-line-strong transition-all duration-300 group shrink-0"
                   >
-                    {/* Brand Initial Monogram */}
-                    <span className="w-6 h-6 rounded-md bg-elevated text-accent group-hover:text-accent-hi border border-line text-[10px] font-mono font-bold flex items-center justify-center transition-colors">
-                      {brand.name.slice(0, 1)}
-                    </span>
+                    {/* Brand Logo Image (from Sanity) OR Monogram Fallback */}
+                    {brand.logo ? (
+                      <span className="w-6 h-6 rounded-md bg-elevated border border-line flex items-center justify-center p-0.5 overflow-hidden shrink-0">
+                        <img
+                          src={brand.logo}
+                          alt={`${brand.name} logo`}
+                          className="w-full h-full object-contain filter grayscale group-hover:grayscale-0 transition-all duration-300"
+                          loading="lazy"
+                        />
+                      </span>
+                    ) : (
+                      <span className="w-6 h-6 rounded-md bg-elevated text-accent group-hover:text-accent-hi border border-line text-[10px] font-mono font-bold flex items-center justify-center transition-colors shrink-0">
+                        {brand.name.slice(0, 1)}
+                      </span>
+                    )}
 
                     {/* Brand Name & Category */}
                     <div className="flex items-center gap-2">

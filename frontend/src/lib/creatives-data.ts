@@ -7,6 +7,9 @@ export interface CreativeCard {
   accent: string; // Color token / gradient
   bgGradient: string;
   aspectRatio?: string;
+  thumbnailUrl?: string | null;
+  projectSlug?: string | null;
+  externalUrl?: string | null;
 }
 
 export const CREATIVE_SHOWCASE: CreativeCard[] = [

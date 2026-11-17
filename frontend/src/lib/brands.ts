@@ -4,6 +4,7 @@ export interface TrustedBrand {
   category: string;
   symbol?: string; // Optional custom SVG path
   caseStudyHref?: string;
+  logo?: string | null;
 }
 
 /**

@@ -10,7 +10,7 @@ import type { HomeWorkClient } from '@/lib/content/types';
 import { ClientMediaTile } from './ClientMediaTile';
 import { track } from '@/lib/analytics';
 
-const AUTOPLAY_INTERVAL_MS = 2000;
+const AUTOPLAY_INTERVAL_MS = 3000;
 const AUTOPLAY_MAX_CLIENTS = 6;
 
 interface WorkClientSelectorProps {

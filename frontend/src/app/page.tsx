@@ -1,7 +1,12 @@
 import type { Metadata } from 'next';
 import { buildMetadata } from '@/lib/seo';
 import { MAX_HOME_CLIENTS } from '@/lib/content/projects';
-import { getProjects, getAllPosts, getTestimonials } from '@/lib/sanity/fetchers';
+import {
+  getProjects,
+  getAllPosts,
+  getTestimonials,
+  getCreativeShowcases,
+} from '@/lib/sanity/fetchers';
 import { Section01Hero } from '@/components/sections/Section01Hero';
 import { Section03PositioningStrip } from '@/components/sections/Section03PositioningStrip';
 import { Section02Problems } from '@/components/sections/Section02Problems';
@@ -26,12 +31,24 @@ export const metadata: Metadata = buildMetadata({
 });
 
 export default async function HomePage() {
-  const [projects, sanityPosts, testimonials] = await Promise.all([
+  const [projects, sanityPosts, testimonials, creativeItems] = await Promise.all([
     getProjects(),
     getAllPosts(),
     getTestimonials(),
+    getCreativeShowcases(),
   ]);
   const visibleProjects = projects.slice(0, MAX_HOME_CLIENTS);
+
+  const marqueeBrands =
+    projects.length > 0
+      ? projects.map((p) => ({
+          id: p.slug,
+          name: p.client,
+          category: p.industry,
+          logo: p.logo,
+          caseStudyHref: `/projects/${p.slug}`,
+        }))
+      : undefined;
 
   const homeInsights = sanityPosts
     .filter((p) => Boolean(p.title && p.slug))
@@ -53,7 +70,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <Section01Hero />
+      <Section01Hero trustedBrands={marqueeBrands} />
       <Section03PositioningStrip />
       <Section02Problems />
       <Section04SolutionsSelector />
@@ -61,7 +78,7 @@ export default async function HomePage() {
         clients={visibleProjects}
         totalCount={projects.length}
       />
-      <SectionCreativeDriftWall />
+      <SectionCreativeDriftWall items={creativeItems} />
       <Section08ClientLove testimonials={testimonials} />
       <Section05ProcessPathway />
       <Section06Industries />

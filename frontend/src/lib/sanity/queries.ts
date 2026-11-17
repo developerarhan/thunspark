@@ -158,3 +158,18 @@ export const allTestimonialsQuery = groq`
     verified
   }
 `;
+
+export const allCreativeShowcasesQuery = groq`
+  *[_type == "creativeShowcase"] | order(order asc, _createdAt desc) {
+    _id,
+    title,
+    client,
+    category,
+    metric,
+    accent,
+    thumbnail,
+    "projectSlug": project->slug.current,
+    externalUrl,
+    order
+  }
+`;

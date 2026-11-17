@@ -3,6 +3,7 @@ import { postType } from './post';
 import { authorType } from './author';
 import { categoryType } from './category';
 import { testimonialType } from './testimonial';
+import { creativeShowcaseType } from './creativeShowcase';
 import { siteSettingsType } from './siteSettings';
 import { teamMemberType } from './teamMember';
 import { jobOpeningType } from './jobOpening';
@@ -13,6 +14,7 @@ export const schemaTypes = [
   authorType,
   categoryType,
   testimonialType,
+  creativeShowcaseType,
   siteSettingsType,
   teamMemberType,
   jobOpeningType,

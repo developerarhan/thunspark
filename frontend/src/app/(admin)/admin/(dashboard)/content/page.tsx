@@ -21,7 +21,14 @@ const SANITY_MODELS = [
     desc: 'Publish B2B growth case studies, metrics, deliverables, and client outcomes.',
     icon: Briefcase,
     color: 'bg-orange-500/10 text-orange-400 border-orange-500/20',
-    href: '/studio/structure/caseStudy',
+    href: '/studio/structure/project',
+  },
+  {
+    title: 'Creative Showcase (Drift Wall)',
+    desc: 'Manage the 3D lookbook of ad creatives, motion reels, metric badges, and case study links.',
+    icon: Zap,
+    color: 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20',
+    href: '/studio/structure/creativeShowcase',
   },
   {
     title: 'Client Testimonials & Reviews',

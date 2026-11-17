@@ -10,9 +10,11 @@ import {
   allJobOpeningsQuery,
   siteSettingsQuery,
   allTestimonialsQuery,
+  allCreativeShowcasesQuery,
 } from './queries';
 import type { HomeWorkClient, ProjectDetail } from '@/lib/content/types';
 import { FALLBACK_TESTIMONIALS, type TestimonialItem } from '@/lib/content/testimonials';
+import { CREATIVE_SHOWCASE, type CreativeCard } from '@/lib/creatives-data';
 import {
   deriveShortDescription,
   getFallbackHomeWorkClients,
@@ -462,5 +464,63 @@ export const getTestimonials = cache(async (): Promise<readonly TestimonialItem[
     console.warn('[Sanity Fetcher] Testimonials query failed, using fallbacks:', error);
   }
   return FALLBACK_TESTIMONIALS;
+});
+
+export interface SanityCreativeShowcaseDocument {
+  _id: string;
+  title: string;
+  client: string;
+  category: string;
+  metric?: string | null;
+  accent?: string | null;
+  thumbnail?: SanityImageObject | null;
+  projectSlug?: string | null;
+  externalUrl?: string | null;
+  order?: number | null;
+}
+
+export const getCreativeShowcases = cache(async (): Promise<CreativeCard[]> => {
+  if (!sanityClient) {
+    return CREATIVE_SHOWCASE;
+  }
+
+  try {
+    const raw = await sanityClient.fetch<SanityCreativeShowcaseDocument[]>(allCreativeShowcasesQuery);
+    if (raw && raw.length > 0) {
+      const gradients = [
+        'from-orange-950/60 via-zinc-900 to-zinc-950',
+        'from-blue-950/60 via-zinc-900 to-zinc-950',
+        'from-emerald-950/60 via-zinc-900 to-zinc-950',
+        'from-purple-950/60 via-zinc-900 to-zinc-950',
+        'from-amber-950/60 via-zinc-900 to-zinc-950',
+        'from-rose-950/60 via-zinc-900 to-zinc-950',
+      ];
+
+      return raw.map((item, idx) => {
+        const thumbUrl = item.thumbnail
+          ? urlForImage(item.thumbnail)?.width(600).auto('format').url() ?? null
+          : null;
+        const accent = item.accent || '#FFD21F';
+        const bgGradient = gradients[idx % gradients.length];
+
+        return {
+          id: item._id,
+          title: item.title,
+          client: item.client,
+          category: item.category,
+          metric: item.metric || undefined,
+          accent,
+          bgGradient,
+          thumbnailUrl: thumbUrl,
+          projectSlug: item.projectSlug || null,
+          externalUrl: item.externalUrl || null,
+        };
+      });
+    }
+  } catch (error) {
+    console.warn('[Sanity Fetcher] Creative showcase query failed, using fallbacks:', error);
+  }
+
+  return CREATIVE_SHOWCASE;
 });
 
