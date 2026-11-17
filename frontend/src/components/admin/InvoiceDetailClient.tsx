@@ -230,8 +230,13 @@ export default function InvoiceDetailClient({ invoice }: InvoiceDetailClientProp
         {/* Header Bar */}
         <div className="flex justify-between items-start border-b-2 border-orange-600 pb-6 mb-6">
           <div>
-            <div className="text-2xl font-black tracking-tight text-zinc-900 flex items-center gap-2">
-              <span className="text-orange-600">THUNSPARK</span>
+            <div className="text-2xl font-black tracking-tight text-zinc-900 flex items-center gap-2.5">
+              <img
+                src="/brand/logo.jpg"
+                alt="ThunSpark Logo"
+                className="w-7 h-7 rounded-md object-cover border border-zinc-300 shadow-xs"
+              />
+              <span className="text-zinc-950 font-extrabold tracking-tight">THUN<span className="text-orange-600">SPARK</span></span>
               <span className="text-xs font-semibold px-2 py-0.5 rounded bg-orange-100 text-orange-800 tracking-normal uppercase">
                 Digital Agency
               </span>

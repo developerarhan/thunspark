@@ -11,6 +11,7 @@ import { trackBookCallClick } from '@/lib/analytics/gtm';
 import { track } from '@/lib/analytics';
 import { MegaMenu } from './MegaMenu';
 import { siteConfig } from '@/site.config';
+import { ThunSparkLogo } from '@/components/ui/ThunSparkLogo';
 
 export function Header({ hasTeamMembers = false }: { hasTeamMembers?: boolean }) {
   const pathname = usePathname();
@@ -105,29 +106,9 @@ export function Header({ hasTeamMembers = false }: { hasTeamMembers?: boolean })
             {/* Logo */}
             <Link
               href="/"
-              className="flex items-center gap-2 sm:gap-2.5 shrink-0 group focus:outline-none"
+              className="flex items-center shrink-0 group focus:outline-none"
             >
-              {/* Lightning Mark */}
-              <svg
-                width="22"
-                height="22"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                className="w-5 h-5 sm:w-[22px] sm:h-[22px] shrink-0 text-accent group-hover:scale-110 transition-transform"
-              >
-                <path
-                  d="M13 2L3 14H12L11 22L21 10H12L13 2Z"
-                  fill="#FFD21F"
-                  stroke="#FFD21F"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              <span className="font-display font-extrabold text-sm sm:text-base md:text-xl tracking-tight text-ink truncate">
-                THUN<span className="text-accent">SPARK</span>
-              </span>
+              <ThunSparkLogo size={28} />
             </Link>
 
             {/* Desktop Navigation */}

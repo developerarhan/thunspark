@@ -4,6 +4,7 @@ import React, { useState, Suspense } from 'react';
 import { signIn } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { ShieldCheck, ArrowRight, AlertCircle, Loader2 } from 'lucide-react';
+import { ThunSparkLogo } from '@/components/ui/ThunSparkLogo';
 
 export const dynamic = 'force-dynamic';
 
@@ -51,27 +52,8 @@ function LoginFormContent() {
       <div className="w-full max-w-md relative z-10">
         {/* Logo & Heading */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-2 mb-3">
-            <svg
-              width="26"
-              height="26"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              className="text-accent"
-            >
-              <path
-                d="M13 2L3 14H12L11 22L21 10H12L13 2Z"
-                fill="#FFD21F"
-                stroke="#FFD21F"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-            <span className="font-display font-extrabold text-2xl tracking-tight">
-              THUN<span className="text-accent">SPARK</span>
-            </span>
+          <div className="inline-flex items-center justify-center mb-4">
+            <ThunSparkLogo size={40} textClassName="text-2xl" />
           </div>
           <h1 className="text-xl font-display font-semibold text-ink">
             Agency Operations & CRM

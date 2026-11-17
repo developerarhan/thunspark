@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/Button';
 import { siteConfig } from '@/site.config';
 import { LEGAL_DISCLAIMER } from '@/lib/constants';
 import { BackToTop } from './BackToTop';
+import { ThunSparkLogo } from '@/components/ui/ThunSparkLogo';
 
 export interface FooterProps {
   hasTeamMembers?: boolean;
@@ -52,25 +53,8 @@ export function Footer({ hasTeamMembers = false, contact }: FooterProps) {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
           {/* Column 1: Brand & Tagline */}
           <div className="space-y-4">
-            <Link href="/" className="flex items-center gap-2 group">
-              <svg
-                width="22"
-                height="22"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                className="text-accent"
-              >
-                <path
-                  d="M13 2L3 14H12L11 22L21 10H12L13 2Z"
-                  fill="#FFD21F"
-                  stroke="#FFD21F"
-                  strokeWidth="1.5"
-                />
-              </svg>
-              <span className="font-display font-extrabold text-xl tracking-tight text-ink">
-                THUN<span className="text-accent">SPARK</span>
-              </span>
+            <Link href="/" className="flex items-center group">
+              <ThunSparkLogo size={32} textClassName="text-xl" />
             </Link>
             <p className="text-xs text-meta leading-relaxed max-w-xs">
               Strategy, execution, and measurement — for businesses that want growth they can prove.

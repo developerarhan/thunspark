@@ -19,6 +19,7 @@ import {
   Layers,
 } from 'lucide-react';
 import type { UserRole } from '@prisma/client';
+import { ThunSparkLogo } from '@/components/ui/ThunSparkLogo';
 
 interface AdminSidebarProps {
   user: {
@@ -108,23 +109,7 @@ export function AdminSidebar({ user }: AdminSidebarProps) {
       {/* Brand & Badge */}
       <div className="flex items-center justify-between pb-6 border-b border-line">
         <Link href="/admin" className="flex items-center gap-2.5 group">
-          <svg
-            width="22"
-            height="22"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            className="text-accent group-hover:scale-105 transition-transform shrink-0"
-          >
-            <path
-              d="M13 2L3 14H12L11 22L21 10H12L13 2Z"
-              fill="#FFD21F"
-              stroke="#FFD21F"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
+          <ThunSparkLogo size={32} showText={false} />
           <div className="flex flex-col">
             <span className="font-display font-bold text-sm tracking-tight text-ink">
               THUN<span className="text-accent">SPARK</span>
