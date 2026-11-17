@@ -18,10 +18,17 @@ export const metadata = {
 const SANITY_MODELS = [
   {
     title: 'Case Studies & Client Work',
-    desc: 'Publish B2B growth case studies, metrics, deliverables, and client testimonials.',
+    desc: 'Publish B2B growth case studies, metrics, deliverables, and client outcomes.',
     icon: Briefcase,
     color: 'bg-orange-500/10 text-orange-400 border-orange-500/20',
     href: '/studio/structure/caseStudy',
+  },
+  {
+    title: 'Client Testimonials & Reviews',
+    desc: 'Author, edit, and verify client quotes and founder reviews featured on the homepage.',
+    icon: ShieldCheck,
+    color: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
+    href: '/studio/structure/testimonial',
   },
   {
     title: 'Blog & Thought Leadership',

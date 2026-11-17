@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { buildMetadata } from '@/lib/seo';
 import { MAX_HOME_CLIENTS } from '@/lib/content/projects';
-import { getProjects, getAllPosts } from '@/lib/sanity/fetchers';
+import { getProjects, getAllPosts, getTestimonials } from '@/lib/sanity/fetchers';
 import { Section01Hero } from '@/components/sections/Section01Hero';
 import { Section03PositioningStrip } from '@/components/sections/Section03PositioningStrip';
 import { Section02Problems } from '@/components/sections/Section02Problems';
@@ -26,9 +26,10 @@ export const metadata: Metadata = buildMetadata({
 });
 
 export default async function HomePage() {
-  const [projects, sanityPosts] = await Promise.all([
+  const [projects, sanityPosts, testimonials] = await Promise.all([
     getProjects(),
     getAllPosts(),
+    getTestimonials(),
   ]);
   const visibleProjects = projects.slice(0, MAX_HOME_CLIENTS);
 
@@ -61,7 +62,7 @@ export default async function HomePage() {
         totalCount={projects.length}
       />
       <SectionCreativeDriftWall />
-      <Section08ClientLove testimonials={[]} />
+      <Section08ClientLove testimonials={testimonials} />
       <Section05ProcessPathway />
       <Section06Industries />
       <Section09WhyThunSpark />

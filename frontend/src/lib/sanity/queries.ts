@@ -147,3 +147,14 @@ export const allJobOpeningsQuery = groq`
     active
   }
 `;
+
+export const allTestimonialsQuery = groq`
+  *[_type == "testimonial" && verified == true] | order(_createdAt desc) {
+    _id,
+    clientName,
+    clientRole,
+    company,
+    quote,
+    verified
+  }
+`;

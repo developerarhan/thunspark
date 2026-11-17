@@ -9,8 +9,10 @@ import {
   allTeamMembersQuery,
   allJobOpeningsQuery,
   siteSettingsQuery,
+  allTestimonialsQuery,
 } from './queries';
 import type { HomeWorkClient, ProjectDetail } from '@/lib/content/types';
+import { FALLBACK_TESTIMONIALS, type TestimonialItem } from '@/lib/content/testimonials';
 import {
   deriveShortDescription,
   getFallbackHomeWorkClients,
@@ -428,4 +430,37 @@ export async function getVerifiedContact(): Promise<VerifiedContact> {
     },
   };
 }
+
+export interface SanityTestimonialDocument {
+  _id: string;
+  clientName: string;
+  clientRole?: string | null;
+  company: string;
+  quote: string;
+  verified?: boolean | null;
+}
+
+export const getTestimonials = cache(async (): Promise<readonly TestimonialItem[]> => {
+  if (!sanityClient) {
+    return FALLBACK_TESTIMONIALS;
+  }
+
+  try {
+    const raw = await sanityClient.fetch<SanityTestimonialDocument[]>(allTestimonialsQuery);
+    if (raw && raw.length > 0) {
+      return raw.map((t) => ({
+        id: t._id,
+        author: t.clientName,
+        role: t.clientRole || 'Client Partner',
+        company: t.company,
+        quote: t.quote,
+        isVerified: Boolean(t.verified),
+        rating: 5,
+      }));
+    }
+  } catch (error) {
+    console.warn('[Sanity Fetcher] Testimonials query failed, using fallbacks:', error);
+  }
+  return FALLBACK_TESTIMONIALS;
+});
 
