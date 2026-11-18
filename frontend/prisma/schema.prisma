@@ -188,6 +188,7 @@ model Client {
   contacts         Contact[]
   projects         Project[]
   campaigns        Campaign[]
+  adReports        AdPerformanceReport[]
   invoices         Invoice[]
   expenses         Expense[]
   createdAt        DateTime  @default(now())
@@ -382,6 +383,30 @@ model CreativeAsset {
   createdAt  DateTime       @default(now())
 
   @@index([campaignId])
+}
+
+model AdPerformanceReport {
+  id             String    @id @default(cuid())
+  clientId       String
+  client         Client    @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  platform       String    @default("meta") // 'meta', 'google', 'other'
+  dateStart      DateTime?
+  dateEnd        DateTime?
+  currency       String    @default("INR")
+  spend          Decimal   @default(0) @db.Decimal(12, 2)
+  impressions    Int       @default(0)
+  clicks         Int       @default(0)
+  conversions    Int       @default(0)
+  cpa            Decimal   @default(0) @db.Decimal(10, 2)
+  roas           Decimal?  @db.Decimal(8, 2)
+  aiSummaryNotes String?   @db.Text
+  sourceType     String    @default("screenshot") // 'screenshot', 'csv', 'manual'
+  fileName       String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@index([clientId, platform])
+  @@index([createdAt])
 }
 
 // ── FINANCE, INVOICES & EXPENSES (Phase 3) ──────────────────

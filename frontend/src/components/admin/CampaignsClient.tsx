@@ -7,6 +7,7 @@ import {
   TrendingUp,
   Plus,
   RefreshCw,
+  Sparkles,
 } from 'lucide-react';
 import type { Channel } from '@prisma/client';
 
@@ -129,6 +130,16 @@ export function CampaignsClient({
         </div>
 
         <div className="flex items-center gap-3">
+          {filterClient !== 'ALL' && (
+            <Link
+              href={`/admin/clients/${filterClient}`}
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-accent/10 border border-accent/30 text-xs font-semibold text-accent hover:bg-accent/20 transition-colors"
+              title="Open AI Vision & CSV Drop-Zone on Client Profile"
+            >
+              <Sparkles size={14} />
+              <span>AI Drop-Zone &rarr;</span>
+            </Link>
+          )}
           <button
             type="button"
             disabled={isSyncing}

@@ -219,3 +219,72 @@ export async function syncCampaignMetricsAction(data: {
   revalidatePath('/admin/campaigns');
   return { success: true };
 }
+
+// ── AD PERFORMANCE REPORTS (AI Vision & CSV Parser) ─────────
+
+export async function saveAdPerformanceReportAction(data: {
+  clientId: string;
+  platform: string;
+  dateStart?: string | null;
+  dateEnd?: string | null;
+  currency?: string;
+  spend: number;
+  impressions: number;
+  clicks: number;
+  conversions: number;
+  cpa: number;
+  roas?: number | null;
+  aiSummaryNotes?: string | null;
+  sourceType: string;
+  fileName?: string | null;
+}) {
+  const session = await auth();
+  if (!session?.user) throw new Error('Unauthorized');
+
+  const report = await db.adPerformanceReport.create({
+    data: {
+      clientId: data.clientId,
+      platform: data.platform || 'meta',
+      dateStart: data.dateStart ? new Date(data.dateStart) : null,
+      dateEnd: data.dateEnd ? new Date(data.dateEnd) : null,
+      currency: data.currency || 'INR',
+      spend: Number(data.spend),
+      impressions: Number(data.impressions || 0),
+      clicks: Number(data.clicks || 0),
+      conversions: Number(data.conversions || 0),
+      cpa: Number(data.cpa || 0),
+      roas: data.roas !== null && data.roas !== undefined ? Number(data.roas) : null,
+      aiSummaryNotes: data.aiSummaryNotes?.trim() || null,
+      sourceType: data.sourceType || 'screenshot',
+      fileName: data.fileName || null,
+    },
+  });
+
+  // Also sync to active campaign if one exists
+  const channelMap: Record<string, Channel> = {
+    meta: 'META_ADS',
+    google: 'GOOGLE_ADS',
+    other: 'OTHER',
+  };
+  const targetChannel = channelMap[data.platform] || 'OTHER';
+
+  const existingCampaign = await db.campaign.findFirst({
+    where: { clientId: data.clientId, channel: targetChannel, status: 'ACTIVE' },
+    orderBy: { createdAt: 'desc' },
+  });
+
+  if (existingCampaign) {
+    await db.campaign.update({
+      where: { id: existingCampaign.id },
+      data: {
+        spend: Number(data.spend),
+        actualCpa: Number(data.cpa || 0),
+        actualRoas: data.roas ? Number(data.roas) : null,
+      },
+    });
+  }
+
+  revalidatePath(`/admin/clients/${data.clientId}`);
+  revalidatePath('/admin/campaigns');
+  return { success: true, reportId: report.id };
+}
