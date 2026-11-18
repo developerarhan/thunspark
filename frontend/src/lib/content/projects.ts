@@ -76,35 +76,34 @@ export function computeNextProject(
 }
 
 export function getFallbackProjectDetails(): ProjectDetail[] {
-  const studies: readonly {
-    slug: string;
-    client: string;
-    industry: string;
-    headline: string;
-    shortDescription?: string;
-    overview: string;
-    scope: readonly string[];
-    servicesRendered: readonly string[];
-    year: number;
-    honestyNote?: string;
-  }[] = CASE_STUDIES;
+  const studies: readonly any[] = CASE_STUDIES;
 
-  const rawList = studies.map((study) => {
-    const summary = study.shortDescription || deriveShortDescription(study.overview);
+  const rawList: ProjectDetail[] = studies.map((study) => {
+    const summary = study.transformationSummary || study.shortDescription || deriveShortDescription(study.overview);
     return {
       slug: study.slug,
+      title: study.headline,
       client: study.client,
       industry: study.industry,
       year: study.year,
+      categories: study.categories ? [...study.categories] : ['full_service'],
+      transformationSummary: study.transformationSummary || summary,
       logo: null,
       cover: null,
       summary,
       overview: study.overview,
-      challenge: null,
-      strategy: null,
+      challenge: study.challenge || null,
+      goal: study.goal || null,
+      engagementRole: study.engagementRole || 'Full-Service Agency Scope',
+      servicesDelivered: study.servicesDelivered ? [...study.servicesDelivered] : [],
+      scopeTags: study.scopeTags ? [...study.scopeTags] : [...study.servicesRendered],
+      phaseBrand: study.phaseBrand || null,
+      phaseDigital: study.phaseDigital || null,
+      phaseGrowth: study.phaseGrowth || null,
+      result: study.result || null,
       services: [...study.servicesRendered],
       deliverables: [...study.scope],
-      outcomes: [],
+      outcomes: study.result?.metrics ? [...study.result.metrics] : [],
       gallery: [],
       headline: study.headline,
       honestyNote: study.honestyNote,

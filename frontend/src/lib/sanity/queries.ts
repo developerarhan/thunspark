@@ -7,12 +7,20 @@ export const allProjectsQuery = groq`
     "slug": slug.current,
     client,
     industry,
+    categories,
+    transformationSummary,
     shortDescription,
     headline,
     overview,
     summary,
     challenge,
-    strategy,
+    goal,
+    engagementRole,
+    servicesDelivered[] {
+      service,
+      note
+    },
+    scopeTags,
     "services": coalesce(services, servicesRendered, []),
     "deliverables": coalesce(deliverables, scope, []),
     year,
@@ -20,6 +28,62 @@ export const allProjectsQuery = groq`
     featured,
     logo,
     "cover": coalesce(cover, coverImage),
+    phaseBrand {
+      enabled,
+      title,
+      description,
+      layoutStyle,
+      deliverables,
+      images[] {
+        "image": image,
+        alt,
+        caption
+      }
+    },
+    phaseDigital {
+      enabled,
+      title,
+      description,
+      websiteUrl,
+      techStack,
+      uxUiNotes,
+      layoutStyle,
+      screenshots[] {
+        "image": image,
+        alt,
+        caption
+      }
+    },
+    phaseGrowth {
+      enabled,
+      title,
+      description,
+      channels,
+      seoImprovements,
+      layoutStyle,
+      creativeAssets[] {
+        "image": image,
+        alt,
+        caption
+      }
+    },
+    result {
+      outcomeSummary,
+      keyWins,
+      metrics[] {
+        label,
+        value,
+        verified,
+        permission
+      },
+      testimonial {
+        quote,
+        author,
+        title,
+        company,
+        avatar
+      }
+    },
     outcomes[] {
       label,
       value,
@@ -41,12 +105,20 @@ export const projectBySlugQuery = groq`
     "slug": slug.current,
     client,
     industry,
+    categories,
+    transformationSummary,
     shortDescription,
     headline,
     overview,
     summary,
     challenge,
-    strategy,
+    goal,
+    engagementRole,
+    servicesDelivered[] {
+      service,
+      note
+    },
+    scopeTags,
     "services": coalesce(services, servicesRendered, []),
     "deliverables": coalesce(deliverables, scope, []),
     year,
@@ -54,6 +126,62 @@ export const projectBySlugQuery = groq`
     featured,
     logo,
     "cover": coalesce(cover, coverImage),
+    phaseBrand {
+      enabled,
+      title,
+      description,
+      layoutStyle,
+      deliverables,
+      images[] {
+        "image": image,
+        alt,
+        caption
+      }
+    },
+    phaseDigital {
+      enabled,
+      title,
+      description,
+      websiteUrl,
+      techStack,
+      uxUiNotes,
+      layoutStyle,
+      screenshots[] {
+        "image": image,
+        alt,
+        caption
+      }
+    },
+    phaseGrowth {
+      enabled,
+      title,
+      description,
+      channels,
+      seoImprovements,
+      layoutStyle,
+      creativeAssets[] {
+        "image": image,
+        alt,
+        caption
+      }
+    },
+    result {
+      outcomeSummary,
+      keyWins,
+      metrics[] {
+        label,
+        value,
+        verified,
+        permission
+      },
+      testimonial {
+        quote,
+        author,
+        title,
+        company,
+        avatar
+      }
+    },
     outcomes[] {
       label,
       value,
@@ -111,65 +239,83 @@ export const postBySlugQuery = groq`
   }
 `;
 
-export const siteSettingsQuery = groq`
-  *[_type == "siteSettings"][0] {
-    agencyName,
-    tagline,
-    contactEmail,
-    phone,
-    whatsapp,
-    address,
-    socials
-  }
-`;
-
 export const allTeamMembersQuery = groq`
-  *[_type == "teamMember"] | order(order asc, _createdAt asc) {
+  *[_type == "teamMember"] | order(order asc, name asc) {
     _id,
     name,
     role,
-    photo,
-    shortBio,
-    linkedinUrl,
+    bio,
+    image,
+    linkedIn,
+    twitter,
+    skills,
     order
   }
 `;
 
 export const allJobOpeningsQuery = groq`
-  *[_type == "jobOpening" && active == true] | order(_createdAt desc) {
+  *[_type == "jobOpening" && active == true] | order(order asc, _createdAt desc) {
     _id,
     title,
-    team,
+    "slug": slug.current,
+    department,
     location,
     type,
-    description,
-    applyEmail,
-    active
+    experienceLevel,
+    overview,
+    responsibilities,
+    requirements,
+    niceToHave,
+    benefits,
+    applyUrl,
+    active,
+    order
   }
 `;
 
 export const allTestimonialsQuery = groq`
-  *[_type == "testimonial" && verified == true] | order(_createdAt desc) {
+  *[_type == "testimonial"] | order(featured desc, order asc, _createdAt desc) {
     _id,
-    clientName,
-    clientRole,
-    company,
     quote,
-    verified
+    author,
+    title,
+    company,
+    avatar,
+    logo,
+    verified,
+    rating,
+    metricHighlight,
+    featured,
+    order
   }
 `;
 
 export const allCreativeShowcasesQuery = groq`
-  *[_type == "creativeShowcase"] | order(order asc, _createdAt desc) {
+  *[_type == "creativeShowcase"] | order(featured desc, order asc, _createdAt desc) {
     _id,
     title,
-    client,
+    subtitle,
     category,
-    metric,
-    accent,
-    thumbnail,
-    "projectSlug": project->slug.current,
-    externalUrl,
+    mediaType,
+    image,
+    videoUrl,
+    stats,
+    aspectRatio,
+    featured,
     order
+  }
+`;
+
+export const siteSettingsQuery = groq`
+  *[_type == "siteSettings"][0] {
+    companyName,
+    siteDescription,
+    contactEmail,
+    primaryPhoneNumber,
+    address,
+    socialProfiles,
+    primaryCtaLabel,
+    primaryCtaUrl,
+    enableCaseStudyMetrics
   }
 `;

@@ -50,12 +50,18 @@ export interface SanityProjectDocument {
   slug: string;
   client: string;
   industry: string;
+  categories?: string[] | null;
+  transformationSummary?: string | null;
   shortDescription?: string | null;
   headline?: string | null;
   overview?: string | null;
   summary?: string | null;
   challenge?: string | null;
+  goal?: string | null;
   strategy?: string | null;
+  engagementRole?: string | null;
+  servicesDelivered?: Array<{ service: string; note?: string | null }> | null;
+  scopeTags?: string[] | null;
   services?: string[] | null;
   deliverables?: string[] | null;
   servicesRendered?: string[] | null;
@@ -65,6 +71,45 @@ export interface SanityProjectDocument {
   honestyNote?: string | null;
   logo?: SanityImageObject | null;
   cover?: SanityImageObject | null;
+  phaseBrand?: {
+    enabled?: boolean;
+    title?: string;
+    description?: string;
+    layoutStyle?: string;
+    deliverables?: string[];
+    images?: Array<{ image?: SanityImageObject; alt: string; caption?: string }>;
+  } | null;
+  phaseDigital?: {
+    enabled?: boolean;
+    title?: string;
+    description?: string;
+    websiteUrl?: string;
+    techStack?: string[];
+    uxUiNotes?: string;
+    layoutStyle?: string;
+    screenshots?: Array<{ image?: SanityImageObject; alt: string; caption?: string }>;
+  } | null;
+  phaseGrowth?: {
+    enabled?: boolean;
+    title?: string;
+    description?: string;
+    channels?: string[];
+    seoImprovements?: string;
+    layoutStyle?: string;
+    creativeAssets?: Array<{ image?: SanityImageObject; alt: string; caption?: string }>;
+  } | null;
+  result?: {
+    outcomeSummary?: string | null;
+    keyWins?: string[] | null;
+    metrics?: SanityOutcomeItem[] | null;
+    testimonial?: {
+      quote?: string;
+      author?: string;
+      title?: string;
+      company?: string;
+      avatar?: SanityImageObject;
+    } | null;
+  } | null;
   outcomes?: SanityOutcomeItem[] | null;
   gallery?: SanityGalleryItem[] | null;
 }
@@ -209,20 +254,123 @@ function mapSanityProjectToDetail(doc: SanityProjectDocument): ProjectDetail {
         .filter((g): g is NonNullable<typeof g> => Boolean(g))
     : [];
 
+  const phaseBrand = doc.phaseBrand?.enabled
+    ? {
+        enabled: true,
+        title: doc.phaseBrand.title,
+        description: doc.phaseBrand.description,
+        layoutStyle: doc.phaseBrand.layoutStyle,
+        deliverables: doc.phaseBrand.deliverables || [],
+        images: (doc.phaseBrand.images || [])
+          .map((img) => {
+            const url = img.image ? urlForImage(img.image)?.width(1600).auto('format').url() ?? null : null;
+            if (!url) return null;
+            return {
+              image: url,
+              alt: img.alt || `${doc.client} brand asset`,
+              caption: img.caption || null,
+            };
+          })
+          .filter((i): i is NonNullable<typeof i> => Boolean(i)),
+      }
+    : null;
+
+  const phaseDigital = doc.phaseDigital?.enabled
+    ? {
+        enabled: true,
+        title: doc.phaseDigital.title,
+        description: doc.phaseDigital.description,
+        websiteUrl: doc.phaseDigital.websiteUrl || null,
+        techStack: doc.phaseDigital.techStack || [],
+        uxUiNotes: doc.phaseDigital.uxUiNotes || null,
+        layoutStyle: doc.phaseDigital.layoutStyle,
+        screenshots: (doc.phaseDigital.screenshots || [])
+          .map((img) => {
+            const url = img.image ? urlForImage(img.image)?.width(1600).auto('format').url() ?? null : null;
+            if (!url) return null;
+            return {
+              image: url,
+              alt: img.alt || `${doc.client} digital screenshot`,
+              caption: img.caption || null,
+            };
+          })
+          .filter((i): i is NonNullable<typeof i> => Boolean(i)),
+      }
+    : null;
+
+  const phaseGrowth = doc.phaseGrowth?.enabled
+    ? {
+        enabled: true,
+        title: doc.phaseGrowth.title,
+        description: doc.phaseGrowth.description,
+        channels: doc.phaseGrowth.channels || [],
+        seoImprovements: doc.phaseGrowth.seoImprovements || null,
+        layoutStyle: doc.phaseGrowth.layoutStyle,
+        creativeAssets: (doc.phaseGrowth.creativeAssets || [])
+          .map((img) => {
+            const url = img.image ? urlForImage(img.image)?.width(1600).auto('format').url() ?? null : null;
+            if (!url) return null;
+            return {
+              image: url,
+              alt: img.alt || `${doc.client} ad creative`,
+              caption: img.caption || null,
+            };
+          })
+          .filter((i): i is NonNullable<typeof i> => Boolean(i)),
+      }
+    : null;
+
+  const result = doc.result
+    ? {
+        outcomeSummary: doc.result.outcomeSummary || null,
+        keyWins: doc.result.keyWins || [],
+        metrics: (doc.result.metrics || []).map((m) => ({
+          label: m.label,
+          value: m.value ?? null,
+          verified: Boolean(m.verified),
+          permission: Boolean(m.permission),
+        })),
+        testimonial: doc.result.testimonial
+          ? {
+              quote: doc.result.testimonial.quote || '',
+              author: doc.result.testimonial.author || '',
+              title: doc.result.testimonial.title || null,
+              company: doc.result.testimonial.company || null,
+              avatar: doc.result.testimonial.avatar
+                ? urlForImage(doc.result.testimonial.avatar)?.width(200).auto('format').url() ?? null
+                : null,
+            }
+          : null,
+      }
+    : null;
+
   return {
     slug: doc.slug,
+    title: doc.title || doc.headline || doc.client,
     client: doc.client,
     industry: doc.industry || 'Client Engagement',
     year: typeof doc.year === 'number' ? doc.year : new Date().getFullYear(),
+    categories: Array.isArray(doc.categories) && doc.categories.length > 0 ? doc.categories : ['full_service'],
+    transformationSummary: doc.transformationSummary || rawSummary,
+    engagementRole: doc.engagementRole || 'Full-Service Agency Scope',
+    servicesDelivered: Array.isArray(doc.servicesDelivered) && doc.servicesDelivered.length > 0
+      ? doc.servicesDelivered
+      : services.map((s) => ({ service: s })),
+    scopeTags: Array.isArray(doc.scopeTags) && doc.scopeTags.length > 0 ? doc.scopeTags : deliverables.slice(0, 4),
     logo: logoUrl,
     cover: coverUrl,
     summary: rawSummary.length <= 110 ? rawSummary : deriveShortDescription(rawSummary),
     overview: doc.overview || doc.headline || doc.client,
     challenge: doc.challenge ?? null,
+    goal: doc.goal ?? null,
     strategy: doc.strategy ?? null,
+    phaseBrand,
+    phaseDigital,
+    phaseGrowth,
+    result,
     services,
     deliverables,
-    outcomes,
+    outcomes: result?.metrics && result.metrics.length > 0 ? result.metrics : outcomes,
     gallery,
     headline: doc.headline ?? undefined,
     honestyNote: doc.honestyNote ?? undefined,

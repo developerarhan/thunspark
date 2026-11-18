@@ -14,6 +14,7 @@ import {
   Clock,
   Plus,
   CheckCircle2,
+  ExternalLink,
 } from 'lucide-react';
 import type { TaskStatus, Priority } from '@prisma/client';
 
@@ -183,7 +184,7 @@ export function ProjectWorkspaceClient({
   return (
     <div className="p-4 sm:p-7 space-y-6 max-w-7xl">
       {/* Back button & Breadcrumb */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center justify-between gap-3">
         <Link
           href="/admin/projects"
           className="inline-flex items-center gap-1.5 text-xs font-mono text-meta hover:text-accent transition-colors"
@@ -191,6 +192,15 @@ export function ProjectWorkspaceClient({
           <ArrowLeft size={14} />
           <span>All Engagements</span>
         </Link>
+        <a
+          href="/projects"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1.5 text-xs font-mono text-accent hover:underline"
+        >
+          <span>View Public Portfolio</span>
+          <ExternalLink size={12} />
+        </a>
       </div>
 
       {/* Project Workspace Header */}

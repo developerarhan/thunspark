@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { Container } from '@/components/ui/Container';
 import { BookingButton } from '@/components/ui/BookingButton';
 import { Reveal } from '@/components/motion/Reveal';
-import { CASE_STUDIES } from '@/lib/constants';
+import { getAllProjectsDetail } from '@/lib/sanity/fetchers';
 import { ProjectsListingClient } from '@/components/projects/ProjectsListingClient';
 import { ArrowRight } from 'lucide-react';
 import { buildMetadata } from '@/lib/seo';
@@ -17,7 +17,9 @@ export const metadata: Metadata = buildMetadata({
   path: '/projects',
 });
 
-export default function ProjectsPage() {
+export default async function ProjectsPage() {
+  const projects = await getAllProjectsDetail();
+
   return (
     <div className="flex flex-col">
       {/* 1. HERO */}
@@ -43,7 +45,7 @@ export default function ProjectsPage() {
       {/* 2. CASE STUDIES GRID WITH FILTER */}
       <section className="py-20 md:py-28 border-b border-line">
         <Container>
-          <ProjectsListingClient initialStudies={CASE_STUDIES} />
+          <ProjectsListingClient initialStudies={projects} />
         </Container>
       </section>
 
