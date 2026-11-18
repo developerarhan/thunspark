@@ -153,6 +153,30 @@ export function ClientAdPerformanceTab({
     }
   };
 
+  const handleLoadSampleScreenshot = async () => {
+    try {
+      setError(null);
+      const res = await fetch('/test-meta-ads-screenshot.png');
+      const blob = await res.blob();
+      const file = new File([blob], 'test-meta-ads-screenshot.png', { type: 'image/png' });
+      await handleFileUpload(file);
+    } catch (err: unknown) {
+      setError('Could not load sample screenshot: ' + (err instanceof Error ? err.message : String(err)));
+    }
+  };
+
+  const handleLoadSampleCsv = async () => {
+    try {
+      setError(null);
+      const res = await fetch('/test-ad-report.csv');
+      const blob = await res.blob();
+      const file = new File([blob], 'test-ad-report.csv', { type: 'text/csv' });
+      await handleFileUpload(file);
+    } catch (err: unknown) {
+      setError('Could not load sample CSV: ' + (err instanceof Error ? err.message : String(err)));
+    }
+  };
+
   const handleManualEntry = () => {
     setError(null);
     setPreviewImage(null);
@@ -326,19 +350,41 @@ export function ClientAdPerformanceTab({
               </span>
             </div>
 
-            <div className="pt-2 flex items-center justify-center gap-3">
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleManualEntry();
-                }}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-elevated hover:bg-line border border-line text-[11px] font-mono text-soft hover:text-ink transition-colors"
-              >
-                <Edit3 size={12} />
-                <span>Enter Manually</span>
-              </button>
-            </div>
+              <div className="pt-2 flex flex-wrap items-center justify-center gap-2">
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleLoadSampleScreenshot();
+                  }}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-accent/10 hover:bg-accent/20 border border-accent/30 text-[11px] font-mono text-accent transition-colors"
+                >
+                  <ImageIcon size={12} />
+                  <span>Test Sample Screenshot</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleLoadSampleCsv();
+                  }}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-[11px] font-mono text-emerald-400 transition-colors"
+                >
+                  <FileSpreadsheet size={12} />
+                  <span>Test Sample CSV</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleManualEntry();
+                  }}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-elevated hover:bg-line border border-line text-[11px] font-mono text-soft hover:text-ink transition-colors"
+                >
+                  <Edit3 size={12} />
+                  <span>Enter Manually</span>
+                </button>
+              </div>
           </div>
         </div>
       )}
@@ -350,7 +396,7 @@ export function ClientAdPerformanceTab({
             <RefreshCw size={24} className="animate-spin" />
           </div>
           <h3 className="text-sm font-display font-bold text-ink">
-            Analyzing Report with Gemini 2.5 Flash...
+            Analyzing Report with Gemini 3.5 Flash Lite...
           </h3>
           <p className="text-xs text-soft max-w-sm mx-auto font-mono">
             Multimodal OCR vision model is extracting spend, impressions, clicks, CPA, and ROAS.

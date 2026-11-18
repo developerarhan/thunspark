@@ -101,6 +101,7 @@ export interface EnquiryApiResponse {
   success: boolean;
   code: string;
   message: string;
+  leadId?: string;
   fieldErrors?: Record<string, string[]>;
   simulated?: boolean;
 }

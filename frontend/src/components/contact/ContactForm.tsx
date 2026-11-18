@@ -12,20 +12,21 @@ import {
   Loader2,
   Mail,
   ShieldAlert,
+  ChevronDown,
+  Check,
 } from 'lucide-react';
 import { getAttributionPayload } from '@/components/analytics/AttributionTracker';
 import { track } from '@/lib/analytics';
 import {
-  BUDGET_OPTIONS,
   CHALLENGE_PRESETS,
   SERVICE_OPTIONS,
-  TIMELINE_OPTIONS,
   enquiryFormSchema,
   type EnquiryApiResponse,
   type EnquiryFieldErrors,
   type EnquiryFormValues,
 } from '@/lib/enquiry-schema';
 import { siteConfig } from '@/site.config';
+import { getCalLink } from '@/lib/booking';
 
 interface TurnstileRenderOptions {
   sitekey: string;
@@ -77,7 +78,16 @@ export function ContactForm() {
   const [successMeta, setSuccessMeta] = useState<{
     code: string;
     message: string;
+    leadId?: string;
     simulated?: boolean;
+  } | null>(null);
+
+  // In-page calendar scheduling states
+  const [bookingStatus, setBookingStatus] = useState<'pending' | 'booked'>('pending');
+  const [bookedDetails, setBookedDetails] = useState<{
+    date?: string;
+    time?: string;
+    eventTitle?: string;
   } | null>(null);
 
   const [turnstileToken, setTurnstileToken] = useState('');
@@ -86,6 +96,21 @@ export function ContactForm() {
   const turnstileWidgetIdRef = useRef<string | null>(null);
   const consentInputRef = useRef<HTMLInputElement | null>(null);
   const [highlightConsent, setHighlightConsent] = useState(false);
+
+  // Dropdown states for streamlined compact form
+  const [isDisciplinesOpen, setIsDisciplinesOpen] = useState(false);
+  const [isCustomChallenge, setIsCustomChallenge] = useState(false);
+  const disciplinesRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (disciplinesRef.current && !disciplinesRef.current.contains(event.target as Node)) {
+        setIsDisciplinesOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   useEffect(() => {
     if (!turnstileSiteKey) return;
@@ -200,8 +225,6 @@ export function ContactForm() {
       `Company: ${formData.company || 'N/A'}`,
       `Website: ${formData.website || 'N/A'}`,
       `Services Interested In: ${formData.servicesNeeded.join(', ') || 'Not selected'}`,
-      `Budget Range: ${formData.budgetRange || 'Not specified'}`,
-      `Timeline: ${formData.timeline || 'Not specified'}`,
       '',
       'Primary Business Challenge:',
       formData.businessChallenge || 'N/A',
@@ -303,6 +326,7 @@ export function ContactForm() {
       setSuccessMeta({
         code: data.code,
         message: data.message,
+        leadId: data.leadId,
         simulated: data.simulated,
       });
       setStatus('success');
@@ -328,29 +352,157 @@ export function ContactForm() {
     }
   };
 
+  useEffect(() => {
+    if (status !== 'success') return;
+
+    // Listen for Cal.com booking confirmation events (embed iframe postMessage or window.Cal)
+    const handleMessage = (e: MessageEvent) => {
+      try {
+        const raw = e.data;
+        const data = typeof raw === 'string' ? JSON.parse(raw) : raw;
+        const action = data?.type || data?.action || data?.event;
+
+        if (
+          action === 'cal:bookingSuccessful' ||
+          action === 'bookingSuccessful' ||
+          action === 'BOOKING_SUCCESSFUL'
+        ) {
+          console.log('✅ [Cal In-Page Event] Booking confirmed:', data);
+          const payload = data?.data || data?.payload || {};
+          handleBookingConfirmed(payload);
+        }
+      } catch {}
+    };
+
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, [status, successMeta?.leadId, formData.workEmail]);
+
+  const handleBookingConfirmed = async (bookingData?: any) => {
+    setBookingStatus('booked');
+    setBookedDetails({
+      date:
+        bookingData?.date ||
+        (bookingData?.startTime
+          ? new Date(bookingData.startTime).toLocaleDateString()
+          : undefined),
+      time: bookingData?.time,
+      eventTitle: bookingData?.eventTitle || 'Growth Strategy Call',
+    });
+
+    try {
+      await fetch('/api/crm/leads/record-booking', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          leadId: successMeta?.leadId,
+          email: formData.workEmail,
+          bookingDetails: {
+            eventTitle: bookingData?.eventTitle || 'Growth Strategy Call',
+            date: bookingData?.date,
+            time: bookingData?.time,
+            url: bookingData?.bookingUrl,
+          },
+        }),
+      });
+    } catch (e) {
+      console.error('Failed to sync booking to CRM:', e);
+    }
+  };
+
   if (status === 'success' && successMeta) {
     const isAlreadyReceived = successMeta.code === 'ALREADY_RECEIVED';
-    return (
-      <Card className="p-8 sm:p-12 text-center bg-card border-line">
-        <div className="w-16 h-16 rounded-full bg-elevated border border-accent text-accent flex items-center justify-center mx-auto mb-6">
-          <CheckCircle2 size={32} />
-        </div>
-        {successMeta.simulated && !isProduction && (
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-elevated border border-[#FFBF47] text-[#FFBF47] font-mono text-[11px] mb-4">
-            DEV SIMULATION MODE (NO EMAIL DISPATCHED)
+    const calSlug = getCalLink() || 'thunspark/strategy';
+
+    if (bookingStatus === 'booked') {
+      return (
+        <Card className="p-8 sm:p-12 text-center bg-card border-line animate-in fade-in duration-300">
+          <div className="w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500 text-emerald-400 flex items-center justify-center mx-auto mb-6">
+            <CheckCircle2 size={32} />
           </div>
-        )}
-        <h3 className="font-display font-medium text-2xl sm:text-3xl text-ink mb-3">
-          {isAlreadyReceived ? 'Enquiry Already Received.' : 'Strategy Call Request Received.'}
-        </h3>
-        <p className="text-soft text-sm leading-relaxed max-w-md mx-auto mb-8">
-          {isAlreadyReceived
-            ? successMeta.message
-            : `Thank you, ${formData.name}. ${successMeta.message}`}
-        </p>
-        <Button href="/" variant="secondary" size="md">
-          <span>Return to Homepage</span>
-        </Button>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-mono text-xs mb-4">
+            STRATEGY CALL CONFIRMED
+          </div>
+          <h3 className="font-display font-medium text-2xl sm:text-3xl text-ink mb-3">
+            You&apos;re All Set, {formData.name}!
+          </h3>
+          <p className="text-soft text-sm leading-relaxed max-w-md mx-auto mb-6">
+            Your strategy consultation is booked and your lead status has been advanced in our CRM. A calendar invitation with video conference coordinates has been dispatched to{' '}
+            <strong className="text-ink">{formData.workEmail}</strong>.
+          </p>
+
+          <div className="p-4 rounded-xl bg-elevated border border-line max-w-sm mx-auto mb-8 text-left space-y-2">
+            <div className="flex items-center justify-between text-xs font-mono">
+              <span className="text-meta">Brand / Company:</span>
+              <span className="text-ink font-semibold">{formData.company}</span>
+            </div>
+            <div className="flex items-center justify-between text-xs font-mono">
+              <span className="text-meta">Disciplines:</span>
+              <span className="text-accent font-semibold">
+                {formData.servicesNeeded.join(', ') || 'Growth Strategy'}
+              </span>
+            </div>
+            <div className="flex items-center justify-between text-xs font-mono">
+              <span className="text-meta">Pipeline Stage:</span>
+              <span className="text-emerald-400 font-semibold">Discovery Session Confirmed</span>
+            </div>
+          </div>
+
+          <Button href="/" variant="secondary" size="md">
+            <span>Return to Homepage</span>
+          </Button>
+        </Card>
+      );
+    }
+
+    return (
+      <Card className="p-6 sm:p-8 bg-card border-line space-y-6 animate-in fade-in duration-300">
+        {/* Step Indicator Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-line">
+          <div>
+            <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-accent/10 border border-accent/30 text-accent font-mono text-[11px] mb-2">
+              STEP 2 OF 2: IN-PAGE SCHEDULER
+            </div>
+            <h3 className="font-display font-bold text-xl sm:text-2xl text-ink">
+              Choose Your Strategy Call Time
+            </h3>
+            <p className="text-xs text-soft mt-1 leading-relaxed">
+              {isAlreadyReceived
+                ? 'Your enquiry is logged in our CRM. Select a convenient time below for your 30-minute growth consultation:'
+                : `Thank you, ${formData.name}. Your details are recorded in our CRM pipeline. Pick a 30-minute strategy slot below:`}
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2 self-start sm:self-auto shrink-0 font-mono text-xs text-meta bg-elevated px-3 py-1.5 rounded-lg border border-line">
+            <CheckCircle2 size={14} className="text-emerald-400" />
+            <span>Lead Saved to CRM</span>
+          </div>
+        </div>
+
+        {/* Embedded Dark Themed Calendar */}
+        <div className="w-full min-h-[620px] rounded-xl overflow-hidden border border-line bg-base relative">
+          <iframe
+            src={`https://cal.com/${calSlug}?embed=true&layout=month_view&theme=dark&name=${encodeURIComponent(
+              formData.name
+            )}&email=${encodeURIComponent(formData.workEmail)}`}
+            title="Schedule Your Strategy Call"
+            className="w-full h-[620px] border-0"
+            allow="camera; microphone; autoplay; fullscreen"
+          />
+        </div>
+
+        {/* Escape Hatch / Book Later */}
+        <div className="pt-2 text-center space-y-3">
+          <p className="text-xs text-meta">
+            Prefer to pick a time later? We have also sent a direct booking link to{' '}
+            <span className="text-ink font-mono">{formData.workEmail}</span>.
+          </p>
+          <div className="flex items-center justify-center gap-4">
+            <Button href="/" variant="secondary" size="sm">
+              <span>Skip &amp; Return to Homepage</span>
+            </Button>
+          </div>
+        </div>
       </Card>
     );
   }
@@ -502,168 +654,203 @@ export function ContactForm() {
           </div>
         </div>
 
-        {/* Services Needed (Pills) */}
-        <div>
-          <span
-            id={`${formId}-services-label`}
-            className="font-mono text-xs uppercase tracking-wider text-ink block mb-2"
-          >
-            Disciplines you are interested in <span className="text-accent">*</span>
-          </span>
-          <div
-            role="group"
-            aria-labelledby={`${formId}-services-label`}
-            aria-describedby={
-              fieldErrors.servicesNeeded ? `${formId}-services-error` : undefined
-            }
-            className={`flex flex-wrap gap-2 p-3 rounded-lg border ${
-              fieldErrors.servicesNeeded
-                ? 'border-[#FF6464] bg-elevated'
-                : 'border-transparent p-0'
-            }`}
-          >
-            {SERVICE_OPTIONS.map((service) => {
-              const isSelected = formData.servicesNeeded.includes(service);
-              return (
-                <button
-                  key={service}
-                  type="button"
-                  aria-pressed={isSelected}
-                  onClick={() => toggleService(service)}
-                  className={`px-3 py-1.5 rounded-full text-xs font-mono transition-colors cursor-pointer ${
-                    isSelected
-                      ? 'bg-accent text-canvas font-bold'
-                      : 'bg-elevated text-soft border border-line hover:border-line-strong hover:text-ink'
-                  }`}
-                >
-                  {service}
-                </button>
-              );
-            })}
-          </div>
-          {fieldErrors.servicesNeeded?.[0] && (
-            <p
-              id={`${formId}-services-error`}
-              role="alert"
-              className="mt-1.5 text-xs text-[#FF6464]"
-            >
-              {fieldErrors.servicesNeeded[0]}
-            </p>
-          )}
-        </div>
-
-        {/* Primary Business Challenge (20-1000 chars textarea + quick presets) */}
-        <div>
-          <div className="flex items-center justify-between gap-2 mb-2">
+        {/* Disciplines & Primary Challenge Dropdowns (Compact 2-Column Grid) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {/* Disciplines Dropdown */}
+          <div ref={disciplinesRef} className="relative">
             <label
-              htmlFor={`${formId}-challenge`}
-              className="font-mono text-xs uppercase tracking-wider text-ink"
+              id={`${formId}-services-label`}
+              className="font-mono text-xs uppercase tracking-wider text-ink block mb-2"
+            >
+              Disciplines Interested In <span className="text-accent">*</span>
+            </label>
+            <button
+              id={`${formId}-servicesNeeded`}
+              type="button"
+              onClick={() => setIsDisciplinesOpen((prev) => !prev)}
+              aria-haspopup="listbox"
+              aria-expanded={isDisciplinesOpen}
+              className={`w-full h-14 px-4 rounded-lg bg-elevated border text-sm text-left flex items-center justify-between transition-colors cursor-pointer ${
+                fieldErrors.servicesNeeded
+                  ? 'border-[#FF6464]'
+                  : isDisciplinesOpen
+                    ? 'border-accent'
+                    : 'border-line'
+              }`}
+            >
+              <div className="truncate pr-2">
+                {formData.servicesNeeded.length === 0 ? (
+                  <span className="text-meta">Select disciplines...</span>
+                ) : formData.servicesNeeded.length <= 2 ? (
+                  <span className="text-ink font-medium">
+                    {formData.servicesNeeded.join(', ')}
+                  </span>
+                ) : (
+                  <span className="text-ink font-medium">
+                    {formData.servicesNeeded.slice(0, 2).join(', ')}{' '}
+                    <span className="text-accent text-xs font-mono font-bold">
+                      (+{formData.servicesNeeded.length - 2} more)
+                    </span>
+                  </span>
+                )}
+              </div>
+              <ChevronDown
+                size={16}
+                className={`text-meta shrink-0 transition-transform duration-200 ${
+                  isDisciplinesOpen ? 'rotate-180 text-accent' : ''
+                }`}
+              />
+            </button>
+
+            {/* Dropdown Menu */}
+            {isDisciplinesOpen && (
+              <div className="absolute z-30 left-0 right-0 mt-2 p-2 bg-[#12141a] border border-line-strong rounded-xl shadow-2xl max-h-64 overflow-y-auto space-y-1">
+                <div className="flex items-center justify-between px-2 py-1.5 border-b border-line/60 mb-1 text-[11px] font-mono text-meta">
+                  <span>{formData.servicesNeeded.length} of {SERVICE_OPTIONS.length} selected</span>
+                  {formData.servicesNeeded.length > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => setFormData((prev) => ({ ...prev, servicesNeeded: [] }))}
+                      className="text-soft hover:text-accent transition-colors"
+                    >
+                      Clear all
+                    </button>
+                  )}
+                </div>
+                {SERVICE_OPTIONS.map((service) => {
+                  const isSelected = formData.servicesNeeded.includes(service);
+                  return (
+                    <button
+                      key={service}
+                      type="button"
+                      onClick={() => toggleService(service)}
+                      className={`w-full px-3 py-2 rounded-lg text-xs font-mono flex items-center justify-between text-left transition-colors cursor-pointer ${
+                        isSelected
+                          ? 'bg-accent/15 text-accent font-semibold'
+                          : 'text-soft hover:bg-elevated hover:text-ink'
+                      }`}
+                    >
+                      <span>{service}</span>
+                      {isSelected && <Check size={14} className="text-accent shrink-0 ml-2" />}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+
+            {fieldErrors.servicesNeeded?.[0] && (
+              <p
+                id={`${formId}-services-error`}
+                role="alert"
+                className="mt-1.5 text-xs text-[#FF6464]"
+              >
+                {fieldErrors.servicesNeeded[0]}
+              </p>
+            )}
+          </div>
+
+          {/* Primary Business Challenge Dropdown */}
+          <div>
+            <label
+              htmlFor={`${formId}-businessChallenge`}
+              className="font-mono text-xs uppercase tracking-wider text-ink block mb-2"
             >
               Primary Business Challenge <span className="text-accent">*</span>
             </label>
-            <span
-              className={`font-mono text-[11px] ${
-                challengeLength > 1000 ? 'text-[#FF6464]' : 'text-meta'
-              }`}
-            >
-              {challengeLength} / 1000
-            </span>
-          </div>
-
-          {/* Optional Preset Quick-Starters */}
-          <div className="flex flex-wrap gap-1.5 mb-2.5">
-            {CHALLENGE_PRESETS.map((preset) => (
-              <button
-                key={preset}
-                type="button"
-                onClick={() => updateField('businessChallenge', preset)}
-                className="px-2.5 py-1 rounded-md text-[11px] font-mono bg-elevated text-meta border border-line hover:border-line-strong hover:text-ink transition-colors cursor-pointer text-left"
+            <div className="relative">
+              <select
+                id={`${formId}-businessChallenge`}
+                value={
+                  isCustomChallenge
+                    ? 'custom'
+                    : CHALLENGE_PRESETS.includes(formData.businessChallenge as any)
+                      ? formData.businessChallenge
+                      : formData.businessChallenge
+                        ? 'custom'
+                        : ''
+                }
+                onChange={(e) => {
+                  const val = e.target.value;
+                  if (val === 'custom') {
+                    setIsCustomChallenge(true);
+                    updateField('businessChallenge', '');
+                  } else if (val) {
+                    setIsCustomChallenge(false);
+                    updateField('businessChallenge', val);
+                  } else {
+                    setIsCustomChallenge(false);
+                    updateField('businessChallenge', '');
+                  }
+                }}
+                aria-invalid={Boolean(fieldErrors.businessChallenge)}
+                aria-describedby={
+                  fieldErrors.businessChallenge ? `${formId}-challenge-error` : undefined
+                }
+                className={`w-full h-14 px-4 pr-10 rounded-lg bg-elevated border text-sm focus:outline-none focus:border-accent transition-colors appearance-none cursor-pointer ${
+                  formData.businessChallenge || isCustomChallenge ? 'text-ink' : 'text-meta'
+                } ${fieldErrors.businessChallenge ? 'border-[#FF6464]' : 'border-line'}`}
               >
-                + {preset}
-              </button>
-            ))}
-          </div>
+                <option value="" className="bg-[#12141a] text-meta">
+                  Select primary challenge...
+                </option>
+                {CHALLENGE_PRESETS.map((preset) => (
+                  <option key={preset} value={preset} className="bg-[#12141a] text-ink">
+                    {preset}
+                  </option>
+                ))}
+                <option value="custom" className="bg-[#12141a] text-accent font-medium">
+                  ✏️ Other / Custom Challenge...
+                </option>
+              </select>
+              <ChevronDown
+                size={16}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-meta pointer-events-none"
+              />
+            </div>
 
-          <textarea
-            id={`${formId}-challenge`}
-            rows={3}
-            required
-            placeholder="Describe the bottleneck holding back growth right now (minimum 20 characters)..."
-            value={formData.businessChallenge}
-            onChange={(e) => updateField('businessChallenge', e.target.value)}
-            aria-invalid={Boolean(fieldErrors.businessChallenge)}
-            aria-describedby={
-              fieldErrors.businessChallenge ? `${formId}-challenge-error` : undefined
-            }
-            className={`w-full p-4 rounded-lg bg-elevated border text-sm text-ink placeholder:text-meta focus:outline-none focus:border-accent transition-colors ${
-              fieldErrors.businessChallenge ? 'border-[#FF6464]' : 'border-line'
-            }`}
-          />
-          {fieldErrors.businessChallenge?.[0] && (
-            <p
-              id={`${formId}-challenge-error`}
-              role="alert"
-              className="mt-1.5 text-xs text-[#FF6464]"
-            >
-              {fieldErrors.businessChallenge[0]}
-            </p>
-          )}
+            {fieldErrors.businessChallenge?.[0] && !isCustomChallenge && (
+              <p
+                id={`${formId}-challenge-error`}
+                role="alert"
+                className="mt-1.5 text-xs text-[#FF6464]"
+              >
+                {fieldErrors.businessChallenge[0]}
+              </p>
+            )}
+          </div>
         </div>
 
-        {/* Budget & Timeline */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label
-              htmlFor={`${formId}-budget`}
-              className="font-mono text-xs uppercase tracking-wider text-ink block mb-2"
-            >
-              Monthly Growth Budget (Optional)
-            </label>
-            <select
-              id={`${formId}-budget`}
-              value={formData.budgetRange}
-              onChange={(e) => updateField('budgetRange', e.target.value)}
-              className={`w-full h-14 px-4 rounded-lg bg-elevated border border-line text-sm focus:outline-none focus:border-accent transition-colors ${
-                formData.budgetRange ? 'text-ink' : 'text-meta'
+        {/* Custom Challenge Detail Textarea (revealed only if custom is chosen) */}
+        {isCustomChallenge && (
+          <div className="space-y-1.5 animate-in fade-in duration-200">
+            <div className="flex items-center justify-between text-[11px] font-mono text-meta">
+              <span>Describe your custom bottleneck <span className="text-accent">*</span></span>
+              <span className={challengeLength > 1000 ? 'text-[#FF6464]' : ''}>
+                {challengeLength} / 1000
+              </span>
+            </div>
+            <textarea
+              id={`${formId}-businessChallenge`}
+              rows={2}
+              required
+              placeholder="Describe the bottleneck holding back growth right now (minimum 20 characters)..."
+              value={formData.businessChallenge}
+              onChange={(e) => updateField('businessChallenge', e.target.value)}
+              aria-invalid={Boolean(fieldErrors.businessChallenge)}
+              className={`w-full p-3 rounded-lg bg-elevated border text-sm text-ink placeholder:text-meta focus:outline-none focus:border-accent transition-colors ${
+                fieldErrors.businessChallenge ? 'border-[#FF6464]' : 'border-line'
               }`}
-            >
-              <option value="" className="bg-elevated text-meta">
-                Select a range...
-              </option>
-              {BUDGET_OPTIONS.map((budget) => (
-                <option key={budget} value={budget} className="bg-elevated text-ink">
-                  {budget}
-                </option>
-              ))}
-            </select>
+            />
+            {fieldErrors.businessChallenge?.[0] && (
+              <p
+                role="alert"
+                className="mt-1 text-xs text-[#FF6464]"
+              >
+                {fieldErrors.businessChallenge[0]}
+              </p>
+            )}
           </div>
-
-          <div>
-            <label
-              htmlFor={`${formId}-timeline`}
-              className="font-mono text-xs uppercase tracking-wider text-ink block mb-2"
-            >
-              Target Timeline (Optional)
-            </label>
-            <select
-              id={`${formId}-timeline`}
-              value={formData.timeline}
-              onChange={(e) => updateField('timeline', e.target.value)}
-              className={`w-full h-14 px-4 rounded-lg bg-elevated border border-line text-sm focus:outline-none focus:border-accent transition-colors ${
-                formData.timeline ? 'text-ink' : 'text-meta'
-              }`}
-            >
-              <option value="" className="bg-elevated text-meta">
-                Select a timeline...
-              </option>
-              {TIMELINE_OPTIONS.map((t) => (
-                <option key={t} value={t} className="bg-elevated text-ink">
-                  {t}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
+        )}
 
         {/* Message / Context */}
         <div>

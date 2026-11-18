@@ -23,7 +23,8 @@ export function BookingButton({
   ...props
 }: BookingButtonProps) {
   const resolvedHref = href || getBookingHref();
-  const calLink = getCalLink(resolvedHref);
+  const isDirectContact = resolvedHref === '/contact' || resolvedHref.startsWith('/contact?');
+  const calLink = isDirectContact ? null : getCalLink(resolvedHref);
   const isExternal = isExternalBooking(resolvedHref);
   const finalTarget = target !== undefined ? target : (isExternal && !calLink ? '_blank' : undefined);
   const finalRel = rel !== undefined ? rel : (isExternal && !calLink ? 'noopener noreferrer' : undefined);

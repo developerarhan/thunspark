@@ -331,8 +331,10 @@ export async function POST(request: Request) {
 
       // Development simulation only
       recordInMemoryDedupe(data.workEmail, data.businessChallenge);
+      let devLeadId: string | undefined = undefined;
       try {
-        await persistInboundLead(data);
+        const persisted = await persistInboundLead(data);
+        devLeadId = persisted?.leadId;
         revalidatePath('/admin');
         revalidatePath('/admin/leads');
       } catch (dbErr) {
@@ -349,6 +351,7 @@ export async function POST(request: Request) {
         success: true,
         code: 'ENQUIRY_SIMULATED',
         message: '[Dev Mode] Enquiry validated and simulated successfully (no email sent).',
+        leadId: devLeadId,
         simulated: true,
       });
     }
@@ -420,9 +423,11 @@ export async function POST(request: Request) {
     recordInMemoryDedupe(data.workEmail, data.businessChallenge);
 
     // Persist inbound lead to Neon DB (awaited so serverless runtime does not abort execution)
+    let leadId: string | undefined = undefined;
     try {
       const persisted = await persistInboundLead(data);
-      console.log('✅ [CRM Lead Capture] Inbound lead saved to Neon DB:', persisted?.leadId);
+      leadId = persisted?.leadId;
+      console.log('✅ [CRM Lead Capture] Inbound lead saved to Neon DB:', leadId);
       revalidatePath('/admin');
       revalidatePath('/admin/leads');
     } catch (persistErr) {
@@ -433,6 +438,7 @@ export async function POST(request: Request) {
       success: true,
       code: 'ENQUIRY_SENT',
       message: 'Thank you. We have received your inquiry and will respond within 24 hours.',
+      leadId,
     });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : 'Unknown error';

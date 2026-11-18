@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
+import { GoogleGenAI, Type } from '@google/genai';
 
 export const maxDuration = 60; // Allow sufficient time for vision/OCR analysis
 
@@ -71,7 +72,7 @@ export async function POST(req: NextRequest) {
           cpa: 314.93,
           roas: 4.2,
           ai_summary_notes:
-            'AI Extraction Preview: CPA is performing 22% better than benchmark. (Tip: Set GEMINI_API_KEY in .env.local for live Gemini 2.5 Flash Vision OCR).',
+            'AI Extraction Preview: CPA is performing 22% better than benchmark. (Tip: Set GEMINI_API_KEY in .env.local for live Gemini Vision OCR).',
         },
         meta: {
           fileName: detectedFileName,
@@ -81,9 +82,16 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    const parts: any[] = [];
+    // Initialize official Google GenAI SDK with v1beta for Gemini multimodal & JSON schema support
+    const ai = new GoogleGenAI({
+      apiKey,
+      apiVersion: 'v1beta',
+      httpOptions: {
+        apiVersion: 'v1beta',
+      },
+    });
 
-    // System prompt with strict instructions
+    // Prepare prompt and multimodal contents
     const instructionPrompt = `You are an expert performance marketing data analyst. Extract ad campaign performance metrics from the attached image (screenshot/photo of Meta Ads Manager, Google Ads, or LinkedIn Campaign Manager) or raw CSV data.
 Normalize platform-specific labels into the requested JSON schema:
 - Meta's "Amount Spent" or Google's "Cost" -> spend (as a clean positive float/number)
@@ -97,10 +105,9 @@ Normalize platform-specific labels into the requested JSON schema:
 - Platform: "meta" if Facebook/Instagram/Meta Ads, "google" if Google Ads, else "other".
 - In "ai_summary_notes", provide a concise 1-sentence observation about performance or flag any obvious anomalies (e.g., "Strong 3.8x ROAS with steady lead volume across Meta Reels" or "Warning: CPA spiked 40% compared to target").
 
-If multiple campaigns are visible, sum the totals for the visible date range unless a "Total" row is already present.
-Return ONLY valid JSON matching the exact schema.`;
+If multiple campaigns are visible, sum the totals for the visible date range unless a "Total" row is already present. Return ONLY valid JSON matching the exact schema.`;
 
-    parts.push({ text: instructionPrompt });
+    const contents: any[] = [{ text: instructionPrompt }];
 
     if (file) {
       const bytes = await file.arrayBuffer();
@@ -108,7 +115,7 @@ Return ONLY valid JSON matching the exact schema.`;
 
       if (file.type.startsWith('image/')) {
         const base64Data = buffer.toString('base64');
-        parts.push({
+        contents.push({
           inlineData: {
             mimeType: file.type || 'image/png',
             data: base64Data,
@@ -117,33 +124,30 @@ Return ONLY valid JSON matching the exact schema.`;
       } else {
         // Assume CSV or text file
         const textContent = buffer.toString('utf-8');
-        parts.push({
+        contents.push({
           text: `Raw CSV/Report Data:\n\`\`\`csv\n${textContent.slice(0, 50000)}\n\`\`\``,
         });
       }
     } else if (pastedText) {
-      parts.push({
+      contents.push({
         text: `Raw Data Content:\n\`\`\`\n${pastedText.slice(0, 50000)}\n\`\`\``,
       });
     }
 
-    // Call Google AI Studio free tier Gemini 2.5 Flash
-    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
-
     const responseSchema = {
-      type: 'OBJECT',
+      type: Type.OBJECT,
       properties: {
-        platform: { type: 'STRING', enum: ['meta', 'google', 'other'] },
-        date_start: { type: 'STRING', nullable: true },
-        date_end: { type: 'STRING', nullable: true },
-        currency: { type: 'STRING' },
-        spend: { type: 'NUMBER' },
-        impressions: { type: 'INTEGER' },
-        clicks: { type: 'INTEGER' },
-        conversions: { type: 'INTEGER' },
-        cpa: { type: 'NUMBER' },
-        roas: { type: 'NUMBER', nullable: true },
-        ai_summary_notes: { type: 'STRING' },
+        platform: { type: Type.STRING, enum: ['meta', 'google', 'other'] },
+        date_start: { type: Type.STRING, nullable: true },
+        date_end: { type: Type.STRING, nullable: true },
+        currency: { type: Type.STRING },
+        spend: { type: Type.NUMBER },
+        impressions: { type: Type.INTEGER },
+        clicks: { type: Type.INTEGER },
+        conversions: { type: Type.INTEGER },
+        cpa: { type: Type.NUMBER },
+        roas: { type: Type.NUMBER, nullable: true },
+        ai_summary_notes: { type: Type.STRING },
       },
       required: [
         'platform',
@@ -157,41 +161,96 @@ Return ONLY valid JSON matching the exact schema.`;
       ],
     };
 
-    const res = await fetch(geminiUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        contents: [{ parts }],
-        generationConfig: {
-          responseMimeType: 'application/json',
-          responseSchema,
-          temperature: 0.1,
-        },
-      }),
-    });
-
-    if (!res.ok) {
-      const errText = await res.text();
-      console.error('[Gemini Vision Ad Parser Error]:', errText);
-      return NextResponse.json(
-        { error: `Gemini AI API error (${res.status}): ${errText}` },
-        { status: res.status }
-      );
+    // Candidate models: prioritize user requested gemini-3.5-flash-lite -> lite & flash fallbacks on v1beta
+    const rawConfiguredModel = process.env.GEMINI_MODEL?.trim().replace(/^["']|["']$/g, '');
+    let normalizedConfigured: string | undefined = rawConfiguredModel;
+    if (rawConfiguredModel) {
+      normalizedConfigured = rawConfiguredModel
+        .replace(/^models\//, '')
+        .replace(/\s+/g, '-');
+      if (
+        !normalizedConfigured.toLowerCase().startsWith('gemini-') &&
+        !normalizedConfigured.toLowerCase().startsWith('google-')
+      ) {
+        normalizedConfigured = `gemini-${normalizedConfigured}`;
+      }
     }
 
-    const data = await res.json();
-    const rawContent = data.candidates?.[0]?.content?.parts?.[0]?.text;
+    const candidateModels = Array.from(
+      new Set(
+        [
+          normalizedConfigured,
+          rawConfiguredModel?.replace(/^models\//, ''),
+          'gemini-3.5-flash-lite',
+          'gemini-2.5-flash-lite',
+          'gemini-2.0-flash-lite',
+          'gemini-2.0-flash-lite-preview-02-05',
+          'gemini-2.5-flash',
+          'gemini-2.0-flash',
+          'gemini-1.5-flash',
+        ].filter((m): m is string => Boolean(m))
+      )
+    );
+
+    let rawContent: string | null | undefined = null;
+    let successfulModel: string | null = null;
+    let lastError: any = null;
+
+    for (const modelName of candidateModels) {
+      try {
+        console.log(`[Gemini SDK Request]: Attempting ad extraction with model "${modelName}" (v1beta)...`);
+        
+        // 1. First attempt: with native responseSchema
+        try {
+          const response = await ai.models.generateContent({
+            model: modelName,
+            contents,
+            config: {
+              responseMimeType: 'application/json',
+              responseSchema,
+              temperature: 0.1,
+            },
+          });
+          rawContent = response.text;
+        } catch (schemaErr: any) {
+          const sMsg = String(schemaErr?.message || '').toLowerCase();
+          if (sMsg.includes('not found') || sMsg.includes('404') || sMsg.includes('not_found')) {
+            throw schemaErr;
+          }
+          // If responseSchema is not supported for this model, retry without it
+          console.warn(`[Gemini SDK]: Model "${modelName}" responseSchema failed, retrying in standard prompt mode...`);
+          const fallbackRes = await ai.models.generateContent({
+            model: modelName,
+            contents,
+            config: {
+              temperature: 0.1,
+            },
+          });
+          rawContent = fallbackRes.text;
+        }
+
+        if (rawContent) {
+          successfulModel = modelName;
+          console.log(`[Gemini SDK Success]: Model "${modelName}" parsed ad report successfully.`);
+          break; // successfully generated
+        }
+      } catch (err: any) {
+        lastError = err;
+        console.warn(`[Gemini SDK Model Attempt]: Model "${modelName}" failed:`, err?.message || err);
+        continue;
+      }
+    }
 
     if (!rawContent) {
+      const errMsg = lastError?.message || 'AI model failed to produce a structured extraction.';
+      console.error('[Gemini Vision Ad Parser Error]:', errMsg);
       return NextResponse.json(
-        { error: 'AI model failed to produce a structured extraction.' },
+        { error: `Gemini AI SDK error: ${errMsg}` },
         { status: 502 }
       );
     }
 
-    const parsed: AdReportExtraction = JSON.parse(rawContent);
+    const parsed: AdReportExtraction = extractJsonFromText(rawContent);
 
     return NextResponse.json({
       success: true,
@@ -206,6 +265,27 @@ Return ONLY valid JSON matching the exact schema.`;
     const message = err instanceof Error ? err.message : String(err);
     console.error('[Ad Report Parse Route Error]:', message);
     return NextResponse.json({ error: message }, { status: 500 });
+  }
+}
+
+function extractJsonFromText(text: string): AdReportExtraction {
+  try {
+    return JSON.parse(text.trim());
+  } catch {
+    const match = text.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
+    if (match) {
+      try {
+        return JSON.parse(match[1].trim());
+      } catch {
+        // continue to brace slice
+      }
+    }
+    const firstBrace = text.indexOf('{');
+    const lastBrace = text.lastIndexOf('}');
+    if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+      return JSON.parse(text.slice(firstBrace, lastBrace + 1));
+    }
+    throw new Error('Unable to extract structured JSON from AI response: ' + text.slice(0, 200));
   }
 }
 
