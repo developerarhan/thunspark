@@ -22,6 +22,7 @@
   --color-line: #252525;
   --color-line-strong: #353535;
   --color-lineStrong: #353535;
+  --color-surface-hover: #222222;
 
   --color-success: #47C78A;
   --color-warning: #FFBF47;
@@ -75,6 +76,7 @@
   --color-line: #252525;
   --color-line-strong: #353535;
   --color-lineStrong: #353535;
+  --color-surface-hover: #222222;
 
   --color-success: #47C78A;
   --color-warning: #FFBF47;
@@ -360,5 +362,28 @@ section[class*="pt-24"] {
   .drift-track-up,
   .drift-track-down {
     animation: none !important;
+  }
+}
+
+.container-page {
+  width: 100%;
+  max-width: 1440px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 640px) {
+  .container-page {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container-page {
+    padding-left: 2rem;
+    padding-right: 2rem;
   }
 }

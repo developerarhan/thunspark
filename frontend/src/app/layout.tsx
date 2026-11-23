@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { Space_Grotesk, Inter, Space_Mono, Playfair_Display } from "next/font/google";
+import localFont from "next/font/local";
 import { GoogleTagManager } from "@next/third-parties/google";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -18,37 +18,43 @@ import { siteConfig } from "@/site.config";
 import { SITE_URL, isIndexingAllowed, serializeJsonLd } from "@/lib/seo";
 import { getTeamMembers, getVerifiedContact } from "@/lib/sanity/fetchers";
 
-const spaceGrotesk = Space_Grotesk({
+const spaceGrotesk = localFont({
+  src: "../fonts/SpaceGrotesk-Variable.woff2",
   variable: "--font-space-grotesk",
-  subsets: ["latin"],
   display: "swap",
-  weight: ["500", "700"],
-  preload: true,
+  weight: "300 700",
 });
 
-const inter = Inter({
+const inter = localFont({
+  src: "../fonts/Inter-Variable.woff2",
   variable: "--font-inter",
-  subsets: ["latin"],
   display: "swap",
-  weight: ["400", "500", "600"],
-  preload: true,
+  weight: "100 900",
 });
 
-const spaceMono = Space_Mono({
+const spaceMono = localFont({
+  src: [
+    {
+      path: "../fonts/SpaceMono-Regular.woff2",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "../fonts/SpaceMono-Bold.woff2",
+      weight: "700",
+      style: "normal",
+    },
+  ],
   variable: "--font-space-mono",
-  subsets: ["latin"],
   display: "swap",
-  weight: ["400", "700"],
-  preload: true,
 });
 
-const playfair = Playfair_Display({
+const playfair = localFont({
+  src: "../fonts/PlayfairDisplay-SemiBoldItalic.woff2",
   variable: "--font-playfair",
-  subsets: ["latin"],
   display: "swap",
-  style: "italic",
   weight: "600",
-  preload: true,
+  style: "italic",
 });
 
 export const metadata: Metadata = {

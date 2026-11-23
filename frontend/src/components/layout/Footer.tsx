@@ -9,6 +9,7 @@ import { siteConfig } from '@/site.config';
 import { LEGAL_DISCLAIMER } from '@/lib/constants';
 import { BackToTop } from './BackToTop';
 import { ThunSparkLogo } from '@/components/ui/ThunSparkLogo';
+import { FooterSpotlightText } from './FooterSpotlightText';
 
 export interface FooterProps {
   hasTeamMembers?: boolean;
@@ -233,7 +234,12 @@ export function Footer({ hasTeamMembers = false, contact }: FooterProps) {
             </div>
           </div>
         </div>
+      </Container>
 
+      {/* Large ThunSpark shadow text with interactive cursor spotlight glow */}
+      <FooterSpotlightText />
+
+      <Container>
         {/* Legal Disclaimer & Performance Clause per Guide §R9 */}
         <div className="pt-8 border-t border-line text-xs text-meta leading-relaxed space-y-3">
           <p>{LEGAL_DISCLAIMER}</p>
