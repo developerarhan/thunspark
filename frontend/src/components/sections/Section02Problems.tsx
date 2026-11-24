@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Container, Section } from '@/components/ui/Container';
@@ -31,12 +32,20 @@ export function Section02Problems() {
                 delay: idx * 0.08,
                 ease: [0.22, 1, 0.36, 1],
               }}
-              className="group p-8 rounded-xl bg-card border border-line hover:border-line-strong hover:bg-elevated transition-all duration-200 flex flex-col justify-between"
+              className="group p-6 sm:p-7 rounded-xl bg-card border border-line hover:border-line-strong hover:bg-elevated transition-all duration-200 flex flex-col justify-between"
             >
               <div>
-                {/* Yellow Index Chip */}
-                <div className="w-9 h-9 rounded-full border border-line group-hover:border-accent group-hover:bg-accent flex items-center justify-center font-mono text-xs font-bold text-meta group-hover:text-canvas transition-colors mb-6">
-                  {item.index}
+                {/* Visual Illustration */}
+                <div className="relative aspect-[4/3] w-full overflow-hidden rounded-lg border border-line/80 bg-surface group-hover:border-accent/40 transition-colors mb-6">
+                  <Image
+                    src={item.image}
+                    alt={item.title}
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    className="object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+                  />
+                  {/* Subtle bottom vignette to blend with card */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-card/80 via-transparent to-transparent opacity-60 pointer-events-none" />
                 </div>
 
                 {/* Problem Title */}

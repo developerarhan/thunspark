@@ -36,6 +36,7 @@ export const PROBLEMS_COPY = {
       description:
         "Clicks arrive, pipeline doesn't. Campaigns optimized for platform metrics instead of revenue.",
       fixCategory: "performance-marketing",
+      image: "/images/problems/problem-01.jpg",
     },
     {
       index: "02",
@@ -43,6 +44,7 @@ export const PROBLEMS_COPY = {
       description:
         "Visitors land, then leave. The funnel leaks below the fold, and nobody owns the fix.",
       fixCategory: "web-design-development",
+      image: "/images/problems/problem-02.jpg",
     },
     {
       index: "03",
@@ -50,6 +52,7 @@ export const PROBLEMS_COPY = {
       description:
         "Posting without a strategy. Sporadic output that neither ranks nor builds trust.",
       fixCategory: "content-marketing",
+      image: "/images/problems/problem-03.jpg",
     },
     {
       index: "04",
@@ -57,6 +60,7 @@ export const PROBLEMS_COPY = {
       description:
         "Your best salesperson has become a brochure. Slow, vague, and built to impress, not convert.",
       fixCategory: "web-design-development",
+      image: "/images/problems/problem-04.jpg",
     },
     {
       index: "05",
@@ -64,6 +68,7 @@ export const PROBLEMS_COPY = {
       description:
         "Dashboards full of numbers, none tied to a decision. Reporting that reports — never guides.",
       fixCategory: "analytics-audit",
+      image: "/images/problems/problem-05.jpg",
     },
     {
       index: "06",
@@ -71,6 +76,7 @@ export const PROBLEMS_COPY = {
       description:
         "What worked last year plateaued. Tactics multiplied. Results didn't.",
       fixCategory: "growth-consulting",
+      image: "/images/problems/problem-06.jpg",
     },
   ],
 } as const;
