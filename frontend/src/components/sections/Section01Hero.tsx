@@ -231,14 +231,14 @@ export function Section01Hero({ trustedBrands }: Section01HeroProps = {}) {
                     href={brand.caseStudyHref || ''}
                     title={brand.name}
                     aria-label={`${brand.name} case study`}
-                    className="flex items-center justify-center h-16 sm:h-20 w-44 sm:w-52 px-6 py-3 rounded-2xl bg-white/95 hover:bg-white border border-white/20 hover:border-accent hover:shadow-[0_0_24px_rgba(255,210,31,0.22)] transition-all duration-300 group shrink-0 cursor-pointer"
+                    className="flex items-center justify-center h-20 sm:h-24 w-52 sm:w-64 px-6 sm:px-8 py-3.5 rounded-2xl bg-white hover:bg-white border border-white/30 hover:border-accent hover:shadow-[0_0_28px_rgba(255,210,31,0.25)] transition-all duration-300 group shrink-0 cursor-pointer shadow-sm"
                   >
                     {/* Brand Logo Only - Sized for High Visual Prominence */}
                     <div className="relative w-full h-full flex items-center justify-center">
                       <img
                         src={brand.logo!}
                         alt={`${brand.name} logo`}
-                        className="max-h-10 sm:max-h-12 max-w-full object-contain filter grayscale group-hover:grayscale-0 transition-all duration-300"
+                        className="max-h-12 sm:max-h-14 w-auto max-w-[88%] object-contain transition-transform duration-300 group-hover:scale-105"
                         loading="lazy"
                       />
                     </div>
