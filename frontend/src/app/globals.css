@@ -1,6 +1,6 @@
 @import "tailwindcss";
 @import "lenis/dist/lenis.css";
-@source "../../src";
+@source "../";
 
 :root {
   /* ThunSpark Master Design Tokens (Guide v1.2 §B2 & §R6) */
