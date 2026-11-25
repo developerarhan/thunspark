@@ -10,9 +10,17 @@ export interface CreativeCard {
   thumbnailUrl?: string | null;
   projectSlug?: string | null;
   externalUrl?: string | null;
+  logo?: string | null;
 }
 
-export const CREATIVE_SHOWCASE: CreativeCard[] = [
+const BRAND_LOGOS: Record<string, string> = {
+  'Coo & Cry': '/images/brands/coo-and-cry.png',
+  'Medilove': '/images/brands/medilove.png',
+  'Suncity Fire': '/images/brands/suncity-fire.png',
+  'Homeware Expo': '/images/brands/homeware-expo.png',
+};
+
+const RAW_CREATIVE_SHOWCASE: Omit<CreativeCard, 'logo'>[] = [
   // Column 1
   {
     id: 'cr-1',
@@ -248,3 +256,8 @@ export const CREATIVE_SHOWCASE: CreativeCard[] = [
     bgGradient: 'from-blue-950/60 via-zinc-900 to-zinc-950',
   },
 ];
+
+export const CREATIVE_SHOWCASE: CreativeCard[] = RAW_CREATIVE_SHOWCASE.map((card) => ({
+  ...card,
+  logo: BRAND_LOGOS[card.client] || null,
+}));

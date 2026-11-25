@@ -38,12 +38,23 @@ function CreativeTile({ card }: { card: CreativeCard }) {
       {/* Top Bar: Client & Category */}
       <div className="relative z-10 flex items-start justify-between gap-1.5">
         <div className="flex items-center gap-1.5 min-w-0">
-          <span
-            className="w-5 h-5 rounded-md flex items-center justify-center text-[10px] font-bold font-mono text-black shrink-0 shadow-sm"
-            style={{ backgroundColor: card.accent }}
-          >
-            {card.client.slice(0, 1)}
-          </span>
+          {card.logo ? (
+            <span className="w-5 h-5 rounded-md bg-white border border-line/40 flex items-center justify-center p-0.5 overflow-hidden shrink-0 shadow-sm">
+              <img
+                src={card.logo}
+                alt={`${card.client} logo`}
+                className="w-full h-full object-contain"
+                loading="lazy"
+              />
+            </span>
+          ) : (
+            <span
+              className="w-5 h-5 rounded-md flex items-center justify-center text-[10px] font-bold font-mono text-black shrink-0 shadow-sm"
+              style={{ backgroundColor: card.accent }}
+            >
+              {card.client.slice(0, 1)}
+            </span>
+          )}
           <span className="font-display font-semibold text-xs text-ink truncate tracking-tight">
             {card.client}
           </span>

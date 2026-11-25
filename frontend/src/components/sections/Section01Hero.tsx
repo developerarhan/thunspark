@@ -82,10 +82,16 @@ export function Section01Hero({ trustedBrands }: Section01HeroProps = {}) {
 
   const currentWord = HERO_COPY.rotatingSlots[wordIndex % HERO_COPY.rotatingSlots.length];
 
-  // Double-buffered for seamless infinite marquee loop
+  // Filter for brands with logos and quadruple-buffer for smooth seamless marquee flow
   const sourceBrands =
     trustedBrands && trustedBrands.length > 0 ? trustedBrands : TRUSTED_BRANDS;
-  const marqueeBrands = [...sourceBrands, ...sourceBrands];
+  const logoBrands = sourceBrands.filter((b) => Boolean(b.logo));
+  const marqueeBrands = [
+    ...logoBrands,
+    ...logoBrands,
+    ...logoBrands,
+    ...logoBrands,
+  ];
 
   return (
     <Section tone="base" spacing="hero" className="overflow-hidden bg-grain pb-12 md:pb-16">
@@ -223,32 +229,18 @@ export function Section01Hero({ trustedBrands }: Section01HeroProps = {}) {
                   <CardWrapper
                     key={`${brand.id || brand.name}-${i}`}
                     href={brand.caseStudyHref || ''}
-                    className="flex items-center gap-3 px-5 py-2.5 rounded-xl bg-card/60 hover:bg-card border border-line hover:border-line-strong transition-all duration-300 group shrink-0"
+                    title={brand.name}
+                    aria-label={`${brand.name} case study`}
+                    className="flex items-center justify-center h-16 sm:h-20 w-44 sm:w-52 px-6 py-3 rounded-2xl bg-white/95 hover:bg-white border border-white/20 hover:border-accent hover:shadow-[0_0_24px_rgba(255,210,31,0.22)] transition-all duration-300 group shrink-0 cursor-pointer"
                   >
-                    {/* Brand Logo Image (from Sanity) OR Monogram Fallback */}
-                    {brand.logo ? (
-                      <span className="w-6 h-6 rounded-md bg-elevated border border-line flex items-center justify-center p-0.5 overflow-hidden shrink-0">
-                        <img
-                          src={brand.logo}
-                          alt={`${brand.name} logo`}
-                          className="w-full h-full object-contain filter grayscale group-hover:grayscale-0 transition-all duration-300"
-                          loading="lazy"
-                        />
-                      </span>
-                    ) : (
-                      <span className="w-6 h-6 rounded-md bg-elevated text-accent group-hover:text-accent-hi border border-line text-[10px] font-mono font-bold flex items-center justify-center transition-colors shrink-0">
-                        {brand.name.slice(0, 1)}
-                      </span>
-                    )}
-
-                    {/* Brand Name & Category */}
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-display font-semibold text-soft group-hover:text-ink transition-colors tracking-tight whitespace-nowrap">
-                        {brand.name}
-                      </span>
-                      <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-elevated/80 text-meta border border-line/50 whitespace-nowrap">
-                        {brand.category}
-                      </span>
+                    {/* Brand Logo Only - Sized for High Visual Prominence */}
+                    <div className="relative w-full h-full flex items-center justify-center">
+                      <img
+                        src={brand.logo!}
+                        alt={`${brand.name} logo`}
+                        className="max-h-10 sm:max-h-12 max-w-full object-contain filter grayscale group-hover:grayscale-0 transition-all duration-300"
+                        loading="lazy"
+                      />
                     </div>
                   </CardWrapper>
                 );

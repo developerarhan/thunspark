@@ -17,24 +17,28 @@ export const TRUSTED_BRANDS: TrustedBrand[] = [
     name: 'Coo & Cry',
     category: 'Luxury Apparel',
     caseStudyHref: '/projects/coo-and-cry',
+    logo: '/images/brands/coo-and-cry.png',
   },
   {
     id: 'medilove',
     name: 'Medilove',
     category: 'Healthcare & Pharma',
     caseStudyHref: '/projects/medilove',
+    logo: '/images/brands/medilove.png',
   },
   {
     id: 'suncity-fire',
     name: 'Suncity Fire',
     category: 'Industrial Safety',
     caseStudyHref: '/projects/suncity-fire',
+    logo: '/images/brands/suncity-fire.png',
   },
   {
     id: 'homeware-expo',
     name: 'Homeware Expo',
     category: 'B2B Trade & Events',
     caseStudyHref: '/projects/homeware-expo',
+    logo: '/images/brands/homeware-expo.png',
   },
   {
     id: 'nexa-growth',

@@ -46,14 +46,15 @@ export function getFallbackHomeWorkClients(): HomeWorkClient[] {
     shortDescription?: string;
     overview: string;
     year: number;
-  }[] = CASE_STUDIES;
+    logo?: string | null;
+  }[] = CASE_STUDIES as any;
 
   return studies.map((study) => ({
     slug: study.slug,
     client: study.client,
     industry: study.industry,
     shortDescription: study.shortDescription || deriveShortDescription(study.overview),
-    logo: null,
+    logo: study.logo || null,
     cover: null,
     year: study.year,
     featured: false,
@@ -88,7 +89,7 @@ export function getFallbackProjectDetails(): ProjectDetail[] {
       year: study.year,
       categories: study.categories ? [...study.categories] : ['full_service'],
       transformationSummary: study.transformationSummary || summary,
-      logo: null,
+      logo: study.logo || null,
       cover: null,
       summary,
       overview: study.overview,

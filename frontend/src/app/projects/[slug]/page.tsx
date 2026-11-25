@@ -256,6 +256,18 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
                   )}
                 </div>
 
+                {study.logo && (
+                  <div className="flex justify-center mb-6">
+                    <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-white border border-line/60 p-3 shadow-md flex items-center justify-center">
+                      <img
+                        src={study.logo}
+                        alt={`${study.client} logo`}
+                        className="w-full h-full object-contain"
+                      />
+                    </div>
+                  </div>
+                )}
+
                 <h1 className="font-display font-medium text-3xl sm:text-5xl lg:text-6xl text-ink tracking-tight mb-6 text-balance">
                   {study.title || study.headline || `${study.client} Growth Transformation.`}
                 </h1>

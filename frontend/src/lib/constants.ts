@@ -192,6 +192,7 @@ export const CASE_STUDIES = [
   {
     slug: "coo-and-cry",
     client: "Coo & Cry",
+    logo: "/images/brands/coo-and-cry.png",
     industry: "Baby Care / E-commerce",
     headline: "Building a Connected Digital Brand Experience for Coo & Cry.",
     shortDescription: "Connected brand identity, packaging, full-stack e-commerce, social marketing, and content.",
@@ -279,6 +280,7 @@ export const CASE_STUDIES = [
   {
     slug: "medilove",
     client: "Medilove",
+    logo: "/images/brands/medilove.png",
     industry: "Adult Care / Consumer Products",
     headline: "Creating a Consistent Social Presence for Medilove.",
     shortDescription: "End-to-end social media management, content planning, creative production, and publishing.",
@@ -347,6 +349,7 @@ export const CASE_STUDIES = [
   {
     slug: "suncity-fire",
     client: "Suncity Fire",
+    logo: "/images/brands/suncity-fire.png",
     industry: "B2B Fire-Safety Manufacturing",
     headline: "Connecting B2B Visibility and Paid Advertising for Suncity Fire.",
     shortDescription: "B2B organic social presence paired with Google Ads and Facebook Ads to drive qualified enquiries.",
@@ -404,6 +407,7 @@ export const CASE_STUDIES = [
   {
     slug: "homeware-expo",
     client: "Homeware Expo",
+    logo: "/images/brands/homeware-expo.png",
     industry: "Exhibitions & Events",
     headline: "A Connected Website and Digital Marketing Presence for Homeware Expo.",
     shortDescription: "Full-stack event website paired with social media marketing and Facebook and Google Ads.",

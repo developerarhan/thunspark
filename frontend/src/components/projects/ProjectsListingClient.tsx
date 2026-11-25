@@ -129,9 +129,20 @@ export function ProjectsListingClient({ initialStudies }: ProjectsListingClientP
                           </div>
 
                           <div className="my-auto text-center py-4">
-                            <div className="w-14 h-14 rounded-2xl bg-accent/10 border border-accent/30 text-accent flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
-                              <Sparkles size={24} />
-                            </div>
+                            {study.logo ? (
+                              <div className="w-16 h-16 rounded-2xl bg-white border border-line/60 flex items-center justify-center mx-auto mb-3 p-2 group-hover:scale-105 transition-transform shadow-md overflow-hidden">
+                                <img
+                                  src={study.logo}
+                                  alt={`${study.client} logo`}
+                                  className="w-full h-full object-contain"
+                                  loading="lazy"
+                                />
+                              </div>
+                            ) : (
+                              <div className="w-14 h-14 rounded-2xl bg-accent/10 border border-accent/30 text-accent flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
+                                <Sparkles size={24} />
+                              </div>
+                            )}
                             <h4 className="font-display font-bold text-2xl text-ink tracking-tight group-hover:text-accent transition-colors">
                               {study.client}
                             </h4>
